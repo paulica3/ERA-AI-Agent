@@ -1,0 +1,98 @@
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/appsettings.Development.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/appsettings.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.staticwebassets.runtime.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.staticwebassets.endpoints.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.deps.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.runtimeconfig.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.dll
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/bin/Debug/net10.0/ERA AI.pdb
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/rpswa.dswa.cache.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.AssemblyInfoInputs.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.AssemblyInfo.cs
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.csproj.CoreCompileInputs.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.MvcApplicationPartsAssemblyInfo.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.RazorAssemblyInfo.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.RazorAssemblyInfo.cs
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.sourcelink.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/rjimswa.dswa.cache.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/scopedcss/bundle/ERA AI.styles.css
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/scopedcss/projectbundle/ERA AI.bundle.scp.css
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/p7x6sn9r0y-{0}-61n19gt1b8-61n19gt1b8.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/2ijmufyzgq-{0}-fr7q2aak1r-fr7q2aak1r.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/s3i0zwr17w-{0}-bqjiyaj88i-bqjiyaj88i.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/jauxc85x5n-{0}-c2jlpeoesf-c2jlpeoesf.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/qx0w1t1yrf-{0}-erw9l3u2r3-erw9l3u2r3.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/wojnmcb1gy-{0}-aexeepp0ev-aexeepp0ev.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/vj5bez902w-{0}-d7shbmvgxk-d7shbmvgxk.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/cluen49r4h-{0}-ausgxo2sd3-ausgxo2sd3.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/25vwr2hvlr-{0}-k8d9w2qqmf-k8d9w2qqmf.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/fstijubd2h-{0}-cosvhxvwiu-cosvhxvwiu.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/b1izph7wyj-{0}-ub07r2b239-ub07r2b239.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/wpckhmtsl9-{0}-fvhpjtyr6v-fvhpjtyr6v.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/5iweoyqinl-{0}-b7pk76d08c-b7pk76d08c.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/zh3pncaadz-{0}-fsbi9cje9m-fsbi9cje9m.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/waulrw3lwy-{0}-rzd6atqjts-rzd6atqjts.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/eq01ajj69x-{0}-ee0r1s7dh0-ee0r1s7dh0.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/fdhc9u025c-{0}-dxx9fxp4il-dxx9fxp4il.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/e4my44wbno-{0}-jd9uben2k1-jd9uben2k1.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/ccxtx33vtx-{0}-khv3u5hwcm-khv3u5hwcm.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/35dkx31851-{0}-r4e9w2rdcm-r4e9w2rdcm.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/n0hc3hg5g9-{0}-lcd1t2u6c8-lcd1t2u6c8.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/0udi55ta3c-{0}-c2oey78nd0-c2oey78nd0.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/emnptyj2fp-{0}-tdbxkamptv-tdbxkamptv.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/8pmib7mv77-{0}-j5mq2jizvt-j5mq2jizvt.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/za4pqdhpkq-{0}-06098lyss8-06098lyss8.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/73wilciirj-{0}-nvvlpmu67g-nvvlpmu67g.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/litml1f20a-{0}-s35ty4nyc5-s35ty4nyc5.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/ovqtx460kb-{0}-pj5nd1wqec-pj5nd1wqec.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/tx2kfofqnt-{0}-46ein0sx1k-46ein0sx1k.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/xty564s0ph-{0}-v0zj4ognzu-v0zj4ognzu.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/kyrtric3nr-{0}-37tfw0ft22-37tfw0ft22.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/m4g4v5j3o4-{0}-hrwsygsryq-hrwsygsryq.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/itf3c7qd50-{0}-pk9g2wxc8p-pk9g2wxc8p.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/9a5rp8v75k-{0}-ft3s53vfgj-ft3s53vfgj.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/4jwbcb3uka-{0}-6cfz1n2cew-6cfz1n2cew.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/tazzz1kago-{0}-6pdc2jztkx-6pdc2jztkx.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/1owg80lyfm-{0}-493y06b0oq-493y06b0oq.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/218wmo3356-{0}-iovd86k7lj-iovd86k7lj.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/ypgfjb7squ-{0}-vr1egmr9el-vr1egmr9el.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/umd1fg73er-{0}-kbrnm935zg-kbrnm935zg.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/wm08ejoulr-{0}-jj8uyg4cgr-jj8uyg4cgr.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/yql95xw1ys-{0}-y7v9cxd14o-y7v9cxd14o.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/fr0onustwn-{0}-notf2xhcfb-notf2xhcfb.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/rj52juo9n0-{0}-h1s4sie4z3-h1s4sie4z3.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/aq53rx3dav-{0}-63fj8s7r0e-63fj8s7r0e.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/8t9ofig5xc-{0}-0j3bgjxly4-0j3bgjxly4.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/5rrrzsnyko-{0}-47otxtyo56-47otxtyo56.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/es8wsxhx07-{0}-4v8eqarkd7-4v8eqarkd7.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/5tl41va9w1-{0}-l3n5xuwxn8-l3n5xuwxn8.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/bu3he0bhcg-{0}-ilo7uva0vt-ilo7uva0vt.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/su5s0ou26p-{0}-qlccset4i1-qlccset4i1.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/gerd8td83n-{0}-lzl9nlhx6b-lzl9nlhx6b.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/50d4lp1bv6-{0}-ag7o75518u-ag7o75518u.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/ydx1s61mn2-{0}-xzw0cte36n-xzw0cte36n.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/0mk0c9rbr1-{0}-0i3buxo5is-0i3buxo5is.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/n7lqrmz87g-{0}-o1o13a6vjx-o1o13a6vjx.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/j8gn5j3isz-{0}-ttgo8qnofa-ttgo8qnofa.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/k9a3ay328t-{0}-2z0ns9nrw6-2z0ns9nrw6.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/rbp8hyyqrq-{0}-muycvpuwrr-muycvpuwrr.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/eu7oi4rwr3-{0}-87fc7y1x7t-87fc7y1x7t.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/lvd47icyk8-{0}-jfsiqqwiad-jfsiqqwiad.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/zu1b9pdd5v-{0}-86ynymoguc-86ynymoguc.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/aa8rro8kh7-{0}-86ynymoguc-86ynymoguc.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/staticwebassets.build.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/staticwebassets.build.json.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/staticwebassets.development.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/staticwebassets.build.endpoints.json
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/swae.build.ex.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.dll
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/refint/ERA AI.dll
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.pdb
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.genruntimeconfig.cache
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ref/ERA AI.dll
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/rdisae5i19-{0}-qfhwix5nhb-qfhwix5nhb.gz
