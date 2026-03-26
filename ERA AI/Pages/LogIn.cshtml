@@ -1,7 +1,7 @@
 ﻿@page
-@model IndexModel
+@model LogInModel
 @{
-ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Login";
 }
 
 <!DOCTYPE html>
@@ -9,19 +9,18 @@ ViewData["Title"] = "Home page";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Efrim Roșca Asociații — Asistent AI</title>
+  <title>Efrim Roșca Asociații — Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-<div class="app">
+<div class="page">
 
   <!-- Header -->
   <header>
     <div class="logo-mark">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- border -->
         <rect x="0.5" y="0.5" width="47" height="47" stroke="#8b6914" stroke-width="1" fill="none"/>
-        <!-- corner ticks -->
         <line x1="0" y1="0" x2="7" y2="0"   stroke="#c9a84c" stroke-width="1.2"/>
         <line x1="0" y1="0" x2="0" y2="7"   stroke="#c9a84c" stroke-width="1.2"/>
         <line x1="48" y1="0"  x2="41" y2="0"  stroke="#c9a84c" stroke-width="1.2"/>
@@ -30,88 +29,66 @@ ViewData["Title"] = "Home page";
         <line x1="0"  y1="48" x2="0"  y2="41" stroke="#c9a84c" stroke-width="1.2"/>
         <line x1="48" y1="48" x2="41" y2="48" stroke="#c9a84c" stroke-width="1.2"/>
         <line x1="48" y1="48" x2="48" y2="41" stroke="#c9a84c" stroke-width="1.2"/>
-        <!-- ERA large -->
-        <text x="25" y="22" font-family="Cormorant Garamond, serif" font-size="13" font-weight="500"
+        <text x="25" y="23" font-family="Cormorant Garamond, serif" font-size="13" font-weight="500"
               fill="#8b6914" text-anchor="middle" letter-spacing="2">ERA</text>
-        <!-- divider line -->
-        <line x1="10" y1="27" x2="38" y2="27" stroke="#c9a84c" stroke-width="0.6" opacity="0.6"/>
-        <!-- AI small -->
-        <text x="26" y="38" font-family="Jost, sans-serif" font-size="8" font-weight="300"
+        <line x1="10" y1="28" x2="38" y2="28" stroke="#c9a84c" stroke-width="0.6" opacity="0.6"/>
+        <text x="25" y="39" font-family="Jost, sans-serif" font-size="8" font-weight="300"
               fill="#7a7060" text-anchor="middle" letter-spacing="4">AI</text>
       </svg>
     </div>
-
     <div class="header-text">
       <div class="firm-name">Efrim Roșca <span>&amp;</span> Asociații</div>
       <div class="firm-sub">Asistent Juridic AI</div>
     </div>
-    <div class="header-right">
-      <div class="status-dot"></div>
-      <span class="status-label">Activ</span>
-    </div>
   </header>
 
-  <!-- Messages -->
-  <div class="messages" id="messages">
-    <div class="welcome" id="welcome">
+  <!-- Main -->
+  <main>
+    <div class="login-card">
 
-      <div class="welcome-emblem">
-        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- border -->
-          <rect x="0.5" y="0.5" width="99" height="99" stroke="#8b6914" stroke-width="0.8" fill="none"/>
-          <!-- corner ticks -->
-          <line x1="0" y1="0" x2="14" y2="0"    stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="0" y1="0" x2="0"  y2="14"   stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="100" y1="0"   x2="86"  y2="0"   stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="100" y1="0"   x2="100" y2="14"  stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="0"   y1="100" x2="14"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="0"   y1="100" x2="0"   y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="100" y1="100" x2="86"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
-          <line x1="100" y1="100" x2="100" y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
-          <!-- ERA large -->
-          <text x="52" y="48" font-family="Cormorant Garamond, serif" font-size="28" font-weight="500"
-                fill="#8b6914" text-anchor="middle" letter-spacing="5">ERA</text>
-          <!-- divider -->
-          <line x1="18" y1="57" x2="82" y2="57" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
-          <!-- AI -->
-          <text x="54" y="72" font-family="Jost, sans-serif" font-size="13" font-weight="300"
-                fill="#7a7060" text-anchor="middle" letter-spacing="8">AI</text>
-        </svg>
+      <!-- Emblem -->
+      <svg class="emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="99" height="99" stroke="#8b6914" stroke-width="0.8" fill="none"/>
+        <line x1="0" y1="0" x2="14" y2="0"    stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="0" y1="0" x2="0"  y2="14"   stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="100" y1="0"   x2="86"  y2="0"   stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="100" y1="0"   x2="100" y2="14"  stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="0"   y1="100" x2="14"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="0"   y1="100" x2="0"   y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="100" y1="100" x2="86"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="100" y1="100" x2="100" y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="52" y="52" font-family="Cormorant Garamond, serif" font-size="28" font-weight="500"
+              fill="#8b6914" text-anchor="middle" letter-spacing="5">ERA</text>
+        <line x1="18" y1="59" x2="82" y2="59" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+        <text x="52" y="74" font-family="Jost, sans-serif" font-size="13" font-weight="300"
+              fill="#7a7060" text-anchor="middle" letter-spacing="8">AI</text>
+      </svg>
+
+      <h1 class="card-title">Bine ați venit</h1>
+      <p class="card-sub">Introduceți credențialele pentru a accesa platforma</p>
+
+      <!-- Error -->
+      <div class="error-msg" id="errorMsg">
+        Adresa de email sau parola este incorectă.
       </div>
 
-      <h1>Bine ați venit<br/>la asistentul dumneavoastră</h1>
-      <p>Sunt aici să vă ajut cu eficiența în activitatea juridică — de la redactarea documentelor până la cercetare și organizare.</p>
-      <div class="suggestions">
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">Redactează un contract</button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">Rezumă un document</button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">Cercetare juridică</button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">Redactează o scrisoare</button>
+      <!-- Form -->
+      <div class="form-group">
+        <label for="email">Adresă de email</label>
+        <input type="email" id="email" placeholder="nume@era.md" autocomplete="email"/>
       </div>
-    </div>
-  </div>
 
-  <!-- Input -->
-  <div class="input-area">
-    <div class="input-wrap">
-      <textarea
-        id="userInput"
-        placeholder="Introduceți întrebarea sau solicitarea dumneavoastră..."
-        rows="1"
-        oninput="autoResize(this); updateCharCount(this);"
-        onkeydown="handleKey(event)"
-      ></textarea>
-      <button class="send-btn" onclick="sendMessage()" title="Trimite">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="22" y1="2" x2="11" y2="13"></line>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-        </svg>
-      </button>
+      <div class="form-group">
+        <label for="password">Parolă</label>
+        <input type="password" id="password" placeholder="*******" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') handleLogin()"/>
+        <div class="forgot"><a href="#">Ați uitat parola?</a></div>
+      </div>
+
+      <button class="btn-login" onclick="handleLogin()">Autentificare</button>
+
     </div>
-    <div class="input-footer">
-      <span class="input-hint">Enter — trimite &nbsp;·&nbsp; Shift+Enter — linie nouă</span>
-      <span class="char-count" id="charCount">0</span>
-    </div>
-  </div>
+  </main>
 
   <!-- Footer -->
   <footer>
@@ -126,146 +103,23 @@ ViewData["Title"] = "Home page";
 </div>
 
 <script>
-  const messagesEl = document.getElementById('messages');
-  const welcomeEl  = document.getElementById('welcome');
-  const inputEl    = document.getElementById('userInput');
-  let welcomeVisible = true;
+  function handleLogin() {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('errorMsg');
 
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-  }
-
-  function updateCharCount(el) {
-    document.getElementById('charCount').textContent = el.value.length;
-  }
-
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
+    if (!email || !password) {
+      errorMsg.textContent = 'Vă rugăm completați toate câmpurile.';
+      errorMsg.classList.add('visible');
+      return;
     }
-  }
-
-  function sendSuggestion(btn) {
-    inputEl.value = btn.textContent;
-    sendMessage();
-  }
-
-  function hideWelcome() {
-    if (welcomeVisible) {
-      welcomeEl.style.transition = 'opacity 0.3s ease';
-      welcomeEl.style.opacity = '0';
-      setTimeout(() => welcomeEl.remove(), 300);
-      welcomeVisible = false;
+    else{
+      window.location.href = "/";
     }
-  }
 
-  function addMessage(role, text) {
-    const isUser = role === 'user';
-    const msg = document.createElement('div');
-    msg.className = `msg ${role}`;
-
-    const avatar = document.createElement('div');
-    avatar.className = 'msg-avatar';
-    avatar.innerHTML = isUser
-      ? '<span>DV</span>'
-      : `<svg viewBox="0 0 32 32" width="20" height="20" fill="none">
-           <circle cx="16" cy="16" r="4.5" fill="#8b6914" opacity="0.15"/>
-           <circle cx="16" cy="16" r="2.5" fill="#8b6914"/>
-           <circle cx="16" cy="7"  r="1.8" fill="#c9a84c"/>
-           <circle cx="25" cy="16" r="1.8" fill="#c9a84c"/>
-           <circle cx="16" cy="25" r="1.8" fill="#c9a84c"/>
-           <circle cx="7"  cy="16" r="1.8" fill="#c9a84c"/>
-           <line x1="16" y1="13.5" x2="16" y2="8.8"  stroke="#8b6914" stroke-width="0.6" opacity="0.35"/>
-           <line x1="18.5" y1="16" x2="23.2" y2="16" stroke="#8b6914" stroke-width="0.6" opacity="0.35"/>
-           <line x1="16" y1="18.5" x2="16" y2="23.2" stroke="#8b6914" stroke-width="0.6" opacity="0.35"/>
-           <line x1="13.5" y1="16" x2="8.8" y2="16"  stroke="#8b6914" stroke-width="0.6" opacity="0.35"/>
-         </svg>`;
-
-    const body = document.createElement('div');
-    body.className = 'msg-body';
-
-    const sender = document.createElement('div');
-    sender.className = 'msg-sender';
-    sender.textContent = isUser ? 'Dumneavoastră' : 'ERA AI · Efrim Roșca Asociații';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
-    bubble.textContent = text;
-
-    body.appendChild(sender);
-    body.appendChild(bubble);
-    msg.appendChild(avatar);
-    msg.appendChild(body);
-    messagesEl.appendChild(msg);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    return bubble;
-  }
-
-  function showTyping() {
-    const wrap = document.createElement('div');
-    wrap.className = 'msg assistant';
-    wrap.id = 'typingWrap';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'msg-avatar';
-    avatar.innerHTML = `<svg viewBox="0 0 32 32" width="20" height="20" fill="none">
-           <circle cx="16" cy="16" r="4.5" fill="#8b6914" opacity="0.15"/>
-           <circle cx="16" cy="16" r="2.5" fill="#8b6914"/>
-           <circle cx="16" cy="7"  r="1.8" fill="#c9a84c"/>
-           <circle cx="25" cy="16" r="1.8" fill="#c9a84c"/>
-           <circle cx="16" cy="25" r="1.8" fill="#c9a84c"/>
-           <circle cx="7"  cy="16" r="1.8" fill="#c9a84c"/>
-         </svg>`;
-
-    const body = document.createElement('div');
-    body.className = 'msg-body';
-
-    const sender = document.createElement('div');
-    sender.className = 'msg-sender';
-    sender.textContent = 'ERA AI · Efrim Roșca Asociații';
-
-    const indicator = document.createElement('div');
-    indicator.className = 'typing-indicator';
-    indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-
-    body.appendChild(sender);
-    body.appendChild(indicator);
-    wrap.appendChild(avatar);
-    wrap.appendChild(body);
-    messagesEl.appendChild(wrap);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }
-
-  function removeTyping() {
-    const el = document.getElementById('typingWrap');
-    if (el) el.remove();
-  }
-
-  async function sendMessage() {
-    const text = inputEl.value.trim();
-    if (!text) return;
-
-    hideWelcome();
-    addMessage('user', text);
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
-    document.getElementById('charCount').textContent = '0';
-
-    showTyping();
-
-    await new Promise(r => setTimeout(r, 1400 + Math.random() * 600));
-    removeTyping();
-
-    const responses = [
-      'Înțeleg solicitarea dumneavoastră. Voi analiza detaliile și vă voi pregăti materialele necesare în cel mai scurt timp posibil.',
-      'Aceasta este o întrebare excelentă din perspectivă juridică. Permiteți-mi să elaborez un răspuns complet bazat pe legislația în vigoare.',
-      'Documentul poate fi redactat conform specificațiilor dumneavoastră. Am nevoie de câteva detalii suplimentare pentru a asigura precizia juridică necesară.',
-      'Am procesat solicitarea. Conform practicii juridice moldovenești, există câteva aspecte importante de luat în considerare în acest context.',
-    ];
-
-    addMessage('assistant', responses[Math.floor(Math.random() * responses.length)]);
+    // Replace this with your real auth logic / form post
+    errorMsg.classList.remove('visible');
+    console.log('Login attempt:', email);
   }
 </script>
 

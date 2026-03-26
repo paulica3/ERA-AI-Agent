@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ERA_AI.Pages;
 
-public class IndexModel : PageModel
+public class LogInModel : PageModel
 {
     public void OnGet()
     {

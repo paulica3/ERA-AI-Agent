@@ -95,4 +95,5 @@
 /Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.pdb
 /Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ERA AI.genruntimeconfig.cache
 /Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/ref/ERA AI.dll
-/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/rdisae5i19-{0}-qfhwix5nhb-qfhwix5nhb.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/ru7xcufn9a-{0}-vjafekmwm7-vjafekmwm7.gz
+/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/Debug/net10.0/compressed/rdisae5i19-{0}-493g2oynrt-493g2oynrt.gz

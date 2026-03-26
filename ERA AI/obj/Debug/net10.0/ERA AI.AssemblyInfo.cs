@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ERA AI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2cb411963ba8f7d807268728086eb6adf481d90")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+320470523e3a2a2d51994960d5d60323b8f7e827")]
 [assembly: System.Reflection.AssemblyProductAttribute("ERA AI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ERA AI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
