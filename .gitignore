@@ -1,0 +1,23 @@
+# IDE
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# .NET
+bin/
+obj/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Claude Code
+.claude/worktrees/

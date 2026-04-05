@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc ERA_Agent_Development_Plan.docx -o /dev/stdout)",
+      "Bash(python -c \":*)",
+      "Bash(git -C /c/Users/paolo/repos/ERA-AI-Agent worktree list)",
+      "Bash(git -C /c/Users/paolo/repos/ERA-AI-Agent worktree remove --force /c/Users/paolo/repos/ERA-AI-Agent/PY/.claude/worktrees/nostalgic-gagarin)",
+      "Bash(rm -rf /c/Users/paolo/repos/ERA-AI-Agent/PY/.claude/worktrees/nostalgic-gagarin)",
+      "Bash(git -C /c/Users/paolo/repos/ERA-AI-Agent worktree prune)",
+      "Bash(rm -rf /c/Users/paolo/repos/ERA-AI-Agent/.idea/)",
+      "Bash(rm -rf /c/Users/paolo/repos/ERA-AI-Agent/PY/.idea/)",
+      "Bash(git -C /c/Users/paolo/repos/ERA-AI-Agent branch -D claude/nostalgic-gagarin)",
+      "Bash(git -C /c/Users/paolo/repos/ERA-AI-Agent status)",
+      "Bash(npm list:*)",
+      "Bash(npm install:*)",
+      "Bash(node generate_plan.js)"
+    ]
+  }
+}
