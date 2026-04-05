@@ -2,3 +2,4 @@
 - [User Role - Paolo](user_role.md) — Developer building the ERA AI Agent product
 - [DOCX style validated](feedback_docx_style.md) — User loves the professional Romanian DOCX style, keep it
 - [Docs directory](project_docs_location.md) — All documents go in ERA-AI-Agent/Docs/
+- [ELI5 explanations](feedback_eli5.md) — Explain everything in simple language, focus on the "why"

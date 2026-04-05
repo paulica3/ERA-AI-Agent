@@ -1,7 +1,9 @@
 ---
 name: User Role - Paolo
-description: Developer building an AI agent product for a Moldovan law firm
+description: AI/ML student (GenAI semester) building an AI agent for a Moldovan law firm — wants to learn deeply
 type: user
 ---
 
-Paolo is building an AI agent (ERA-AI-Agent) targeting a Moldovan law firm as the client. He is the developer/builder of the product.
+Paolo is an AI/ML student, currently in a GenAI-focused semester. He's building the ERA-AI-Agent as a project targeting a Moldovan law firm.
+
+He wants to understand the "why" behind every decision — not just have code written for him. Frame explanations as learning opportunities, especially around agent architecture, prompt engineering, RAG, and LLM integration patterns.
