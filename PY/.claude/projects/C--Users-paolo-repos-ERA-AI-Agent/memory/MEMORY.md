@@ -1,0 +1,2 @@
+- [ERA AI Agent Overview](project_overview.md) — AI agent for Moldovan law firm, automates repetitive tasks
+- [User Role - Paolo](user_role.md) — Developer building the ERA AI Agent product
