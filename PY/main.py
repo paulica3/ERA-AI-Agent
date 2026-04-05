@@ -2,6 +2,13 @@
 
 import argparse
 import sys
+import os
+
+# Fix Windows terminal encoding for Romanian characters (ă, â, î, ș, ț)
+if sys.platform == "win32":
+    os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stdin.reconfigure(encoding="utf-8")
 
 from era_agent.config import ANTHROPIC_API_KEY
 

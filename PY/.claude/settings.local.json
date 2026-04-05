@@ -14,7 +14,12 @@
       "Bash(npm list:*)",
       "Bash(npm install:*)",
       "Bash(node generate_plan.js)",
-      "Bash(.venv/Scripts/pip install:*)"
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(.venv/Scripts/python -c \"from era_agent.config import ANTHROPIC_API_KEY; print\\(''Key loaded!'' if ANTHROPIC_API_KEY and ANTHROPIC_API_KEY.startswith\\(''sk-''\\) else ''Key NOT found!''\\)\")",
+      "Bash(.venv/Scripts/python -c \"from era_agent.config import ANTHROPIC_API_KEY; print\\(repr\\(ANTHROPIC_API_KEY\\)[:20]\\)\")",
+      "Bash(.venv/Scripts/python -c \":*)",
+      "Bash(.venv/Scripts/python -c \"from era_agent.config import ANTHROPIC_API_KEY; print\\(''Key loaded!'' if ANTHROPIC_API_KEY and ANTHROPIC_API_KEY.startswith\\(''sk-''\\) else ''Key NOT found''\\)\")",
+      "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python -c \":*)"
     ]
   }
 }
