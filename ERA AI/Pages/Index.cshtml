@@ -15,6 +15,8 @@
 </head>
 <body>
 
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
@@ -44,12 +46,25 @@
   <div class="sidebar-collapsible">
     <div class="sidebar-label">Conversații</div>
     <div class="sidebar-list" id="sidebarList"></div>
+    <div class="sidebar-footer">
+      <button class="new-chat-btn" onclick="newConversation()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Conversație nouă
+      </button>
+    </div>
   </div>
 </aside>
 
 <!-- ── MAIN ───────────────────────────────────────────────────────── -->
 <div class="main">
   <header>
+    <button class="menu-btn" id="menuBtn" onclick="openSidebar()" title="Conversații">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
     <div class="logo-mark">
       <svg viewBox="0 0 48 48" fill="none">
         <rect x="0.5" y="0.5" width="47" height="47" stroke="#8b6914" stroke-width="1" fill="none"/>
@@ -394,8 +409,24 @@
   }
 
   // ── Sidebar toggle ────────────────────────────────────────────────
+  function isMobile() { return window.innerWidth <= 768; }
+
   function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('collapsed');
+    if (isMobile()) {
+      closeSidebar();
+    } else {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+  }
+
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('visible');
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('visible');
   }
 
   // ── Init ──────────────────────────────────────────────────────────

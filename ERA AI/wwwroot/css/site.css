@@ -14,10 +14,14 @@
   --shadow:      0 4px 40px rgba(26,23,20,0.10);
 }
 
-html { height: 100%; }
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
 
 body {
   height: 100vh;
+  height: 100dvh;
   background-color: var(--cream);
   font-family: 'Cormorant Garamond', serif;
   color: var(--ink);
@@ -78,6 +82,42 @@ body {
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+}
+
+.sidebar-footer {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.new-chat-btn {
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.new-chat-btn:hover {
+  background: var(--cream);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.new-chat-btn svg {
+  width: 13px; height: 13px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round;
+  flex-shrink: 0;
 }
 
 /* Collapsed state */
@@ -597,4 +637,184 @@ footer {
   background: var(--border);
   margin: 0 8px;
   vertical-align: middle;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+
+/* Overlay (mobile sidebar backdrop) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 23, 20, 0.35);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.sidebar-overlay.visible {
+  opacity: 1;
+}
+
+/* Hamburger button — hidden on desktop */
+.menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 5px 8px;
+  color: var(--ink-muted);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.menu-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+.menu-btn svg {
+  width: 16px; height: 16px;
+  stroke: currentColor;
+}
+
+/* ── Tablet (collapse sidebar automatically) ── */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .sidebar {
+    width: 52px;
+    min-width: 52px;
+  }
+
+  .sidebar .sidebar-collapsible { display: none; }
+
+  .sidebar .sidebar-header {
+    justify-content: center;
+    padding: 14px 0;
+  }
+
+  .sidebar .sidebar-header > svg { display: none; }
+
+  .sidebar .sidebar-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  /* Override: expanding works normally from here */
+  .sidebar:not(.collapsed) {
+    width: 264px;
+    min-width: 264px;
+  }
+
+  .sidebar:not(.collapsed) .sidebar-collapsible { display: flex; }
+
+  .sidebar:not(.collapsed) .sidebar-header {
+    justify-content: space-between;
+    padding: 14px;
+  }
+
+  .sidebar:not(.collapsed) .sidebar-header > svg { display: block; }
+
+  .sidebar:not(.collapsed) .sidebar-toggle svg {
+    transform: rotate(0deg);
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  /* Fix iOS viewport — let layout breathe when keyboard opens */
+  body {
+    height: 100%;
+    height: -webkit-fill-available;
+    overflow: auto;
+  }
+
+  .main {
+    height: 100%;
+    min-height: -webkit-fill-available;
+    overflow: hidden;
+  }
+
+  /* Smooth scrolling on iOS */
+  .messages {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Safe area padding for notch/home-bar phones */
+  .input-area {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Sidebar becomes a fixed drawer */
+  .sidebar {
+    position: fixed;
+    left: -264px;
+    top: 0;
+    width: 264px;
+    min-width: 264px;
+    height: 100%;
+    height: -webkit-fill-available;
+    z-index: 100;
+    transition: left 0.25s ease;
+    box-shadow: 4px 0 24px rgba(26, 23, 20, 0.12);
+  }
+
+  .sidebar.open { left: 0; }
+
+  .sidebar-overlay.visible { display: block; }
+
+  /* Collapsed class has no effect on mobile */
+  .sidebar.collapsed {
+    width: 264px;
+    min-width: 264px;
+  }
+
+  .sidebar.collapsed .sidebar-collapsible { display: flex; }
+
+  .sidebar.collapsed .sidebar-header {
+    justify-content: space-between;
+    padding: 14px;
+  }
+
+  .sidebar.collapsed .sidebar-header > svg { display: block; }
+
+  .sidebar.collapsed .sidebar-toggle svg { transform: none; }
+
+  /* Hamburger — large enough touch target for iOS (min 44×44) */
+  .menu-btn {
+    display: flex;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+
+  /* Header */
+  header { padding: 10px 14px; gap: 10px; }
+
+  .logo-mark svg { width: 30px; height: 30px; }
+
+  .firm-name { font-size: 14px; }
+  .firm-sub { font-size: 9px; }
+
+  /* Messages */
+  .messages { padding: 14px 0 6px; }
+
+  .msg { padding: 6px 14px; }
+
+  .msg-bubble { font-size: 15px; padding: 10px 13px; }
+
+  .welcome { padding: 24px 16px; }
+  .welcome h1 { font-size: 21px; }
+  .welcome-emblem svg { width: 64px; height: 64px; }
+
+  /* Input */
+  .input-area { padding: 10px 14px; }
+
+  .input-wrap { padding: 8px 10px; }
+
+  textarea { font-size: 16px; } /* Prevent iOS auto-zoom */
+
+  .input-footer { margin-top: 6px; }
+
+  /* Footer */
+  footer { padding: 8px 16px; font-size: 10px; }
+
+  .footer-right { display: none; }
 }
