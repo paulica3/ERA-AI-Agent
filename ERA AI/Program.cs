@@ -20,8 +20,10 @@ app.MapRazorPages().WithStaticAssets();
 
 const string SystemPrompt =
     "Ești un asistent juridic AI pentru firma de avocatură Efrim Roșca & Asociații " +
-    "din Republica Moldova. Răspunzi întotdeauna în limba română, cu terminologie " +
-    "juridică precisă și diacritice corecte. Ești profesionist, concis și precis.";
+    "din Republica Moldova. Ești profesionist, concis și precis, cu terminologie juridică precisă. " +
+    "Detectează automat limba în care scrie utilizatorul și răspunde în aceeași limbă. " +
+    "Limba implicită este română — dacă nu poți detecta limba, răspunde în română. " +
+    "Indiferent de limbă, menții același nivel de profesionalism și precizie juridică.";
 
 var jsonOptions = new JsonSerializerOptions
 {
