@@ -20,7 +20,11 @@
       "Bash(.venv/Scripts/python -c \":*)",
       "Bash(.venv/Scripts/python -c \"from era_agent.config import ANTHROPIC_API_KEY; print\\(''Key loaded!'' if ANTHROPIC_API_KEY and ANTHROPIC_API_KEY.startswith\\(''sk-''\\) else ''Key NOT found''\\)\")",
       "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python -c \":*)",
-      "Bash(python -c \"import os; print\\(os.path.exists\\(r''C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\Docs\\\\ERA Agent Development Plan.docx''\\)\\); print\\(os.listdir\\(r''C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\Docs''\\)\\)\")"
+      "Bash(python -c \"import os; print\\(os.path.exists\\(r''C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\Docs\\\\ERA Agent Development Plan.docx''\\)\\); print\\(os.listdir\\(r''C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\Docs''\\)\\)\")",
+      "Bash(xargs wc *)",
+      "Read(//c/Users/paolo/repos/ERA-AI-Agent/**)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet clean *)"
     ]
   }
 }
