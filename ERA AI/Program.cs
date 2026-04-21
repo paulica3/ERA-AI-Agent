@@ -1,8 +1,40 @@
+using System.Diagnostics;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
+
+// ── Python API auto-start ────────────────────────────────────────────────────
+// Locate the uvicorn executable inside the Python virtual environment.
+// Path is relative to this project file, going up one level to reach /PY.
+var pyRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "PY"));
+var uvicorn = Path.Combine(pyRoot, ".venv", "Scripts", "uvicorn.exe");
+
+Process? pythonProcess = null;
+
+if (File.Exists(uvicorn))
+{
+    pythonProcess = new Process
+    {
+        StartInfo = new ProcessStartInfo
+        {
+            FileName         = uvicorn,
+            Arguments        = "api:app --port 8000 --reload",
+            WorkingDirectory = pyRoot,
+            UseShellExecute  = false,   // run silently, no extra window
+            CreateNoWindow   = true,
+        }
+    };
+    pythonProcess.Start();
+    Console.WriteLine("✓ Python API server started on http://localhost:8000");
+}
+else
+{
+    Console.WriteLine($"⚠ uvicorn not found at: {uvicorn}");
+    Console.WriteLine("  Run: cd PY && .venv\\Scripts\\pip install uvicorn");
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 var app = builder.Build();
 
@@ -56,6 +88,17 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
     var result = await response.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
     var reply = result?.Content?.FirstOrDefault()?.Text ?? "Eroare de răspuns.";
     return Results.Ok(new { reply });
+});
+
+// Shut down the Python process cleanly when the .NET app stops
+var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+lifetime.ApplicationStopping.Register(() =>
+{
+    if (pythonProcess is { HasExited: false })
+    {
+        pythonProcess.Kill(entireProcessTree: true);
+        Console.WriteLine("✓ Python API server stopped.");
+    }
 });
 
 app.Run();
