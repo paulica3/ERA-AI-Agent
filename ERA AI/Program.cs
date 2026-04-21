@@ -62,6 +62,31 @@ var jsonOptions = new JsonSerializerOptions
     PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
 };
 
+app.MapPost("/api/title", async (TitleRequest req, IConfiguration config, IHttpClientFactory factory) =>
+{
+    var apiKey = config["AnthropicApiKey"];
+    if (string.IsNullOrEmpty(apiKey)) return Results.Problem("Cheia API nu este configurată.");
+
+    var httpClient = factory.CreateClient();
+    httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+    httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
+
+    var requestBody = new AnthropicRequest(
+        Model: "claude-sonnet-4-20250514",
+        MaxTokens: 20,
+        System: "You generate ultra-short chat titles. Reply with 2-3 words only — no punctuation, no quotes, no explanation.",
+        Messages: [new ChatMessage("user", $"Summarize this message as a 2-3 word title: {req.Message}")]
+    );
+
+    var content = JsonContent.Create(requestBody, options: jsonOptions);
+    var response = await httpClient.PostAsync("https://api.anthropic.com/v1/messages", content);
+    if (!response.IsSuccessStatusCode) return Results.Problem("Eroare de la serviciul AI.");
+
+    var result = await response.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
+    var title = result?.Content?.FirstOrDefault()?.Text ?? req.Message[..Math.Min(30, req.Message.Length)];
+    return Results.Ok(new { title });
+});
+
 app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpClientFactory factory) =>
 {
     var apiKey = config["AnthropicApiKey"];
@@ -103,6 +128,7 @@ lifetime.ApplicationStopping.Register(() =>
 
 app.Run();
 
+record TitleRequest(string Message);
 record ChatRequest(List<ChatMessage> Messages);
 record ChatMessage(string Role, string Content);
 record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages);

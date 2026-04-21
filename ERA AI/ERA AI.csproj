@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>ERA_AI</RootNamespace>
         <AssemblyName>ERA-AI</AssemblyName>
-    </PropertyGroup>
+      <UserSecretsId>ba1e323b-a897-43d6-b5a9-bd1c0275e625</UserSecretsId>
+  </PropertyGroup>
 
 </Project>

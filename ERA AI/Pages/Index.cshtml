@@ -227,10 +227,27 @@
       item.className = 'conv-item' + (conv.id === currentId ? ' active' : '');
       item.innerHTML = `
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/></svg>
-        <span>${esc(conv.title)}</span>`;
+        <span>${esc(conv.title)}</span>
+        <button class="conv-delete" title="Șterge conversația">✕</button>`;
       item.onclick = () => loadConversation(conv.id);
+      item.querySelector('.conv-delete').onclick = (e) => {
+        e.stopPropagation();
+        deleteConversation(conv.id);
+      };
       list.appendChild(item);
     });
+  }
+
+  function deleteConversation(id) {
+    conversations = conversations.filter(c => c.id !== id);
+    if (currentId === id) {
+      currentId = null;
+      messagesEl.innerHTML = '';
+      messagesEl.appendChild(buildWelcome());
+      welcomeVisible = true;
+    }
+    save();
+    renderSidebar();
   }
 
   function esc(s) {
@@ -259,12 +276,37 @@
 
   function startConversation(firstMessage) {
     const id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
-    const title = firstMessage.length > 42 ? firstMessage.slice(0, 42) + '…' : firstMessage;
-    const conv = { id, title, messages: [] };
+    const conv = { id, title: '…', messages: [] };
     conversations.push(conv);
     currentId = id;
     save();
     renderSidebar();
+
+    // Ask Claude for a 2-3 word title in the background
+    fetch('/api/title', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: firstMessage })
+    })
+      .then(r => r.json())
+      .then(data => {
+        const target = conversations.find(c => c.id === id);
+        if (target && data.title) {
+          target.title = data.title;
+          save();
+          renderSidebar();
+        }
+      })
+      .catch(() => {
+        // Fallback: use truncated message if title generation fails
+        const target = conversations.find(c => c.id === id);
+        if (target) {
+          target.title = firstMessage.length > 30 ? firstMessage.slice(0, 30) + '…' : firstMessage;
+          save();
+          renderSidebar();
+        }
+      });
+
     return conv;
   }
 
