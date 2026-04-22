@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,11 @@ builder.Services.AddHttpClient();
 // Locate the uvicorn executable inside the Python virtual environment.
 // Path is relative to this project file, going up one level to reach /PY.
 var pyRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "PY"));
-var uvicorn = Path.Combine(pyRoot, ".venv", "Scripts", "uvicorn.exe");
+
+// Windows: .venv/Scripts/uvicorn.exe  |  Mac/Linux: .venv/bin/uvicorn
+var uvicorn = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+    ? Path.Combine(pyRoot, ".venv", "Scripts", "uvicorn.exe")
+    : Path.Combine(pyRoot, ".venv", "bin", "uvicorn");
 
 Process? pythonProcess = null;
 
@@ -32,7 +37,8 @@ if (File.Exists(uvicorn))
 else
 {
     Console.WriteLine($"⚠ uvicorn not found at: {uvicorn}");
-    Console.WriteLine("  Run: cd PY && .venv\\Scripts\\pip install uvicorn");
+    Console.WriteLine("  Run: cd PY && .venv/bin/pip install uvicorn  (Mac/Linux)");
+    Console.WriteLine("  Run: cd PY && .venv\\Scripts\\pip install uvicorn  (Windows)");
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -96,12 +102,14 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
     var httpClient = factory.CreateClient();
     httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
     httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
+    httpClient.DefaultRequestHeaders.Add("anthropic-beta", "web-search-2025-03-05");
 
     var requestBody = new AnthropicRequest(
         Model: "claude-sonnet-4-20250514",
         MaxTokens: 4096,
         System: SystemPrompt,
-        Messages: req.Messages
+        Messages: req.Messages,
+        Tools: [new AnthropicTool("web_search_20250305", "web_search")]
     );
 
     var content = JsonContent.Create(requestBody, options: jsonOptions);
@@ -111,8 +119,11 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
         return Results.Problem("Eroare de la serviciul AI.");
 
     var result = await response.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
-    var reply = result?.Content?.FirstOrDefault()?.Text ?? "Eroare de răspuns.";
-    return Results.Ok(new { reply });
+    // Only return text blocks — web search result blocks are handled server-side by Claude
+    var reply = string.Join("\n", result?.Content?
+        .Where(c => c.Type == "text" && c.Text != null)
+        .Select(c => c.Text!) ?? []);
+    return Results.Ok(new { reply = string.IsNullOrWhiteSpace(reply) ? "Eroare de răspuns." : reply });
 });
 
 // Shut down the Python process cleanly when the .NET app stops
@@ -131,6 +142,7 @@ app.Run();
 record TitleRequest(string Message);
 record ChatRequest(List<ChatMessage> Messages);
 record ChatMessage(string Role, string Content);
-record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages);
+record AnthropicTool(string Type, string Name);
+record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages, List<AnthropicTool>? Tools = null);
 record AnthropicResponse(List<AnthropicContent> Content);
-record AnthropicContent(string Type, string Text);
+record AnthropicContent(string Type, string? Text);
