@@ -559,7 +559,7 @@
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:8000/analyze', {
+      const response = await fetch('/api/analyze', {
         method: 'POST',
         body: formData
       });
@@ -583,7 +583,7 @@
       resultsEl.style.display = 'flex';
 
     } catch (e) {
-      resultsEl.innerHTML = `<div class="analysis-card"><div class="analysis-card-body" style="color:var(--red-accent)">Eroare: ${e.message}. Verificați că serverul Python este pornit pe portul 8000.</div></div>`;
+      resultsEl.innerHTML = `<div class="analysis-card"><div class="analysis-card-body" style="color:var(--red-accent)">Eroare la analizarea documentului: ${e.message}</div></div>`;
       resultsEl.style.display = 'flex';
     } finally {
       document.getElementById('analyzeLoading').style.display = 'none';

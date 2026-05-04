@@ -1,6 +1,10 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -125,6 +129,134 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
         .Select(c => c.Text!) ?? []);
     return Results.Ok(new { reply = string.IsNullOrWhiteSpace(reply) ? "Eroare de răspuns." : reply });
 });
+
+app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory) =>
+{
+    var apiKey = config["AnthropicApiKey"];
+    if (string.IsNullOrEmpty(apiKey)) return Results.Problem("Cheia API nu este configurată.");
+    if (!httpReq.HasFormContentType) return Results.BadRequest("Expected multipart/form-data.");
+
+    var form = await httpReq.ReadFormAsync();
+    var file = form.Files.GetFile("file");
+    if (file is null) return Results.BadRequest("Niciun fișier încărcat.");
+
+    var ext = Path.GetExtension(file.FileName ?? "").ToLowerInvariant();
+    if (ext is not ".pdf" and not ".docx")
+        return Results.Problem("Format neacceptat. Încărcați un fișier PDF sau DOCX.");
+
+    using var ms = new MemoryStream();
+    await file.CopyToAsync(ms);
+    var bytes = ms.ToArray();
+
+    var httpClient = factory.CreateClient();
+    httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+    httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
+
+    // Extract text for DOCX up front (PDF is sent natively to Claude)
+    string? docxText = null;
+    if (ext == ".pdf")
+        httpClient.DefaultRequestHeaders.Add("anthropic-beta", "pdfs-2024-09-25");
+    else
+    {
+        docxText = ExtractDocxText(bytes);
+        if (string.IsNullOrWhiteSpace(docxText))
+            return Results.Problem("Nu s-a putut extrage text din documentul DOCX.");
+    }
+
+    // Precompute once — used by both Claude calls below
+    var base64Pdf = ext == ".pdf" ? Convert.ToBase64String(bytes) : null;
+
+    async Task<string> AskClaude(string prompt)
+    {
+        // PDF → send file natively as a document block; DOCX → send extracted text
+        JsonNode messageContent = ext == ".pdf"
+            ? new JsonArray
+            {
+                new JsonObject
+                {
+                    ["type"] = "document",
+                    ["source"] = new JsonObject
+                    {
+                        ["type"]       = "base64",
+                        ["media_type"] = "application/pdf",
+                        ["data"]       = base64Pdf
+                    }
+                },
+                new JsonObject { ["type"] = "text", ["text"] = prompt }
+            }
+            : JsonValue.Create($"{prompt}\n\nDocument:\n{docxText}")!;
+
+        var body = new JsonObject
+        {
+            ["model"]      = "claude-sonnet-4-20250514",
+            ["max_tokens"] = 4096,
+            ["system"]     = SystemPrompt,
+            ["messages"]   = new JsonArray
+            {
+                new JsonObject { ["role"] = "user", ["content"] = messageContent }
+            }
+        };
+
+        var reqContent = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json");
+        var resp = await httpClient.PostAsync("https://api.anthropic.com/v1/messages", reqContent);
+        if (!resp.IsSuccessStatusCode) return "Eroare de la serviciul AI.";
+        var result = await resp.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
+        return string.Join("\n", result?.Content?
+            .Where(c => c.Type == "text" && c.Text != null)
+            .Select(c => c.Text!) ?? []);
+    }
+
+    var summary = await AskClaude(
+        "Analizează acest document juridic și oferă:\n" +
+        "1. Un rezumat concis (3-5 propoziții)\n" +
+        "2. Punctele cheie identificate\n" +
+        "3. Clauze importante sau riscuri potențiale");
+
+    var clauses = await AskClaude(
+        "Extrage toate clauzele importante din acest document juridic. " +
+        "Pentru fiecare clauză, oferă:\n" +
+        "- Titlul/tipul clauzei\n" +
+        "- Conținutul relevant\n" +
+        "- Observații sau riscuri");
+
+    return Results.Ok(new
+    {
+        filename             = file.FileName,
+        characters_extracted = ext == ".pdf" ? bytes.Length : docxText!.Length,
+        summary,
+        clauses
+    });
+});
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+// Extract plain text from a .docx file (ZIP → word/document.xml → w:t nodes)
+static string ExtractDocxText(byte[] bytes)
+{
+    try
+    {
+        using var zip = new ZipArchive(new MemoryStream(bytes), ZipArchiveMode.Read);
+        var entry = zip.GetEntry("word/document.xml");
+        if (entry is null) return "";
+
+        using var stream = entry.Open();
+        using var reader = new StreamReader(stream);
+        var xml = reader.ReadToEnd();
+
+        var doc = new XmlDocument();
+        doc.LoadXml(xml);
+        var nsmgr = new XmlNamespaceManager(doc.NameTable);
+        nsmgr.AddNamespace("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+        var nodes = doc.SelectNodes("//w:t", nsmgr);
+
+        var sb = new StringBuilder();
+        if (nodes != null)
+            foreach (XmlNode node in nodes)
+                sb.Append(node.InnerText).Append(' ');
+        return sb.ToString().Trim();
+    }
+    catch { return ""; }
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 // Shut down the Python process cleanly when the .NET app stops
 var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
