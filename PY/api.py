@@ -8,7 +8,7 @@ from fastapi.security import APIKeyHeader
 from era_agent.config import ANTHROPIC_API_KEY
 from era_agent.ingestion.pdf import extract_text as pdf_extract
 from era_agent.ingestion.docx import extract_text as docx_extract
-from era_agent.pipelines.analysis import analyze_document
+from era_agent.pipelines.analysis import analyze_document as run_analysis
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -62,7 +62,7 @@ async def analyze_document(file: UploadFile = File(...)):
                 detail="Nu s-a putut extrage text din document.",
             )
 
-        result = analyze_document(text)
+        result = run_analysis(text)
 
         return {
             "filename": filename,

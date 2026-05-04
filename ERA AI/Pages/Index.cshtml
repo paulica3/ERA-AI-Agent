@@ -225,6 +225,7 @@
     conversations.slice().reverse().forEach(conv => {
       const item = document.createElement('div');
       item.className = 'conv-item' + (conv.id === currentId ? ' active' : '');
+      item.dataset.id = conv.id;
       item.innerHTML = `
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/></svg>
         <span>${esc(conv.title)}</span>
@@ -281,33 +282,44 @@
     currentId = id;
     save();
     renderSidebar();
-
-    // Ask Claude for a 2-3 word title in the background
-    fetch('/api/title', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: firstMessage })
-    })
-      .then(r => r.json())
-      .then(data => {
-        const target = conversations.find(c => c.id === id);
-        if (target && data.title) {
-          target.title = data.title;
-          save();
-          renderSidebar();
-        }
-      })
-      .catch(() => {
-        // Fallback: use truncated message if title generation fails
-        const target = conversations.find(c => c.id === id);
-        if (target) {
-          target.title = firstMessage.length > 30 ? firstMessage.slice(0, 30) + '…' : firstMessage;
-          save();
-          renderSidebar();
-        }
-      });
-
     return conv;
+  }
+
+  // Called after the first bot reply — uses both Q and A for a better title
+  async function generateTitle(conv, userMessage, botReply) {
+    const fallback = userMessage.length > 35 ? userMessage.slice(0, 35) + '…' : userMessage;
+    try {
+      const r = await fetch('/api/title', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage, reply: botReply })
+      });
+      const data = await r.json();
+      // Guard: only use the returned title if it looks like a real title (short, no error keywords)
+      const raw = data.title || '';
+      const title = (raw.length > 0 && raw.length <= 50) ? raw : fallback;
+      conv.title = title;
+      save();
+      animateTitle(conv.id, title);
+    } catch {
+      conv.title = fallback;
+      save();
+      animateTitle(conv.id, fallback);
+    }
+  }
+
+  // Typewriter effect: writes the title letter by letter into the sidebar item
+  function animateTitle(convId, title) {
+    renderSidebar(); // rebuild list with final data, then overwrite the one span
+    const item = document.querySelector(`.conv-item[data-id="${convId}"]`);
+    if (!item) return;
+    const span = item.querySelector('span');
+    span.textContent = '';
+    let i = 0;
+    const tick = setInterval(() => {
+      span.textContent += title[i++];
+      if (i >= title.length) clearInterval(tick);
+    }, 35);
   }
 
   function buildWelcome() {
@@ -344,8 +356,22 @@
     return div;
   }
 
+  // ── Typewriter for assistant bubbles ─────────────────────────────
+  function typeMessage(bubble, fullText) {
+    const INTERVAL = 16;                        // ~60fps
+    const DURATION = 3000;                      // always finish within 3 seconds
+    const charsPerTick = Math.max(1, Math.ceil(fullText.length / (DURATION / INTERVAL)));
+    let i = 0;
+    const tick = setInterval(() => {
+      i = Math.min(i + charsPerTick, fullText.length);
+      bubble.innerHTML = marked.parse(fullText.slice(0, i));
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (i >= fullText.length) clearInterval(tick);
+    }, INTERVAL);
+  }
+
   // ── Rendering helpers ─────────────────────────────────────────────
-  function renderMessage(role, text) {
+  function renderMessage(role, text, animate = false) {
     const isUser = role === 'user';
     const msg = document.createElement('div');
     msg.className = `msg ${role}`;
@@ -379,6 +405,8 @@
 
     if (isUser) {
       bubble.textContent = text;
+    } else if (animate) {
+      typeMessage(bubble, text);
     } else {
       bubble.innerHTML = marked.parse(text);
     }
@@ -460,7 +488,8 @@
 
     hideWelcome();
 
-    if (!currentId) startConversation(text);
+    const isNew = !currentId;
+    if (isNew) startConversation(text);
 
     const conv = getCurrent();
     conv.messages.push({ role: 'user', content: text });
@@ -483,7 +512,10 @@
       removeTyping();
       conv.messages.push({ role: 'assistant', content: data.reply });
       save();
-      renderMessage('assistant', data.reply);
+      renderMessage('assistant', data.reply, true);
+
+      // Generate title after we have both the question and the answer
+      if (isNew) generateTitle(conv, text, data.reply);
     } catch {
       removeTyping();
       renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
