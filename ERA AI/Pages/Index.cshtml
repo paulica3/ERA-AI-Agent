@@ -596,12 +596,21 @@
         body: formData
       });
 
+      // Read body once as text so we can fall back gracefully if it isn't JSON
+      const rawBody = await response.text();
+
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.detail || 'Eroare server');
+        let msg = 'Eroare server';
+        try {
+          const err = JSON.parse(rawBody);
+          msg = err.error || err.detail || msg;
+        } catch {
+          // Body wasn't JSON (e.g. HTML error page) — keep generic message
+        }
+        throw new Error(msg);
       }
 
-      const data = await response.json();
+      const data = JSON.parse(rawBody);
 
       resultsEl.innerHTML = `
         <div class="analysis-card">

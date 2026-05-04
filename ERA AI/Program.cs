@@ -108,46 +108,63 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
 
 app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory) =>
 {
-    var pythonApiUrl = config["PythonApiUrl"];
-    if (string.IsNullOrEmpty(pythonApiUrl))
-        return Results.Problem("Python API URL nu este configurat. Setați PythonApiUrl în Application Settings.");
-
-    if (!httpReq.HasFormContentType)
-        return Results.BadRequest("Expected multipart/form-data.");
-
-    var form = await httpReq.ReadFormAsync();
-    var file = form.Files.GetFile("file");
-    if (file is null) return Results.BadRequest("Niciun fișier încărcat.");
-
-    // Forward the file to the Python API unchanged
-    using var ms = new MemoryStream();
-    await file.CopyToAsync(ms);
-    ms.Seek(0, SeekOrigin.Begin);
-
-    var httpClient = factory.CreateClient();
-
-    // Shared secret so the Python API only accepts requests from this .NET app
-    var eraApiKey = config["EraApiKey"];
-    if (!string.IsNullOrEmpty(eraApiKey))
-        httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
-
-    using var formContent = new MultipartFormDataContent();
-    using var fileContent = new StreamContent(ms);
-    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
-        file.ContentType ?? "application/octet-stream");
-    formContent.Add(fileContent, "file", file.FileName ?? "document");
-
-    var resp = await httpClient.PostAsync($"{pythonApiUrl}/analyze", formContent);
-
-    if (!resp.IsSuccessStatusCode)
+    // Always return JSON — never let an exception escape and produce an HTML error page.
+    try
     {
-        var err = await resp.Content.ReadAsStringAsync();
-        return Results.Problem($"Eroare Python API: {err}");
-    }
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
 
-    // Stream the JSON response back to the browser as-is
-    var json = await resp.Content.ReadAsStringAsync();
-    return Results.Content(json, "application/json");
+        if (!httpReq.HasFormContentType)
+            return Results.Json(new { error = "Expected multipart/form-data." }, statusCode: 400);
+
+        var form = await httpReq.ReadFormAsync();
+        var file = form.Files.GetFile("file");
+        if (file is null) return Results.Json(new { error = "Niciun fișier încărcat." }, statusCode: 400);
+
+        // Forward the file to the Python API unchanged
+        using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        var httpClient = factory.CreateClient();
+        // Azure App Service caps inbound requests at ~230s — stay just below that
+        // so we time out cleanly on our side rather than Azure dropping the connection.
+        httpClient.Timeout = TimeSpan.FromSeconds(220);
+
+        // Shared secret so the Python API only accepts requests from this .NET app
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        using var formContent = new MultipartFormDataContent();
+        using var fileContent = new StreamContent(ms);
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
+            file.ContentType ?? "application/octet-stream");
+        formContent.Add(fileContent, "file", file.FileName ?? "document");
+
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/analyze", formContent);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var err = await resp.Content.ReadAsStringAsync();
+            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
+        }
+
+        // Stream the JSON response back to the browser as-is
+        var json = await resp.Content.ReadAsStringAsync();
+        return Results.Content(json, "application/json");
+    }
+    catch (TaskCanceledException)
+    {
+        return Results.Json(
+            new { error = "Analiza a durat prea mult. Documentul este probabil prea lung." },
+            statusCode: 504);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
 });
 
 app.Run();
