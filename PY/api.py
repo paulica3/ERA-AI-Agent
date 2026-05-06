@@ -3,12 +3,15 @@
 import os
 import tempfile
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
+from fastapi.responses import Response
 from fastapi.security import APIKeyHeader
+from pydantic import BaseModel
 
 from era_agent.config import ANTHROPIC_API_KEY
 from era_agent.ingestion.pdf import extract_text as pdf_extract
 from era_agent.ingestion.docx import extract_text as docx_extract
 from era_agent.pipelines.analysis import analyze_document as run_analysis
+from era_agent.pipelines.drafting import draft_contract as run_drafting
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -72,3 +75,47 @@ async def analyze_document(file: UploadFile = File(...)):
         }
     finally:
         os.unlink(tmp_path)
+
+
+class DraftContractRequest(BaseModel):
+    client_name: str
+    client_type: str = "SRL"
+    client_idno: str = ""
+    client_address: str = ""
+    client_rep: str = ""
+    client_rep_role: str = "Administrator"
+    scope: str
+    services: str = ""
+    fees: str = ""
+    duration: str = ""
+    contract_number: str = ""
+
+
+@app.post("/draft-contract", dependencies=[Depends(verify_key)])
+async def draft_contract_endpoint(req: DraftContractRequest):
+    """
+    Fill ERA's contract template with client-specific data and return a DOCX.
+    """
+    try:
+        docx_bytes = run_drafting(
+            client_name=req.client_name,
+            client_type=req.client_type,
+            client_idno=req.client_idno,
+            client_address=req.client_address,
+            client_rep=req.client_rep,
+            client_rep_role=req.client_rep_role,
+            scope=req.scope,
+            services=req.services,
+            fees=req.fees,
+            duration=req.duration,
+            contract_number=req.contract_number,
+        )
+        safe_name = req.client_name.replace(" ", "_").replace("/", "_")[:30]
+        filename = f"Contract_{safe_name}.docx"
+        return Response(
+            content=docx_bytes,
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la redactarea contractului: {str(e)}")

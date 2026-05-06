@@ -25,16 +25,23 @@ def get_client():
     return anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
-def send_message(content: str, system: str = SYSTEM_PROMPT) -> str:
+def send_message(
+    content: str,
+    system: str = SYSTEM_PROMPT,
+    max_tokens: int = MAX_TOKENS,
+    use_web_search: bool = True,
+) -> str:
     client = get_client()
-    response = client.messages.create(
+    create_kwargs = dict(
         model=MODEL,
-        max_tokens=MAX_TOKENS,
+        max_tokens=max_tokens,
         system=system,
-        tools=[WEB_SEARCH_TOOL],
         messages=[{"role": "user", "content": content}],
-        extra_headers={"anthropic-beta": "web-search-2025-03-05"},
     )
+    if use_web_search:
+        create_kwargs["tools"] = [WEB_SEARCH_TOOL]
+        create_kwargs["extra_headers"] = {"anthropic-beta": "web-search-2025-03-05"}
+    response = client.messages.create(**create_kwargs)
     # Extract all text blocks from the response (tool results are handled server-side)
     text_blocks = [block.text for block in response.content if hasattr(block, "text")]
     return "\n".join(text_blocks) if text_blocks else ""

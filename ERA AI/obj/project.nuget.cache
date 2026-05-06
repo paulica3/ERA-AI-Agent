@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "fboqP7b7OIo=",
+  "dgSpecHash": "hMny48k/43s=",
   "success": true,
-  "projectFilePath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.14\\microsoft.netcore.app.ref.9.0.14.nupkg.sha512",
+    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.14\\microsoft.windowsdesktop.app.ref.9.0.14.nupkg.sha512",
+    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.14\\microsoft.aspnetcore.app.ref.9.0.14.nupkg.sha512",
+    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.14\\microsoft.netcore.app.host.win-x64.9.0.14.nupkg.sha512"
+  ],
   "logs": []
 }

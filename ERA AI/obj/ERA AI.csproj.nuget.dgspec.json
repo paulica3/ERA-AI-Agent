@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj": {}
+    "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj": {}
   },
   "projects": {
-    "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj": {
+    "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
+        "projectUniqueName": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
         "projectName": "ERA-AI",
-        "projectPath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
-        "packagesPath": "/Users/paulefrim/.nuget/packages/",
-        "outputPath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/",
+        "projectPath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
+        "packagesPath": "C:\\Users\\paolo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/paulefrim/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\paolo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -54,6 +54,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -62,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

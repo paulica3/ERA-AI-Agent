@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\" -type f \\\\\\( -name \"*.py\" -o -name \"requirements.txt\" \\\\\\) ! -path \"*.venv*\" 2>/dev/null | head -20)",
+      "Bash(python -c ' *)",
+      "Bash(python -m uvicorn --version)",
+      "Bash(python -m uvicorn api:app --port 8000)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(python -m pip install -r requirements.txt)",
+      "Bash(python -c \"from docx import Document; print\\('python-docx OK'\\)\")",
+      "Bash(netstat -ano)",
+      "PowerShell(Get-Process | Where-Object { $_.Name -match \"python|uvicorn\" } | Select-Object Id, Name, CPU)",
+      "Bash(python -m uvicorn api:app --port 8000 --log-level info)",
+      "Bash(python -c \"import urllib.request; print\\(urllib.request.urlopen\\('http://localhost:8000/health'\\).read\\(\\).decode\\(\\)\\)\")",
+      "Bash(python -m uvicorn api:app --port 8001 --log-level info)",
+      "Bash(python -c \"import urllib.request; print\\(urllib.request.urlopen\\('http://localhost:8001/health'\\).read\\(\\).decode\\(\\)\\)\")"
+    ]
+  }
+}

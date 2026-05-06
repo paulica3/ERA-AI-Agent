@@ -101,6 +101,7 @@
   <div class="tab-bar">
     <button class="tab-btn active" id="tabChat" onclick="switchTab('chat')">Conversație</button>
     <button class="tab-btn" id="tabAnalyze" onclick="switchTab('analyze')">Analiză Document</button>
+    <button class="tab-btn" id="tabDraft" onclick="switchTab('draft')">Redactare Contract</button>
   </div>
 
   <!-- ── ANALYZE PANEL ─────────────────────────────────────────────── -->
@@ -131,6 +132,101 @@
     </div>
 
     <div class="analysis-results" id="analysisResults" style="display:none"></div>
+  </div>
+
+  <!-- ── DRAFT PANEL ───────────────────────────────────────────────── -->
+  <div class="draft-panel" id="draftPanel" style="display:none">
+
+    <div class="draft-form" id="draftForm">
+
+      <div class="draft-section">
+        <div class="draft-section-title">Date Client</div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="clientName">Denumire companie / persoană</label>
+            <input class="draft-input" type="text" id="clientName" placeholder="Ex: Draexlmaier Automotive"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="clientType">Formă juridică</label>
+            <select class="draft-select" id="clientType">
+              <option value="SRL">SRL</option>
+              <option value="SA">SA</option>
+              <option value="SCS">SCS</option>
+              <option value="ÎI">Întreprindere Individuală (ÎI)</option>
+              <option value="persoană fizică">Persoană Fizică</option>
+            </select>
+          </div>
+        </div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="clientIdno">IDNO <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="clientIdno" placeholder="Ex: 1007602000178"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="contractNumber">Nr. Contract <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="contractNumber" placeholder="Ex: 001/25 (generat automat dacă gol)"/>
+          </div>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="clientAddress">Adresă juridică <span class="optional">— opțional</span></label>
+          <input class="draft-input" type="text" id="clientAddress" placeholder="Ex: mun. Chișinău, str. București, 72"/>
+        </div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="clientRep">Reprezentant legal <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="clientRep" placeholder="Prenume NUME"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="clientRepRole">Calitate reprezentant <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="clientRepRole" placeholder="Ex: Administrator"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="draft-section">
+        <div class="draft-section-title">Obiectul Contractului</div>
+        <div class="draft-field">
+          <label class="draft-label" for="contractScope">Descrierea cazului / misiunii</label>
+          <textarea class="draft-textarea" id="contractScope" placeholder="Descrieți cazul juridic — litigiul, tipul de asistență solicitată, instanțele implicate, contextul..."></textarea>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="contractServices">Servicii specifice ERA <span class="optional">— opțional (generate automat dacă gol)</span></label>
+          <textarea class="draft-textarea" id="contractServices" placeholder="Ex:&#10;Analiza dosarului și formularea recomandărilor;&#10;Redactarea documentelor procesuale;&#10;Reprezentare în instanță;"></textarea>
+        </div>
+      </div>
+
+      <div class="draft-section">
+        <div class="draft-section-title">Onorarii &amp; Durată</div>
+        <div class="draft-field">
+          <label class="draft-label" for="contractFees">Onorarii <span class="optional">— opțional (câte o linie per sumă)</span></label>
+          <textarea class="draft-textarea" id="contractFees" placeholder="Ex:&#10;pentru analiza dosarului – 1.000 EUR;&#10;pentru reprezentare în instanță – 2.000 EUR per grad de jurisdicție;"></textarea>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="contractDuration">Durata contractului <span class="optional">— opțional</span></label>
+          <input class="draft-input" type="text" id="contractDuration" placeholder="Ex: pe durata examinării cazului în instanțele naționale"/>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="draft-actions">
+      <button class="draft-btn" id="draftBtn" onclick="draftContract()">Generează Contract</button>
+      <div class="draft-loading" id="draftLoading" style="display:none">
+        <div class="analyze-loading-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <span class="draft-loading-text">Se redactează contractul...</span>
+      </div>
+      <div class="draft-success-card" id="draftSuccess" style="display:none">
+        <span class="draft-success-text">Contractul a fost generat cu succes.</span>
+        <button class="draft-download-btn" id="draftDownloadBtn">Descarcă DOCX</button>
+        <button class="draft-btn-ghost" onclick="resetDraft()">Contract Nou</button>
+      </div>
+      <div class="draft-error" id="draftError" style="display:none"></div>
+    </div>
+
   </div>
 
   <div class="messages" id="messages">
@@ -545,12 +641,16 @@
 
   // ── Tab switching ─────────────────────────────────────────────────
   function switchTab(tab) {
-    const isChat = tab === 'chat';
-    document.getElementById('messages').style.display      = isChat ? '' : 'none';
-    document.getElementById('inputArea').style.display     = isChat ? '' : 'none';
-    document.getElementById('analyzePanel').style.display  = isChat ? 'none' : '';
+    const isChat    = tab === 'chat';
+    const isAnalyze = tab === 'analyze';
+    const isDraft   = tab === 'draft';
+    document.getElementById('messages').style.display      = isChat    ? '' : 'none';
+    document.getElementById('inputArea').style.display     = isChat    ? '' : 'none';
+    document.getElementById('analyzePanel').style.display  = isAnalyze ? '' : 'none';
+    document.getElementById('draftPanel').style.display    = isDraft   ? '' : 'none';
     document.getElementById('tabChat').classList.toggle('active', isChat);
-    document.getElementById('tabAnalyze').classList.toggle('active', !isChat);
+    document.getElementById('tabAnalyze').classList.toggle('active', isAnalyze);
+    document.getElementById('tabDraft').classList.toggle('active', isDraft);
   }
 
   // ── Document analysis ─────────────────────────────────────────────
@@ -630,6 +730,90 @@
       document.getElementById('analyzeLoading').style.display = 'none';
       btn.disabled = false;
     }
+  }
+
+  // ── Contract drafting ─────────────────────────────────────────────
+  let lastDraftBlob = null;
+  let lastDraftFilename = 'contract.docx';
+
+  async function draftContract() {
+    const clientName = document.getElementById('clientName').value.trim();
+    const scope      = document.getElementById('contractScope').value.trim();
+
+    if (!clientName || !scope) {
+      alert('Completați câmpurile obligatorii: Denumire Client și Descrierea cazului.');
+      return;
+    }
+
+    const btn = document.getElementById('draftBtn');
+    btn.disabled = true;
+    document.getElementById('draftLoading').style.display  = 'flex';
+    document.getElementById('draftSuccess').style.display  = 'none';
+    document.getElementById('draftError').style.display    = 'none';
+    document.getElementById('draftError').textContent      = '';
+
+    try {
+      const payload = {
+        clientName:      clientName,
+        clientType:      document.getElementById('clientType').value,
+        clientIdno:      document.getElementById('clientIdno').value.trim(),
+        clientAddress:   document.getElementById('clientAddress').value.trim(),
+        clientRep:       document.getElementById('clientRep').value.trim(),
+        clientRepRole:   document.getElementById('clientRepRole').value.trim(),
+        scope:           scope,
+        services:        document.getElementById('contractServices').value.trim(),
+        fees:            document.getElementById('contractFees').value.trim(),
+        duration:        document.getElementById('contractDuration').value.trim(),
+        contractNumber:  document.getElementById('contractNumber').value.trim(),
+      };
+
+      const response = await fetch('/api/draft-contract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        let msg = 'Eroare server';
+        try { const err = await response.json(); msg = err.error || err.detail || msg; } catch {}
+        throw new Error(msg);
+      }
+
+      lastDraftBlob = await response.blob();
+      lastDraftFilename = `Contract_${clientName.replace(/\s+/g, '_')}.docx`;
+
+      triggerDownload(lastDraftBlob, lastDraftFilename);
+
+      document.getElementById('draftDownloadBtn').onclick = () => triggerDownload(lastDraftBlob, lastDraftFilename);
+      document.getElementById('draftSuccess').style.display = 'flex';
+    } catch (e) {
+      const errEl = document.getElementById('draftError');
+      errEl.textContent = `Eroare la redactarea contractului: ${e.message}`;
+      errEl.style.display = 'block';
+    } finally {
+      document.getElementById('draftLoading').style.display = 'none';
+      btn.disabled = false;
+    }
+  }
+
+  function triggerDownload(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function resetDraft() {
+    lastDraftBlob = null;
+    document.getElementById('draftSuccess').style.display = 'none';
+    document.getElementById('draftError').style.display   = 'none';
+    ['clientName','clientIdno','clientAddress','clientRep','clientRepRole',
+     'contractScope','contractServices','contractFees','contractDuration','contractNumber']
+      .forEach(id => { document.getElementById(id).value = ''; });
   }
 
   // ── Init ──────────────────────────────────────────────────────────
