@@ -811,7 +811,24 @@ footer {
   font-weight: 300;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  background: linear-gradient(
+    90deg,
+    var(--ink-muted) 0%,
+    var(--ink-muted) 30%,
+    #c9a84c 50%,
+    var(--ink-muted) 70%,
+    var(--ink-muted) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.2s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 150% center; }
+  100% { background-position: -50% center; }
 }
 
 .analysis-results {

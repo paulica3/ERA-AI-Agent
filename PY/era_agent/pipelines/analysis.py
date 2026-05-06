@@ -1,9 +1,12 @@
-"""Document analysis pipeline — single Claude call returning summary + clauses."""
+"""Document analysis pipeline — streaming markdown analysis via Claude."""
 
 import json
 import re
 
+import anthropic
+
 from era_agent.client import send_message
+from era_agent.config import ANTHROPIC_API_KEY, MODEL, MAX_TOKENS
 
 
 def analyze_document(text: str) -> dict:
@@ -52,6 +55,45 @@ def analyze_document(text: str) -> dict:
     }
 
 
+_STREAM_SYSTEM = (
+    "Ești un asistent juridic expert pentru firma Efrim Roșca & Asociații din Republica Moldova. "
+    "Analizezi documente juridice cu terminologie precisă și diacritice corecte în română."
+)
+
+_STREAM_PROMPT_TEMPLATE = (
+    "Analizează documentul juridic de mai jos și scrie o analiză completă în format markdown.\n\n"
+    "Structurează astfel:\n\n"
+    "## Rezumat\n"
+    "Un rezumat concis al documentului (3-5 propoziții), urmat de punctele cheie ca listă bullets, "
+    "urmat de clauzele importante sau riscurile principale.\n\n"
+    "## Clauze și Riscuri\n"
+    "Pentru fiecare clauză importantă:\n"
+    "### Titlul clauzei\n"
+    "Conținutul relevant al clauzei.\n"
+    "**Observații / riscuri:** ...\n\n"
+    "Folosește diacritice corecte. Fii exhaustiv.\n\n"
+    "Document:\n{text}"
+)
+
+
+def analyze_document_stream(text: str):
+    """
+    Generator that yields raw text chunks as Claude streams the analysis.
+    Produces a single cohesive markdown document (## Rezumat + ## Clauze și Riscuri).
+    """
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    prompt = _STREAM_PROMPT_TEMPLATE.format(text=text)
+
+    with client.messages.stream(
+        model=MODEL,
+        max_tokens=MAX_TOKENS,
+        system=_STREAM_SYSTEM,
+        messages=[{"role": "user", "content": prompt}],
+    ) as stream:
+        for chunk in stream.text_stream:
+            if chunk:
+                yield chunk
+                
 def _coerce_to_markdown(value) -> str:
     """
     Defensive: Claude sometimes returns arrays/objects when asked for strings.

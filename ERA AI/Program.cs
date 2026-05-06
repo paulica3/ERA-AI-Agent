@@ -55,8 +55,8 @@ app.MapPost("/api/title", async (TitleRequest req, IConfiguration config, IHttpC
         var requestBody = new AnthropicRequest(
             Model: "claude-sonnet-4-20250514",
             MaxTokens: 20,
-            System: "You generate ultra-short chat titles. Reply with 2-3 words only — no punctuation, no quotes, no explanation.",
-            Messages: [new ChatMessage("user", $"Summarize this conversation as a 2-3 word title:\n{context}")]
+            System: "Generezi titluri ultra-scurte pentru conversații în limba română. Răspunde doar cu 2-3 cuvinte — fără punctuație, fără ghilimele, fără explicații.",
+            Messages: [new ChatMessage("user", $"Rezumă această conversație într-un titlu de 2-3 cuvinte în română:\n{context}")]
         );
 
         var content = JsonContent.Create(requestBody, options: jsonOptions);
@@ -73,13 +73,18 @@ app.MapPost("/api/title", async (TitleRequest req, IConfiguration config, IHttpC
     }
 });
 
-app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpClientFactory factory) =>
+app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
 {
     var apiKey = config["AnthropicApiKey"];
     if (string.IsNullOrEmpty(apiKey))
-        return Results.Problem("Cheia API nu este configurată.");
+    {
+        ctx.Response.StatusCode = 500;
+        await ctx.Response.WriteAsync("Cheia API nu este configurată.");
+        return;
+    }
 
     var httpClient = factory.CreateClient();
+    httpClient.Timeout = TimeSpan.FromSeconds(220);
     httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
     httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
     httpClient.DefaultRequestHeaders.Add("anthropic-beta", "web-search-2025-03-05");
@@ -89,81 +94,130 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
         MaxTokens: 4096,
         System: SystemPrompt,
         Messages: req.Messages,
-        Tools: [new AnthropicTool("web_search_20250305", "web_search")]
+        Tools: [new AnthropicTool("web_search_20250305", "web_search")],
+        Stream: true
     );
 
     var content = JsonContent.Create(requestBody, options: jsonOptions);
-    var response = await httpClient.PostAsync("https://api.anthropic.com/v1/messages", content);
+    var upstreamResp = await httpClient.SendAsync(
+        new HttpRequestMessage(HttpMethod.Post, "https://api.anthropic.com/v1/messages") { Content = content },
+        HttpCompletionOption.ResponseHeadersRead);
 
-    if (!response.IsSuccessStatusCode)
-        return Results.Problem("Eroare de la serviciul AI.");
+    if (!upstreamResp.IsSuccessStatusCode)
+    {
+        ctx.Response.StatusCode = 502;
+        await ctx.Response.WriteAsync("Eroare de la serviciul AI.");
+        return;
+    }
 
-    var result = await response.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
-    // Only return text blocks — web search result blocks are handled server-side by Claude
-    var reply = string.Join("\n", result?.Content?
-        .Where(c => c.Type == "text" && c.Text != null)
-        .Select(c => c.Text!) ?? []);
-    return Results.Ok(new { reply = string.IsNullOrWhiteSpace(reply) ? "Eroare de răspuns." : reply });
+    ctx.Response.ContentType = "text/event-stream";
+    ctx.Response.Headers["Cache-Control"] = "no-cache";
+    ctx.Response.Headers["X-Accel-Buffering"] = "no";
+
+    await using var stream = await upstreamResp.Content.ReadAsStreamAsync();
+    using var reader = new System.IO.StreamReader(stream);
+
+    while (!reader.EndOfStream && !ctx.RequestAborted.IsCancellationRequested)
+    {
+        var line = await reader.ReadLineAsync();
+        if (line is null) break;
+        await ctx.Response.WriteAsync(line + "\n");
+        if (line == string.Empty)
+            await ctx.Response.Body.FlushAsync();
+    }
 });
 
-app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory) =>
+app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
 {
-    // Always return JSON — never let an exception escape and produce an HTML error page.
+    var pythonApiUrl = config["PythonApiUrl"];
+    if (string.IsNullOrEmpty(pythonApiUrl))
+    {
+        ctx.Response.StatusCode = 500;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync("{\"error\":\"Python API URL nu este configurat.\"}");
+        return;
+    }
+
+    if (!httpReq.HasFormContentType)
+    {
+        ctx.Response.StatusCode = 400;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync("{\"error\":\"Expected multipart/form-data.\"}");
+        return;
+    }
+
+    var form = await httpReq.ReadFormAsync();
+    var file = form.Files.GetFile("file");
+    if (file is null)
+    {
+        ctx.Response.StatusCode = 400;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync("{\"error\":\"Niciun fișier încărcat.\"}");
+        return;
+    }
+
+    using var ms = new MemoryStream();
+    await file.CopyToAsync(ms);
+    ms.Seek(0, SeekOrigin.Begin);
+
+    var httpClient = factory.CreateClient();
+    httpClient.Timeout = TimeSpan.FromSeconds(220);
+
+    var eraApiKey = config["EraApiKey"];
+    if (!string.IsNullOrEmpty(eraApiKey))
+        httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+    using var formContent = new MultipartFormDataContent();
+    using var fileContent = new StreamContent(ms);
+    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
+        file.ContentType ?? "application/octet-stream");
+    formContent.Add(fileContent, "file", file.FileName ?? "document");
+
+    HttpResponseMessage upstreamResp;
     try
     {
-        var pythonApiUrl = config["PythonApiUrl"];
-        if (string.IsNullOrEmpty(pythonApiUrl))
-            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
-
-        if (!httpReq.HasFormContentType)
-            return Results.Json(new { error = "Expected multipart/form-data." }, statusCode: 400);
-
-        var form = await httpReq.ReadFormAsync();
-        var file = form.Files.GetFile("file");
-        if (file is null) return Results.Json(new { error = "Niciun fișier încărcat." }, statusCode: 400);
-
-        // Forward the file to the Python API unchanged
-        using var ms = new MemoryStream();
-        await file.CopyToAsync(ms);
-        ms.Seek(0, SeekOrigin.Begin);
-
-        var httpClient = factory.CreateClient();
-        // Azure App Service caps inbound requests at ~230s — stay just below that
-        // so we time out cleanly on our side rather than Azure dropping the connection.
-        httpClient.Timeout = TimeSpan.FromSeconds(220);
-
-        // Shared secret so the Python API only accepts requests from this .NET app
-        var eraApiKey = config["EraApiKey"];
-        if (!string.IsNullOrEmpty(eraApiKey))
-            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
-
-        using var formContent = new MultipartFormDataContent();
-        using var fileContent = new StreamContent(ms);
-        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
-            file.ContentType ?? "application/octet-stream");
-        formContent.Add(fileContent, "file", file.FileName ?? "document");
-
-        var resp = await httpClient.PostAsync($"{pythonApiUrl}/analyze", formContent);
-
-        if (!resp.IsSuccessStatusCode)
-        {
-            var err = await resp.Content.ReadAsStringAsync();
-            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
-        }
-
-        // Stream the JSON response back to the browser as-is
-        var json = await resp.Content.ReadAsStringAsync();
-        return Results.Content(json, "application/json");
+        upstreamResp = await httpClient.SendAsync(
+            new HttpRequestMessage(HttpMethod.Post, $"{pythonApiUrl}/analyze") { Content = formContent },
+            HttpCompletionOption.ResponseHeadersRead);
     }
     catch (TaskCanceledException)
     {
-        return Results.Json(
-            new { error = "Analiza a durat prea mult. Documentul este probabil prea lung." },
-            statusCode: 504);
+        ctx.Response.StatusCode = 504;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync("{\"error\":\"Analiza a durat prea mult. Documentul este probabil prea lung.\"}");
+        return;
     }
     catch (Exception ex)
     {
-        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+        ctx.Response.StatusCode = 500;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync($"{{\"error\":\"Eroare internă: {ex.Message}\"}}");
+        return;
+    }
+
+    if (!upstreamResp.IsSuccessStatusCode)
+    {
+        var err = await upstreamResp.Content.ReadAsStringAsync();
+        ctx.Response.StatusCode = 502;
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync($"{{\"error\":\"Python API ({(int)upstreamResp.StatusCode}): {err}\"}}");
+        return;
+    }
+
+    ctx.Response.ContentType = "text/event-stream";
+    ctx.Response.Headers["Cache-Control"] = "no-cache";
+    ctx.Response.Headers["X-Accel-Buffering"] = "no";
+
+    await using var stream = await upstreamResp.Content.ReadAsStreamAsync();
+    using var reader = new System.IO.StreamReader(stream);
+
+    while (!reader.EndOfStream && !ctx.RequestAborted.IsCancellationRequested)
+    {
+        var line = await reader.ReadLineAsync();
+        if (line is null) break;
+        await ctx.Response.WriteAsync(line + "\n");
+        if (line == string.Empty)
+            await ctx.Response.Body.FlushAsync();
     }
 });
 
@@ -215,7 +269,7 @@ record TitleRequest(string Message, string? Reply = null);
 record ChatRequest(List<ChatMessage> Messages);
 record ChatMessage(string Role, string Content);
 record AnthropicTool(string Type, string Name);
-record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages, List<AnthropicTool>? Tools = null);
+record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages, List<AnthropicTool>? Tools = null, bool? Stream = null);
 record AnthropicResponse(List<AnthropicContent> Content);
 record AnthropicContent(string Type, string? Text);
 record DraftContractRequest(

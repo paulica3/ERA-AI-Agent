@@ -1,11 +1,12 @@
 """ERA AI Agent — FastAPI web server (deployed on Azure, called by the .NET app)."""
 
+import json as json_module
 import os
 import tempfile
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
-from fastapi.responses import Response
+from fastapi.responses import Response, StreamingResponse
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from era_agent.config import ANTHROPIC_API_KEY
 from era_agent.ingestion.pdf import extract_text as pdf_extract
@@ -40,8 +41,11 @@ def health():
 @app.post("/analyze", dependencies=[Depends(verify_key)])
 async def analyze_document(file: UploadFile = File(...)):
     """
-    Accept a PDF or DOCX, extract its text, run two Claude pipelines
-    (summary + clause extraction), and return structured results.
+    Accept a PDF or DOCX and stream real progress events followed by the result:
+      data: {"status": "..."}   — emitted before each real step
+      data: {"result": {...}}   — final structured analysis
+      data: {"error": "..."}    — on failure
+      data: [DONE]
     """
     filename = file.filename or ""
     ext = os.path.splitext(filename)[1].lower()
@@ -52,29 +56,43 @@ async def analyze_document(file: UploadFile = File(...)):
             detail="Format neacceptat. Încărcați un fișier PDF sau DOCX.",
         )
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
-        tmp.write(await file.read())
-        tmp_path = tmp.name
+    # Read file bytes eagerly so the generator doesn't hold an open upload stream
+    file_bytes = await file.read()
 
-    try:
-        text = pdf_extract(tmp_path) if ext == ".pdf" else docx_extract(tmp_path)
+    def event_stream():
+        # ── Step 1: text extraction ───────────────────────────────────
+        yield f"data: {json_module.dumps({'status': 'Se extrage textul din document...'})}\n\n"
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+            tmp.write(file_bytes)
+            tmp_path = tmp.name
+
+        try:
+            text = pdf_extract(tmp_path) if ext == ".pdf" else docx_extract(tmp_path)
+        finally:
+            os.unlink(tmp_path)
 
         if not text.strip():
-            raise HTTPException(
-                status_code=422,
-                detail="Nu s-a putut extrage text din document.",
-            )
+            yield f"data: {json_module.dumps({'error': 'Nu s-a putut extrage text din document.'})}\n\n"
+            yield "data: [DONE]\n\n"
+            return
 
-        result = run_analysis(text)
+        # ── Step 2: Claude analysis ───────────────────────────────────
+        yield f"data: {json_module.dumps({'status': 'Se analizează documentul'})}\n\n"
 
-        return {
-            "filename": filename,
-            "characters_extracted": len(text),
-            "summary": result["summary"],
-            "clauses": result["clauses"],
-        }
-    finally:
-        os.unlink(tmp_path)
+        try:
+            result = run_analysis(text)
+            yield f"data: {json_module.dumps({'result': result})}\n\n"
+        except Exception as e:
+            yield f"data: {json_module.dumps({'error': str(e)})}\n\n"
+        finally:
+            yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 class DraftContractRequest(BaseModel):

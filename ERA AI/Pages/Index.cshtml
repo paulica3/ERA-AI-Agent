@@ -452,42 +452,28 @@
     return div;
   }
 
-  // ── Typewriter for assistant bubbles ─────────────────────────────
-  function typeMessage(bubble, fullText) {
-    const INTERVAL = 16;                        // ~60fps
-    const DURATION = 3000;                      // always finish within 3 seconds
-    const charsPerTick = Math.max(1, Math.ceil(fullText.length / (DURATION / INTERVAL)));
-    let i = 0;
-    const tick = setInterval(() => {
-      i = Math.min(i + charsPerTick, fullText.length);
-      bubble.innerHTML = marked.parse(fullText.slice(0, i));
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      if (i >= fullText.length) clearInterval(tick);
-    }, INTERVAL);
-  }
-
   // ── Rendering helpers ─────────────────────────────────────────────
-  function renderMessage(role, text, animate = false) {
+  const _avatarSvg = `<svg viewBox="0 0 32 32" width="18" height="18" fill="none">
+    <circle cx="16" cy="16" r="4.5" fill="#8b6914" opacity="0.15"/>
+    <circle cx="16" cy="16" r="2.5" fill="#8b6914"/>
+    <circle cx="16" cy="7"  r="1.8" fill="#c9a84c"/>
+    <circle cx="25" cy="16" r="1.8" fill="#c9a84c"/>
+    <circle cx="16" cy="25" r="1.8" fill="#c9a84c"/>
+    <circle cx="7"  cy="16" r="1.8" fill="#c9a84c"/>
+    <line x1="16" y1="13.5" x2="16" y2="8.8"   stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
+    <line x1="18.5" y1="16" x2="23.2" y2="16"  stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
+    <line x1="16" y1="18.5" x2="16" y2="23.2"  stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
+    <line x1="13.5" y1="16" x2="8.8" y2="16"   stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
+  </svg>`;
+
+  function renderMessage(role, text) {
     const isUser = role === 'user';
     const msg = document.createElement('div');
     msg.className = `msg ${role}`;
 
-    const avatarSvg = `<svg viewBox="0 0 32 32" width="18" height="18" fill="none">
-      <circle cx="16" cy="16" r="4.5" fill="#8b6914" opacity="0.15"/>
-      <circle cx="16" cy="16" r="2.5" fill="#8b6914"/>
-      <circle cx="16" cy="7"  r="1.8" fill="#c9a84c"/>
-      <circle cx="25" cy="16" r="1.8" fill="#c9a84c"/>
-      <circle cx="16" cy="25" r="1.8" fill="#c9a84c"/>
-      <circle cx="7"  cy="16" r="1.8" fill="#c9a84c"/>
-      <line x1="16" y1="13.5" x2="16" y2="8.8"   stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
-      <line x1="18.5" y1="16" x2="23.2" y2="16"  stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
-      <line x1="16" y1="18.5" x2="16" y2="23.2"  stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
-      <line x1="13.5" y1="16" x2="8.8" y2="16"   stroke="#8b6914" stroke-width="0.6" opacity="0.3"/>
-    </svg>`;
-
     const avatar = document.createElement('div');
     avatar.className = 'msg-avatar';
-    avatar.innerHTML = isUser ? '<span>DV</span>' : avatarSvg;
+    avatar.innerHTML = isUser ? '<span>DV</span>' : _avatarSvg;
 
     const body = document.createElement('div');
     body.className = 'msg-body';
@@ -498,14 +484,8 @@
 
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
-
-    if (isUser) {
-      bubble.textContent = text;
-    } else if (animate) {
-      typeMessage(bubble, text);
-    } else {
-      bubble.innerHTML = marked.parse(text);
-    }
+    bubble.innerHTML = isUser ? '' : marked.parse(text);
+    if (isUser) bubble.textContent = text;
 
     body.appendChild(sender);
     body.appendChild(bubble);
@@ -513,6 +493,41 @@
     msg.appendChild(body);
     messagesEl.appendChild(msg);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  // Creates an empty assistant bubble and returns the inner <div> to stream into
+  function appendStreamingBubble() {
+    const msg = document.createElement('div');
+    msg.className = 'msg assistant';
+    msg.innerHTML = `
+      <div class="msg-avatar">${_avatarSvg}</div>
+      <div class="msg-body">
+        <div class="msg-sender">ERA AI · Efrim Roșca &amp; Asociații</div>
+        <div class="msg-bubble"></div>
+      </div>`;
+    messagesEl.appendChild(msg);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return msg.querySelector('.msg-bubble');
+  }
+
+  // Generic SSE reader — calls onChunk(parsedObject) for every data line
+  async function readStream(response, onChunk) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (!data || data === '[DONE]') continue;
+        try { onChunk(JSON.parse(data)); } catch {}
+      }
+    }
   }
 
   function showTyping() {
@@ -604,14 +619,50 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: conv.messages })
       });
-      const data = await response.json();
-      removeTyping();
-      conv.messages.push({ role: 'assistant', content: data.reply });
-      save();
-      renderMessage('assistant', data.reply, true);
 
-      // Generate title after we have both the question and the answer
-      if (isNew) generateTitle(conv, text, data.reply);
+      removeTyping();
+
+      if (!response.ok || !response.body) {
+        renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
+        return;
+      }
+
+      const bubble = appendStreamingBubble();
+      let fullText = '';
+      let displayIdx = 0;
+      let streamDone = false;
+
+      // Plain-text typewriter: no markdown mid-stream = zero layout reflow = silky smooth.
+      // rAF drains the buffer at a steady pace; markdown renders once at the very end.
+      const animFinished = new Promise(resolve => {
+        function tick() {
+          const remaining = fullText.length - displayIdx;
+          if (remaining > 0) {
+            // While streaming keep pace with Claude; once done, flush quickly
+            displayIdx += streamDone ? Math.min(remaining, 6) : Math.min(remaining, 3);
+            bubble.textContent = fullText.slice(0, displayIdx);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+          if (streamDone && displayIdx >= fullText.length) resolve();
+          else requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+
+      await readStream(response, (evt) => {
+        if (evt.delta?.text) fullText += evt.delta.text;
+      });
+      streamDone = true;
+      await animFinished;
+
+      // Swap plain text for fully rendered markdown
+      bubble.innerHTML = marked.parse(fullText || 'Ne cerem scuze, nu am primit un răspuns.');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      conv.messages.push({ role: 'assistant', content: fullText });
+      save();
+
+      if (isNew) generateTitle(conv, text, fullText);
     } catch {
       removeTyping();
       renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
@@ -680,54 +731,60 @@
 
     const btn = document.getElementById('analyzeBtn');
     btn.disabled = true;
-    btn.textContent = 'Analizează';
 
     const resultsEl = document.getElementById('analysisResults');
     resultsEl.style.display = 'none';
     resultsEl.innerHTML = '';
-    document.getElementById('analyzeLoading').style.display = 'flex';
+
+    const loadingEl = document.getElementById('analyzeLoading');
+    const loadingText = loadingEl.querySelector('.analyze-loading-text');
+    loadingText.textContent = 'Se pregătește documentul...';
+    loadingEl.style.display = 'flex';
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        body: formData
-      });
+      const response = await fetch('/api/analyze', { method: 'POST', body: formData });
 
-      // Read body once as text so we can fall back gracefully if it isn't JSON
-      const rawBody = await response.text();
-
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         let msg = 'Eroare server';
-        try {
-          const err = JSON.parse(rawBody);
-          msg = err.error || err.detail || msg;
-        } catch {
-          // Body wasn't JSON (e.g. HTML error page) — keep generic message
-        }
+        try { const err = await response.json(); msg = err.error || err.detail || msg; } catch {}
         throw new Error(msg);
       }
 
-      const data = JSON.parse(rawBody);
+      let streamError = null;
 
-      resultsEl.innerHTML = `
-        <div class="analysis-card">
-          <div class="analysis-card-header">Rezumat</div>
-          <div class="analysis-card-body">${marked.parse(data.summary)}</div>
-        </div>
-        <div class="analysis-card">
-          <div class="analysis-card-header">Clauze &amp; Riscuri</div>
-          <div class="analysis-card-body">${marked.parse(data.clauses)}</div>
-        </div>`;
-      resultsEl.style.display = 'flex';
+      await readStream(response, (evt) => {
+        if (evt.status) {
+          // Real progress update from the server
+          loadingText.textContent = evt.status;
+        } else if (evt.error) {
+          streamError = evt.error;
+        } else if (evt.result) {
+          // Final result — render the two cards
+          loadingEl.style.display = 'none';
+          const data = evt.result;
+          resultsEl.innerHTML = `
+            <div class="analysis-card">
+              <div class="analysis-card-header">Rezumat</div>
+              <div class="analysis-card-body">${marked.parse(data.summary)}</div>
+            </div>
+            <div class="analysis-card">
+              <div class="analysis-card-header">Clauze &amp; Riscuri</div>
+              <div class="analysis-card-body">${marked.parse(data.clauses)}</div>
+            </div>`;
+          resultsEl.style.display = 'flex';
+        }
+      });
+
+      if (streamError) throw new Error(streamError);
 
     } catch (e) {
+      loadingEl.style.display = 'none';
       resultsEl.innerHTML = `<div class="analysis-card"><div class="analysis-card-body" style="color:var(--red-accent)">Eroare la analizarea documentului: ${e.message}</div></div>`;
       resultsEl.style.display = 'flex';
     } finally {
-      document.getElementById('analyzeLoading').style.display = 'none';
       btn.disabled = false;
     }
   }
