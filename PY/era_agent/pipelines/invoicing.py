@@ -86,57 +86,59 @@ def _parse_expenses(text: str) -> list[tuple[str, float]]:
 
 def _rebuild_expense_row(row, expenses: list[tuple[str, float]], currency: str) -> None:
     """
-    Rewrite the out-of-pocket row with a variable number of expense items.
-    Left cell: "Out of pockets:\n1. Name\n2. Name …"
-    Right cell: one amount per line, bold.
+    Rewrite the out-of-pocket row.
+    Left cell:  "Out of pockets:\\n1. Name\\n2. Name …"
+    Right cell: subtotal of all expenses (bold, right-aligned).
     """
     desc_cell = row.cells[0]
     amt_cell = row.cells[1]
 
     if not expenses:
-        # Clear both cells
         for cell in (desc_cell, amt_cell):
             for para in cell.paragraphs:
                 _set_para_text(para, "")
         return
 
     # ── Left cell ────────────────────────────────────────────────────
-    # Use first paragraph as the header, then clone it for each item.
-    header_para = desc_cell.paragraphs[0]
-    _set_para_text(header_para, "Out of pockets:")
+    # Deep-copy the first paragraph as a clone template BEFORE modifying anything.
+    desc_clone_el = copy.deepcopy(desc_cell.paragraphs[0]._element)
 
-    # Remove any extra paragraphs beyond the first
+    _set_para_text(desc_cell.paragraphs[0], "Out of pockets:")
     for extra in desc_cell.paragraphs[1:]:
         extra._element.getparent().remove(extra._element)
 
-    # Clone the header paragraph element for each expense item
     for i, (desc, _) in enumerate(expenses, start=1):
-        new_el = copy.deepcopy(header_para._element)
-        # Set text in all <w:t> inside the cloned element
-        for t_el in new_el.findall(f".//{qn('w:t')}"):
-            t_el.text = f"{i}. {desc}"
-            break  # only the first <w:t>
-        # Clear remaining <w:t> elements
-        for t_el in list(new_el.findall(f".//{qn('w:t')}"))[1:]:
-            t_el.text = ""
+        new_el = copy.deepcopy(desc_clone_el)
+        t_els = new_el.findall(f".//{qn('w:t')}")
+        for j, t_el in enumerate(t_els):
+            t_el.text = f"{i}. {desc}" if j == 0 else ""
         desc_cell._element.append(new_el)
 
-    # ── Right cell ────────────────────────────────────────────────────
-    # Clear existing paragraphs, then write one amount line per expense.
-    existing = amt_cell.paragraphs
-    template_para = existing[0]
-    _set_para_text(template_para, "")   # first line empty (padding)
+    # ── Right cell: show the subtotal ────────────────────────────────
+    subtotal = sum(amt for _, amt in expenses)
 
-    # Remove all but first
-    for extra in existing[1:]:
+    # Save a bold paragraph as clone template BEFORE clearing.
+    bold_clone_el = None
+    for para in amt_cell.paragraphs:
+        if para.runs and any(r.text.strip() for r in para.runs):
+            bold_clone_el = copy.deepcopy(para._element)
+            break
+
+    # Clear all existing paragraphs in the amount cell.
+    for para in amt_cell.paragraphs:
+        _set_para_text(para, "")
+    for extra in amt_cell.paragraphs[1:]:
         extra._element.getparent().remove(extra._element)
 
-    for _, amt in expenses:
-        new_el = copy.deepcopy(template_para._element)
-        for t_el in new_el.findall(f".//{qn('w:t')}"):
-            t_el.text = _fmt(amt, currency)
-            break
+    # Insert the subtotal using the saved bold template.
+    if bold_clone_el is not None:
+        new_el = copy.deepcopy(bold_clone_el)
+        t_els = new_el.findall(f".//{qn('w:t')}")
+        for j, t_el in enumerate(t_els):
+            t_el.text = _fmt(subtotal, currency) if j == 0 else ""
         amt_cell._element.append(new_el)
+    else:
+        _set_para_text(amt_cell.paragraphs[0], _fmt(subtotal, currency))
 
 
 # ── Main entry point ─────────────────────────────────────────────────────────
