@@ -13,6 +13,7 @@ from era_agent.ingestion.pdf import extract_text as pdf_extract
 from era_agent.ingestion.docx import extract_text as docx_extract
 from era_agent.pipelines.analysis import analyze_document as run_analysis
 from era_agent.pipelines.drafting import draft_contract as run_drafting
+from era_agent.pipelines.invoicing import draft_invoice as run_invoicing
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -107,6 +108,56 @@ class DraftContractRequest(BaseModel):
     fees: str = ""
     duration: str = ""
     contract_number: str = ""
+
+
+class DraftInvoiceRequest(BaseModel):
+    date: str
+    company_name: str
+    legal_address: str = ""
+    client_iban: str = ""
+    reg_no: str = ""
+    vat_no: str = ""
+    invoice_number: str = ""
+    contract_ref: str = ""
+    service_description: str = ""
+    legal_fee: str = "0"
+    currency: str = "EUR"
+    expenses_text: str = ""
+    partner_name: str = "Oleg Efrim"
+    partner_title: str = "Partner"
+    partner_email: str = "oleg.efrim@era.md"
+
+
+@app.post("/draft-invoice", dependencies=[Depends(verify_key)])
+async def draft_invoice_endpoint(req: DraftInvoiceRequest):
+    """Fill ERA's invoice template and return a DOCX."""
+    try:
+        docx_bytes = run_invoicing(
+            date=req.date,
+            company_name=req.company_name,
+            legal_address=req.legal_address,
+            client_iban=req.client_iban,
+            reg_no=req.reg_no,
+            vat_no=req.vat_no,
+            invoice_number=req.invoice_number,
+            contract_ref=req.contract_ref,
+            service_description=req.service_description,
+            legal_fee=req.legal_fee,
+            currency=req.currency,
+            expenses_text=req.expenses_text,
+            partner_name=req.partner_name,
+            partner_title=req.partner_title,
+            partner_email=req.partner_email,
+        )
+        safe_name = req.company_name.replace(" ", "_").replace("/", "_")[:30]
+        filename = f"Invoice_{safe_name}.docx"
+        return Response(
+            content=docx_bytes,
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la redactarea facturii: {str(e)}")
 
 
 @app.post("/draft-contract", dependencies=[Depends(verify_key)])

@@ -221,6 +221,45 @@ app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, I
     }
 });
 
+app.MapPost("/api/draft-invoice", async (DraftInvoiceRequest req, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(60);
+
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        var content = JsonContent.Create(req, options: jsonOptions);
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/draft-invoice", content);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var err = await resp.Content.ReadAsStringAsync();
+            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
+        }
+
+        var bytes = await resp.Content.ReadAsByteArrayAsync();
+        var safeName = (req.CompanyName ?? "document").Replace(" ", "_").Replace("/", "_");
+        safeName = safeName[..Math.Min(30, safeName.Length)];
+        return Results.File(bytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"Invoice_{safeName}.docx");
+    }
+    catch (TaskCanceledException)
+    {
+        return Results.Json(new { error = "Cererea a durat prea mult." }, statusCode: 504);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
 app.MapPost("/api/draft-contract", async (DraftContractRequest req, IConfiguration config, IHttpClientFactory factory) =>
 {
     try
@@ -272,6 +311,24 @@ record AnthropicTool(string Type, string Name);
 record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages, List<AnthropicTool>? Tools = null, bool? Stream = null);
 record AnthropicResponse(List<AnthropicContent> Content);
 record AnthropicContent(string Type, string? Text);
+record DraftInvoiceRequest(
+    string Date,
+    string CompanyName,
+    string? LegalAddress,
+    string? ClientIban,
+    string? RegNo,
+    string? VatNo,
+    string? InvoiceNumber,
+    string? ContractRef,
+    string? ServiceDescription,
+    string? LegalFee,
+    string? Currency,
+    string? ExpensesText,
+    string? PartnerName,
+    string? PartnerTitle,
+    string? PartnerEmail
+);
+
 record DraftContractRequest(
     string ClientName,
     string? ClientType,

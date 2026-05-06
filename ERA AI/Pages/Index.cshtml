@@ -102,6 +102,7 @@
     <button class="tab-btn active" id="tabChat" onclick="switchTab('chat')">Conversație</button>
     <button class="tab-btn" id="tabAnalyze" onclick="switchTab('analyze')">Analiză Document</button>
     <button class="tab-btn" id="tabDraft" onclick="switchTab('draft')">Redactare Contract</button>
+    <button class="tab-btn" id="tabInvoice" onclick="switchTab('invoice')">Factură</button>
   </div>
 
   <!-- ── ANALYZE PANEL ─────────────────────────────────────────────── -->
@@ -225,6 +226,121 @@
         <button class="draft-btn-ghost" onclick="resetDraft()">Contract Nou</button>
       </div>
       <div class="draft-error" id="draftError" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <!-- ── INVOICE PANEL ─────────────────────────────────────────────── -->
+  <div class="draft-panel" id="invoicePanel" style="display:none">
+
+    <div class="draft-form" id="invoiceForm">
+
+      <div class="draft-section">
+        <div class="draft-section-title">Client (Plătitor)</div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="invCompany">Denumire companie</label>
+            <input class="draft-input" type="text" id="invCompany" placeholder="Ex: Eleving Group S.A."/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="invDate">Data facturii</label>
+            <input class="draft-input" type="text" id="invDate" placeholder="Ex: 17 April 2025"/>
+          </div>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invAddress">Adresă juridică <span class="optional">— opțional</span></label>
+          <input class="draft-input" type="text" id="invAddress" placeholder="Ex: 8-10, Avenue de la Gare, L-1610 Luxembourg"/>
+        </div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="invIban">IBAN client <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="invIban" placeholder="Ex: LV69LLBB0003204002280"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="invRegNo">Reg. no <span class="optional">— opțional</span></label>
+            <input class="draft-input" type="text" id="invRegNo" placeholder="Ex: B 174457"/>
+          </div>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invVatNo">VAT no <span class="optional">— opțional</span></label>
+          <input class="draft-input" type="text" id="invVatNo" placeholder="Ex: LU30145007"/>
+        </div>
+      </div>
+
+      <div class="draft-section">
+        <div class="draft-section-title">Referință Factură</div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="invNumber">Număr factură</label>
+            <input class="draft-input" type="text" id="invNumber" placeholder="Ex: 01/17/04/2026"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="invCurrency">Valută</label>
+            <select class="draft-select" id="invCurrency">
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+              <option value="MDL">MDL</option>
+            </select>
+          </div>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invContractRef">Referință contract <span class="optional">— opțional</span></label>
+          <input class="draft-input" type="text" id="invContractRef" placeholder="Ex: Client Contract 735/24 as of 10 September 2025"/>
+        </div>
+      </div>
+
+      <div class="draft-section">
+        <div class="draft-section-title">Servicii &amp; Onorarii</div>
+        <div class="draft-field">
+          <label class="draft-label" for="invServiceDesc">Descrierea serviciilor</label>
+          <textarea class="draft-textarea" id="invServiceDesc" placeholder="Ex: Legal and transactional support related to the refinancing of the bonds..."></textarea>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invFee">Onorariu legal</label>
+          <input class="draft-input" type="text" id="invFee" placeholder="Ex: 5500.00"/>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invExpenses">Cheltuieli out-of-pocket <span class="optional">— opțional, câte una per linie: Denumire: sumă</span></label>
+          <textarea class="draft-textarea" id="invExpenses" placeholder="Ex:&#10;Notarial services: 117.78&#10;State duty: 5.69"></textarea>
+        </div>
+      </div>
+
+      <div class="draft-section">
+        <div class="draft-section-title">Semnatar</div>
+        <div class="draft-row">
+          <div class="draft-field">
+            <label class="draft-label" for="invPartner">Nume partener</label>
+            <input class="draft-input" type="text" id="invPartner" value="Oleg Efrim"/>
+          </div>
+          <div class="draft-field">
+            <label class="draft-label" for="invPartnerTitle">Titlu</label>
+            <input class="draft-input" type="text" id="invPartnerTitle" value="Partner"/>
+          </div>
+        </div>
+        <div class="draft-field">
+          <label class="draft-label" for="invPartnerEmail">Email</label>
+          <input class="draft-input" type="text" id="invPartnerEmail" value="oleg.efrim@era.md"/>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="draft-actions">
+      <button class="draft-btn" id="invoiceBtn" onclick="draftInvoice()">Generează Factură</button>
+      <div class="draft-loading" id="invoiceLoading" style="display:none">
+        <div class="analyze-loading-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <span class="draft-loading-text">Se generează factura...</span>
+      </div>
+      <div class="draft-success-card" id="invoiceSuccess" style="display:none">
+        <span class="draft-success-text">Factura a fost generată cu succes.</span>
+        <button class="draft-download-btn" id="invoiceDownloadBtn">Descarcă DOCX</button>
+        <button class="draft-btn-ghost" onclick="resetInvoice()">Factură Nouă</button>
+      </div>
+      <div class="draft-error" id="invoiceError" style="display:none"></div>
     </div>
 
   </div>
@@ -695,13 +811,16 @@
     const isChat    = tab === 'chat';
     const isAnalyze = tab === 'analyze';
     const isDraft   = tab === 'draft';
+    const isInvoice = tab === 'invoice';
     document.getElementById('messages').style.display      = isChat    ? '' : 'none';
     document.getElementById('inputArea').style.display     = isChat    ? '' : 'none';
     document.getElementById('analyzePanel').style.display  = isAnalyze ? '' : 'none';
     document.getElementById('draftPanel').style.display    = isDraft   ? '' : 'none';
+    document.getElementById('invoicePanel').style.display  = isInvoice ? '' : 'none';
     document.getElementById('tabChat').classList.toggle('active', isChat);
     document.getElementById('tabAnalyze').classList.toggle('active', isAnalyze);
     document.getElementById('tabDraft').classList.toggle('active', isDraft);
+    document.getElementById('tabInvoice').classList.toggle('active', isInvoice);
   }
 
   // ── Document analysis ─────────────────────────────────────────────
@@ -871,6 +990,93 @@
     ['clientName','clientIdno','clientAddress','clientRep','clientRepRole',
      'contractScope','contractServices','contractFees','contractDuration','contractNumber']
       .forEach(id => { document.getElementById(id).value = ''; });
+  }
+
+  // ── Invoice drafting ──────────────────────────────────────────────
+  let lastInvoiceBlob = null;
+  let lastInvoiceFilename = 'invoice.docx';
+
+  // Pre-fill today's date on load
+  (function() {
+    const d = new Date();
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+    document.getElementById('invDate').value = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  })();
+
+  async function draftInvoice() {
+    const company = document.getElementById('invCompany').value.trim();
+    const fee     = document.getElementById('invFee').value.trim();
+    if (!company || !fee) {
+      alert('Completați câmpurile obligatorii: Denumire companie și Onorariu legal.');
+      return;
+    }
+
+    const btn = document.getElementById('invoiceBtn');
+    btn.disabled = true;
+    document.getElementById('invoiceLoading').style.display = 'flex';
+    document.getElementById('invoiceSuccess').style.display = 'none';
+    document.getElementById('invoiceError').style.display   = 'none';
+
+    try {
+      const payload = {
+        date:               document.getElementById('invDate').value.trim(),
+        companyName:        company,
+        legalAddress:       document.getElementById('invAddress').value.trim(),
+        clientIban:         document.getElementById('invIban').value.trim(),
+        regNo:              document.getElementById('invRegNo').value.trim(),
+        vatNo:              document.getElementById('invVatNo').value.trim(),
+        invoiceNumber:      document.getElementById('invNumber').value.trim(),
+        contractRef:        document.getElementById('invContractRef').value.trim(),
+        serviceDescription: document.getElementById('invServiceDesc').value.trim(),
+        legalFee:           fee,
+        currency:           document.getElementById('invCurrency').value,
+        expensesText:       document.getElementById('invExpenses').value.trim(),
+        partnerName:        document.getElementById('invPartner').value.trim(),
+        partnerTitle:       document.getElementById('invPartnerTitle').value.trim(),
+        partnerEmail:       document.getElementById('invPartnerEmail').value.trim(),
+      };
+
+      const response = await fetch('/api/draft-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        let msg = 'Eroare server';
+        try { const err = await response.json(); msg = err.error || err.detail || msg; } catch {}
+        throw new Error(msg);
+      }
+
+      lastInvoiceBlob = await response.blob();
+      lastInvoiceFilename = `Invoice_${company.replace(/\s+/g, '_')}.docx`;
+      triggerDownload(lastInvoiceBlob, lastInvoiceFilename);
+
+      document.getElementById('invoiceDownloadBtn').onclick = () => triggerDownload(lastInvoiceBlob, lastInvoiceFilename);
+      document.getElementById('invoiceSuccess').style.display = 'flex';
+    } catch (e) {
+      const errEl = document.getElementById('invoiceError');
+      errEl.textContent = `Eroare la generarea facturii: ${e.message}`;
+      errEl.style.display = 'block';
+    } finally {
+      document.getElementById('invoiceLoading').style.display = 'none';
+      btn.disabled = false;
+    }
+  }
+
+  function resetInvoice() {
+    lastInvoiceBlob = null;
+    document.getElementById('invoiceSuccess').style.display = 'none';
+    document.getElementById('invoiceError').style.display   = 'none';
+    ['invCompany','invAddress','invIban','invRegNo','invVatNo',
+     'invNumber','invContractRef','invServiceDesc','invFee','invExpenses']
+      .forEach(id => { document.getElementById(id).value = ''; });
+    // Re-fill today's date
+    const d = new Date();
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+    document.getElementById('invDate').value = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
   }
 
   // ── Init ──────────────────────────────────────────────────────────

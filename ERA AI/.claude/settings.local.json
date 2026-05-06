@@ -13,7 +13,14 @@
       "Bash(python -m uvicorn api:app --port 8000 --log-level info)",
       "Bash(python -c \"import urllib.request; print\\(urllib.request.urlopen\\('http://localhost:8000/health'\\).read\\(\\).decode\\(\\)\\)\")",
       "Bash(python -m uvicorn api:app --port 8001 --log-level info)",
-      "Bash(python -c \"import urllib.request; print\\(urllib.request.urlopen\\('http://localhost:8001/health'\\).read\\(\\).decode\\(\\)\\)\")"
+      "Bash(python -c \"import urllib.request; print\\(urllib.request.urlopen\\('http://localhost:8001/health'\\).read\\(\\).decode\\(\\)\\)\")",
+      "Read(//c/Users/paolo/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/22878218-7c52-4f36-a85e-ce8a744b8a67/c9b4dbe5-517e-4167-860f-c0d4ba3c90c7/skills/docx/**)",
+      "Bash(python scripts/office/soffice.py --headless --convert-to docx \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.doc\" --outdir \"C:\\\\Users\\\\paolo\\\\Downloads\")",
+      "Bash(where soffice *)",
+      "Bash(where \"C:\\\\Program Files\\\\LibreOffice\\\\program\\\\soffice.exe\")",
+      "Bash(pandoc \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.doc\" -t markdown)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.docx\" \"C:\\\\Users\\\\paolo\\\\Downloads\\\\invoice_unpacked\")",
+      "Bash(pip install *)"
     ]
   }
 }
