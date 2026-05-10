@@ -1,16 +1,16 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --cream:       #f5f0e8;
-    --cream-dark:  #ede6d6;
-    --ink:         #1a1714;
-    --ink-soft:    #3d3830;
-    --ink-muted:   #7a7060;
-    --gold:        #8b6914;
-    --gold-light:  #c9a84c;
-    --red-accent:  #8b1a1a;
-    --white:       #fdfbf7;
-    --border:      rgba(139, 105, 20, 0.2);
+    --cream:       #1A1620;
+    --cream-dark:  #221D27;
+    --ink:         #EDE5E0;
+    --ink-soft:    #C8BDB8;
+    --ink-muted:   #8A8285;
+    --gold:        #9B2D3A;
+    --gold-light:  #C4556A;
+    --red-accent:  #C4556A;
+    --white:       #28232C;
+    --border:      rgba(114, 47, 55, 0.18);
 }
 
 html, body {
@@ -24,8 +24,8 @@ body::before {
     content: '';
     position: fixed; inset: 0;
     background-image:
-            radial-gradient(ellipse at 20% 10%, rgba(139,105,20,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 90%, rgba(139,26,26,0.04) 0%, transparent 60%);
+            radial-gradient(ellipse at 20% 10%, rgba(114,47,55,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 90%, rgba(114,47,55,0.04) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
 }
@@ -200,7 +200,8 @@ input::placeholder {
     transition: background 0.2s, transform 0.15s;
 }
 
-.btn-login:hover  { background: var(--gold); }
+.btn-login { color: var(--ink); }
+.btn-login:hover  { background: var(--gold-light); }
 .btn-login:active { transform: scale(0.99); }
 
 /* ── Divider ── */
@@ -231,7 +232,7 @@ input::placeholder {
     padding: 11px 16px;
     border: 1px solid rgba(139, 26, 26, 0.25);
     border-left: 2px solid var(--red-accent);
-    background: rgba(139, 26, 26, 0.04);
+    background: rgba(139, 26, 26, 0.03);
     font-size: 12px;
     font-weight: 300;
     color: var(--red-accent);
