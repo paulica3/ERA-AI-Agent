@@ -21,7 +21,8 @@
       "Bash(pandoc \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.doc\" -t markdown)",
       "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.docx\" \"C:\\\\Users\\\\paolo\\\\Downloads\\\\invoice_unpacked\")",
       "Bash(pip install *)",
-      "Bash(rm \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\deploy-python-api.yml\" \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\main_era-ai-app.yml\")"
+      "Bash(rm \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\deploy-python-api.yml\" \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\main_era-ai-app.yml\")",
+      "Bash(python3 -c \"import secrets; print\\(secrets.token_hex\\(32\\)\\)\")"
     ]
   }
 }
