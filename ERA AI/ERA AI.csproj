@@ -9,4 +9,13 @@
       <UserSecretsId>ba1e323b-a897-43d6-b5a9-bd1c0275e625</UserSecretsId>
   </PropertyGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="publish\web.config" />
+      <_ContentIncludedByDefault Remove="publish\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="publish\appsettings.json" />
+      <_ContentIncludedByDefault Remove="publish\ERA-AI.deps.json" />
+      <_ContentIncludedByDefault Remove="publish\ERA-AI.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="publish\ERA-AI.staticwebassets.endpoints.json" />
+    </ItemGroup>
+
 </Project>
