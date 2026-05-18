@@ -2,12 +2,10 @@
 
 import io
 import re
-from copy import deepcopy
 from datetime import date
 from pathlib import Path
 
 from docx import Document
-from docx.oxml.ns import qn
 
 from era_agent.client import send_message
 
