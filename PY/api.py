@@ -6,7 +6,7 @@ import tempfile
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.responses import Response, StreamingResponse
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from era_agent.config import ANTHROPIC_API_KEY
 from era_agent.ingestion.pdf import extract_text as pdf_extract
@@ -135,13 +135,14 @@ class GenerateOfferRequest(BaseModel):
     date: str
     addressee_salutation: str
     addressee_block: str = ""
-    intro_paragraphs: list[str] = Field(default_factory=list)
+    intro_text: str = ""          # context (composed) or literal paragraphs
+    compose_intro: bool = True    # let Claude compose the letter from the context
     fee_text: str = ""
     signatory_name: str = "Oleg EFRIM"
     signatory_title: str = "Managing Partner"
-    lang: str = "ro"          # "ro" | "en"
+    lang: str = "ro"              # "ro" | "en"
     reformat_fees: bool = True
-    format: str = "pptx"      # "pptx" | "pdf"
+    format: str = "pptx"          # "pptx" | "pdf"
 
 
 @app.post("/generate-custom-offer", dependencies=[Depends(verify_key)])
@@ -153,7 +154,8 @@ async def generate_custom_offer_endpoint(req: GenerateOfferRequest):
             date=req.date,
             addressee_salutation=req.addressee_salutation,
             addressee_block=req.addressee_block,
-            intro_paragraphs=req.intro_paragraphs,
+            intro_text=req.intro_text,
+            compose_intro=req.compose_intro,
             fee_text=req.fee_text,
             signatory_name=req.signatory_name,
             signatory_title=req.signatory_title,

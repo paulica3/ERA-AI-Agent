@@ -426,9 +426,13 @@
       <div class="draft-section">
         <div class="draft-section-title">Scrisoarea de însoțire</div>
         <div class="draft-field">
-          <label class="draft-label" for="offIntro">Paragrafe introductive <span class="optional">— obligatoriu · max. 3, separate printr-un rând gol</span></label>
-          <textarea class="draft-textarea" id="offIntro" style="min-height:140px" placeholder="Efrim, Roșca & Asociații are plăcerea de a vă transmite această ofertă...&#10;&#10;Asistența noastră va acoperi etapele esențiale ale tranzacției...&#10;&#10;Anexat veți regăsi domeniul serviciilor și estimarea onorariilor..."></textarea>
+          <label class="draft-label" for="offIntro">Context tranzacție / mandat <span class="optional">— obligatoriu · descrieți pe scurt ce se întâmplă; AI redactează scrisoarea</span></label>
+          <textarea class="draft-textarea" id="offIntro" style="min-height:150px" placeholder="Ex: Clientul dorește să achiziționeze 100% din părțile sociale ale Î.M. „Moldova Zahar”. Avem nevoie de due diligence juridic, structurarea tranzacției, redactarea și negocierea contractului de vânzare-cumpărare, asistență la closing și înregistrarea drepturilor."></textarea>
         </div>
+        <label class="draft-check">
+          <input type="checkbox" id="offCompose" checked/>
+          <span>Redactează scrisoarea cu AI din context (debifat = textul se folosește ca atare)</span>
+        </label>
         <div class="draft-row">
           <div class="draft-field">
             <label class="draft-label" for="offSignName">Semnatar</label>
@@ -1229,13 +1233,10 @@
   async function generateOffer() {
     const client     = document.getElementById('offClient').value.trim();
     const salutation = document.getElementById('offSalutation').value.trim();
-    const introRaw   = document.getElementById('offIntro').value.trim();
-    const introParagraphs = introRaw
-      ? introRaw.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean)
-      : [];
+    const introText  = document.getElementById('offIntro').value.trim();
 
-    if (!client || !salutation || introParagraphs.length === 0) {
-      alert('Completați câmpurile obligatorii: Denumire client, Formulă de adresare și Paragrafe introductive.');
+    if (!client || !salutation || !introText) {
+      alert('Completați câmpurile obligatorii: Denumire client, Formulă de adresare și Context tranzacție.');
       return;
     }
 
@@ -1253,7 +1254,8 @@
         date:               document.getElementById('offDate').value.trim(),
         addresseeSalutation: salutation,
         addresseeBlock:     document.getElementById('offAddressee').value.trim(),
-        introParagraphs:    introParagraphs,
+        introText:          introText,
+        composeIntro:       document.getElementById('offCompose').checked,
         feeText:            document.getElementById('offFees').value.trim(),
         signatoryName:      document.getElementById('offSignName').value.trim(),
         signatoryTitle:     document.getElementById('offSignTitle').value.trim(),

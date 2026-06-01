@@ -139,6 +139,99 @@ def reformat_fee_structure(fee_text: str, lang: str = "ro") -> list[str]:
     return [str(data).strip()]
 
 
+def compose_cover_letter(context: str, client_name: str, lang: str = "ro") -> list[str]:
+    """Compose the slide-2 cover-letter body from the user's free context.
+
+    The user describes the matter (who the client is, what the transaction /
+    mandate is, what assistance is needed). Claude turns that into the formal
+    body of an ERA offer letter — exactly 3 paragraphs matching the house style:
+      1. ERA is pleased to submit this offer in response to the client's request
+         regarding <the matter>.
+      2. The scope of assistance, from the perspective of Moldovan law.
+      3. The standard closing (attached: scope, team, assumptions, fee estimate;
+         remaining available for clarifications).
+
+    The salutation and the "Cu respect, / Oleg EFRIM / Managing Partner" block are
+    handled separately, so this returns ONLY the body paragraphs. Claude must not
+    invent specific facts (figures, names, dates) that aren't in the context.
+    """
+    context = (context or "").strip()
+    if not context:
+        return []
+
+    if lang == "ro":
+        system = (
+            "Ești asistentul juridic al firmei de avocatură „Efrim, Roșca & Asociații” "
+            "din Republica Moldova. Redactezi corpul scrisorii de însoțire a unei oferte "
+            "de servicii juridice, într-un registru formal, sobru și profesionist."
+        )
+        prompt = (
+            "Pe baza contextului de mai jos (descris liber de avocat), redactează corpul "
+            "scrisorii de însoțire a ofertei de servicii juridice.\n\n"
+            "Structură — EXACT 3 paragrafe, în această ordine:\n"
+            "1. „Efrim, Roșca & Asociații are plăcerea de a vă transmite această ofertă de "
+            "servicii juridice, ca răspuns la solicitarea privind …” — descrie pe scurt "
+            "obiectul mandatului/tranzacției din context.\n"
+            "2. Domeniul asistenței, din perspectiva dreptului Republicii Moldova "
+            "(etapele esențiale relevante pentru acest tip de mandat).\n"
+            "3. Paragraf de încheiere standard: „Anexat veți regăsi domeniul propus al "
+            "serviciilor, componența echipei, ipotezele de lucru și estimarea onorariilor. "
+            "Rămânem la dispoziția dumneavoastră pentru orice clarificări …”.\n\n"
+            "REGULI:\n"
+            "- NU inventa nume, cifre, sume, date sau fapte specifice care nu apar în context.\n"
+            "- Folosește un ton formal, diacritice corecte, fără titluri sau bullet-uri.\n"
+            "- Returnează STRICT un array JSON cu exact 3 string-uri (un paragraf fiecare), "
+            "fără text înainte sau după.\n\n"
+            f"Numele clientului: {client_name}\n\n"
+            f"Context:\n{context}"
+        )
+    else:
+        system = (
+            "You are the legal assistant of the law firm “Efrim, Roșca & Asociații” in the "
+            "Republic of Moldova. You draft the body of the cover letter accompanying an "
+            "offer of legal services, in a formal, restrained and professional register."
+        )
+        prompt = (
+            "Based on the context below (described freely by the lawyer), draft the body of "
+            "the cover letter accompanying an offer of legal services.\n\n"
+            "Structure — EXACTLY 3 paragraphs, in this order:\n"
+            "1. “Efrim, Roșca & Asociații is pleased to submit this offer of legal services, "
+            "in response to the request regarding …” — briefly describe the subject of the "
+            "mandate/transaction from the context.\n"
+            "2. The scope of assistance, from the perspective of the law of the Republic of "
+            "Moldova (the essential stages relevant to this type of mandate).\n"
+            "3. A standard closing paragraph: “Attached you will find the proposed scope of "
+            "services, the team composition, the working assumptions and the fee estimate. "
+            "We remain at your disposal for any clarifications …”.\n\n"
+            "RULES:\n"
+            "- Do NOT invent names, figures, amounts, dates or specific facts not present "
+            "in the context.\n"
+            "- Use a formal tone, no headings or bullet points.\n"
+            "- Return STRICTLY a JSON array of exactly 3 strings (one paragraph each), "
+            "with no text before or after.\n\n"
+            f"Client name: {client_name}\n\n"
+            f"Context:\n{context}"
+        )
+
+    client = get_client()
+    resp = client.messages.create(
+        model=MODEL,
+        max_tokens=MAX_TOKENS,
+        system=system,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    raw = "\n".join(b.text for b in resp.content if hasattr(b, "text")).strip()
+    clean = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.MULTILINE).strip()
+    try:
+        data = json.loads(clean)
+    except json.JSONDecodeError:
+        # Fall back to splitting the raw context on blank lines.
+        return [blk.strip() for blk in re.split(r"\n\s*\n", context) if blk.strip()][:3]
+    if isinstance(data, list):
+        return [str(x).strip() for x in data if str(x).strip()][:3]
+    return [str(data).strip()]
+
+
 def _fill_fee_section(shape, paragraphs: list[str], lang: str) -> None:
     """Replace the fee-narrative body (everything after the heading) with new paras."""
     if not paragraphs:
@@ -173,7 +266,8 @@ def generate_custom_offer(
     date: str,
     addressee_salutation: str,
     addressee_block: str,
-    intro_paragraphs: list[str] | None = None,
+    intro_text: str = "",
+    compose_intro: bool = True,
     fee_text: str = "",
     signatory_name: str = "Oleg EFRIM",
     signatory_title: str = "Managing Partner",
@@ -189,13 +283,27 @@ def generate_custom_offer(
     addressee_salutation : e.g. "Stimate domnule BÎRCĂ" / "Dear Mr BÎRCĂ".
     addressee_block : multi-line addressee text for the slide-2 table (name,
         title, company, address — one per line).
-    intro_paragraphs : up to 3 cover-letter body paragraphs describing the
-        transaction. Extra template slots are blanked; missing ones left as-is.
+    intro_text : the cover-letter content. If `compose_intro` is True this is the
+        free-form *context* of the matter, which Claude turns into the formal
+        letter body; otherwise it is used as literal paragraphs (split on blank
+        lines). Unused body slots in the template are blanked.
+    compose_intro : if True, Claude composes the letter body from `intro_text`.
     fee_text : user-provided fee description (the numbers always come from here).
     reformat_fees : if True, Claude reformats `fee_text`; if False it is used
         verbatim (split on blank lines).
     lang : "ro" or "en" — picks the matching template.
     """
+    # Resolve the cover-letter body paragraphs.
+    if intro_text.strip():
+        if compose_intro:
+            intro_paragraphs = compose_cover_letter(intro_text, client_name, lang=lang)
+        else:
+            intro_paragraphs = [
+                b.strip() for b in re.split(r"\n\s*\n", intro_text) if b.strip()
+            ]
+    else:
+        intro_paragraphs = []
+
     tmpl = "custom_offer_ro.pptx" if lang == "ro" else "custom_offer_en.pptx"
     prs = Presentation(TEMPLATES_DIR / tmpl)
 
@@ -263,9 +371,9 @@ def generate_custom_offer(
         body_end = closing_idx if closing_idx is not None else len(non_empty)
         body_paras = non_empty[1:body_end]
         for slot, p in enumerate(body_paras):
-            if slot < len(filled):
-                _set_para_text(p, filled[slot])
-            # else: leave the template's prose for that slot untouched.
+            # Fill from composed paragraphs; blank any leftover template slots so
+            # no placeholder prose (e.g. the VITAFOR text) ever leaks through.
+            _set_para_text(p, filled[slot] if slot < len(filled) else "")
         # Signatory block: the two paragraphs after the closing.
         if closing_idx is not None:
             sig = non_empty[closing_idx + 1:]
