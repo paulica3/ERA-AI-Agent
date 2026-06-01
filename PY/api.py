@@ -20,6 +20,10 @@ from era_agent.pipelines.general_description import (
 )
 from era_agent.export.libreoffice import pptx_to_pdf
 from era_agent.chat_settings import load_instructions, save_instructions
+from era_agent.content import store as content_store
+from era_agent.content.schema import Project
+from era_agent.client import get_client
+from era_agent.config import MODEL
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -162,6 +166,15 @@ class GenerateGeneralDescriptionRequest(BaseModel):
     format: str = "pptx"           # "pptx" | "pdf"
 
 
+class ProjectsPayload(BaseModel):
+    projects: list[dict]
+
+
+class TranslateRequest(BaseModel):
+    text: str
+    target: str = "ro"        # "ro" | "en"
+
+
 class ChatInstructions(BaseModel):
     instructions: str = ""
 
@@ -177,6 +190,51 @@ async def put_chat_instructions(body: ChatInstructions):
     """Persist the user's standing chat instructions."""
     saved = save_instructions(body.instructions)
     return {"instructions": saved}
+
+
+@app.get("/projects", dependencies=[Depends(verify_key)])
+async def get_projects():
+    """Return the full track-record store (categories + projects)."""
+    return content_store.load_db()
+
+
+@app.put("/projects", dependencies=[Depends(verify_key)])
+async def put_projects(body: ProjectsPayload):
+    """Replace the whole project list (dashboard bulk save). Each project is
+    normalised through the schema (assigns ids/timestamps, validates category)."""
+    try:
+        normalised = [Project.from_dict(p).to_dict() for p in body.projects]
+        saved = content_store.replace_projects(normalised)
+        return saved
+    except (KeyError, ValueError) as e:
+        raise HTTPException(status_code=400, detail=f"Date invalide: {str(e)}")
+
+
+@app.post("/translate", dependencies=[Depends(verify_key)])
+async def translate(body: TranslateRequest):
+    """Translate a single field EN<->RO for the dashboard's translate button."""
+    text = (body.text or "").strip()
+    if not text:
+        return {"translation": ""}
+    target_name = "Romanian" if body.target == "ro" else "English"
+    system = (
+        "You are a professional legal translator for the Moldovan law firm "
+        f"Efrim, Roșca & Asociații. Translate the text into {target_name}, in a "
+        "formal legal register with correct diacritics. Keep personal names, the "
+        "firm name, company/brand names, emails, phone numbers, law/decision "
+        "numbers, dates and monetary amounts unchanged; translate public "
+        "institutions to their official name in the target language. Return ONLY "
+        "the translation, with no quotes or extra text."
+    )
+    try:
+        resp = get_client().messages.create(
+            model=MODEL, max_tokens=2048, system=system,
+            messages=[{"role": "user", "content": text}],
+        )
+        out = "".join(b.text for b in resp.content if hasattr(b, "text")).strip()
+        return {"translation": out}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la traducere: {str(e)}")
 
 
 @app.post("/generate-custom-offer", dependencies=[Depends(verify_key)])

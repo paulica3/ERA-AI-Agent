@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -393,6 +394,75 @@ app.MapPost("/api/generate-general-description", async (GenerateGeneralDescripti
     catch (TaskCanceledException)
     {
         return Results.Json(new { error = "Generarea prezentării a durat prea mult." }, statusCode: 504);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
+// ── Track-record dashboard (projects store) ──────────────────────────────────
+app.MapGet("/api/projects", async (IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+        var resp = await httpClient.GetAsync($"{pythonApiUrl}/projects");
+        var body = await resp.Content.ReadAsStringAsync();
+        return Results.Content(body, "application/json", Encoding.UTF8, (int)resp.StatusCode);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
+app.MapPut("/api/projects", async (JsonElement body, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+        var content = new StringContent(body.GetRawText(), Encoding.UTF8, "application/json");
+        var resp = await httpClient.PutAsync($"{pythonApiUrl}/projects", content);
+        var respBody = await resp.Content.ReadAsStringAsync();
+        return Results.Content(respBody, "application/json", Encoding.UTF8, (int)resp.StatusCode);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
+app.MapPost("/api/translate", async (JsonElement body, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(60);
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+        var content = new StringContent(body.GetRawText(), Encoding.UTF8, "application/json");
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/translate", content);
+        var respBody = await resp.Content.ReadAsStringAsync();
+        return Results.Content(respBody, "application/json", Encoding.UTF8, (int)resp.StatusCode);
     }
     catch (Exception ex)
     {

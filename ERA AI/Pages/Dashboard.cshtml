@@ -1,0 +1,257 @@
+@page
+@model ERA_AI.Pages.DashboardModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ERA — Portofoliu de proiecte</title>
+    <link rel="icon" href="/favicon.svg"/>
+    <style>
+        :root{ --wine:#8d1d2c; --wine-dark:#6f1622; --ink:#2b2b2b; --muted:#7a7a7a;
+               --line:#e6e0db; --bg:#f7f4f1; --card:#ffffff; --ok:#1f7a3d; }
+        *{ box-sizing:border-box; }
+        body{ margin:0; font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }
+        .topbar{ display:flex; align-items:center; gap:16px; padding:12px 22px; background:var(--wine);
+                 color:#fff; position:sticky; top:0; z-index:10; }
+        .topbar h1{ font-size:18px; margin:0; font-weight:700; letter-spacing:.3px; }
+        .topbar .spacer{ flex:1; }
+        .topbar a.back{ color:#fff; text-decoration:none; opacity:.9; font-size:14px; }
+        .topbar a.back:hover{ opacity:1; text-decoration:underline; }
+        .btn{ border:none; border-radius:6px; padding:8px 16px; font-family:inherit; font-size:14px;
+              cursor:pointer; }
+        .btn-save{ background:#fff; color:var(--wine); font-weight:700; }
+        .btn-save:disabled{ opacity:.55; cursor:default; }
+        .status{ font-size:13px; opacity:.95; min-width:120px; }
+        .layout{ display:flex; min-height:calc(100vh - 56px); }
+        .sidebar{ width:300px; border-right:1px solid var(--line); background:#fbf9f7; padding:10px 0; }
+        .cat{ padding:10px 18px; cursor:pointer; font-size:14px; display:flex; justify-content:space-between;
+              border-left:3px solid transparent; }
+        .cat:hover{ background:#f1ebe6; }
+        .cat.active{ background:#f1e4e4; border-left-color:var(--wine); font-weight:700; }
+        .cat .count{ color:var(--muted); font-size:12px; }
+        .main{ flex:1; padding:22px 26px; max-width:1100px; }
+        .main h2{ margin:0 0 4px; font-size:22px; color:var(--wine-dark); }
+        .main .sub{ color:var(--muted); font-size:13px; margin-bottom:16px; }
+        .addbar{ margin-bottom:16px; }
+        .btn-add{ background:var(--wine); color:#fff; }
+        .card{ background:var(--card); border:1px solid var(--line); border-radius:8px; margin-bottom:12px;
+               box-shadow:0 1px 2px rgba(0,0,0,.04); }
+        .card.inactive{ opacity:.55; }
+        .card-head{ display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; }
+        .card-head .client{ font-weight:700; flex:1; font-size:15px; }
+        .card-head .chev{ color:var(--muted); transition:transform .15s; }
+        .card.open .card-head .chev{ transform:rotate(90deg); }
+        .card-body{ display:none; padding:0 16px 16px; border-top:1px solid var(--line); }
+        .card.open .card-body{ display:block; }
+        .field{ margin-top:14px; }
+        .field > label{ display:block; font-size:12px; font-weight:700; color:var(--wine-dark);
+                        text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; }
+        .bi{ display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:start; }
+        .bi .lang{ font-size:11px; color:var(--muted); margin-bottom:3px; display:block; }
+        textarea,input[type=text]{ width:100%; font-family:inherit; font-size:14px; padding:8px 10px;
+              border:1px solid var(--line); border-radius:6px; resize:vertical; background:#fff; color:var(--ink); }
+        textarea{ min-height:64px; }
+        .longf textarea{ min-height:130px; }
+        .trcol{ display:flex; flex-direction:column; gap:6px; padding-top:18px; }
+        .btn-tr{ background:#f1ebe6; color:var(--wine-dark); border:1px solid var(--line); border-radius:6px;
+                 font-size:11px; padding:5px 7px; cursor:pointer; white-space:nowrap; }
+        .btn-tr:hover{ background:#e7dcd5; }
+        .row-actions{ display:flex; align-items:center; gap:6px; }
+        .iconbtn{ background:none; border:1px solid var(--line); border-radius:6px; cursor:pointer;
+                  width:30px; height:30px; font-size:14px; color:var(--muted); }
+        .iconbtn:hover{ background:#f1ebe6; color:var(--ink); }
+        .iconbtn.del:hover{ background:#fbe9e9; color:#b3261e; border-color:#f0c9c9; }
+        .switch{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:5px; }
+        .empty{ color:var(--muted); font-style:italic; padding:30px 0; }
+        .toast{ position:fixed; bottom:22px; right:22px; background:var(--ink); color:#fff; padding:11px 18px;
+                border-radius:8px; font-size:14px; opacity:0; transition:opacity .25s; pointer-events:none; }
+        .toast.show{ opacity:1; }
+        .toast.err{ background:#b3261e; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1>Portofoliu de proiecte ERA</h1>
+        <a class="back" href="/">← Înapoi la aplicație</a>
+        <div class="spacer"></div>
+        <div class="status" id="status"></div>
+        <button class="btn btn-save" id="saveBtn" onclick="saveAll()" disabled>Salvează</button>
+    </div>
+
+    <div class="layout">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="main">
+            <h2 id="catTitle">—</h2>
+            <div class="sub">Adăugați, editați, reordonați sau ascundeți proiectele firmei. Acestea apar în
+                Prezentarea Generală (textul lung) și în Ofertă (textul scurt).</div>
+            <div class="addbar"><button class="btn btn-add" onclick="addProject()">+ Proiect nou</button></div>
+            <div id="cards"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    let DB = { categories: [], projects: [] };
+    let selectedCat = null;
+    let dirty = false;
+
+    function setDirty(v){ dirty = v; const b=document.getElementById('saveBtn');
+        b.disabled = !v; document.getElementById('status').textContent = v ? 'Modificări nesalvate' : ''; }
+
+    function toast(msg, isErr){ const t=document.getElementById('toast'); t.textContent=msg;
+        t.className='toast show'+(isErr?' err':''); setTimeout(()=>t.className='toast',2600); }
+
+    function catName(id){ const c=DB.categories.find(c=>c.id===id); return c? c.name.ro : id; }
+
+    async function load(){
+        const r = await fetch('/api/projects');
+        if(!r.ok){ toast('Eroare la încărcare', true); return; }
+        DB = await r.json();
+        if(!selectedCat && DB.categories.length) selectedCat = DB.categories[0].id;
+        renderSidebar(); renderCards(); setDirty(false);
+    }
+
+    function projectsOf(cat){
+        return DB.projects.filter(p=>p.category===cat)
+                 .sort((a,b)=>(a.order||0)-(b.order||0));
+    }
+
+    function renderSidebar(){
+        const sb=document.getElementById('sidebar'); sb.innerHTML='';
+        DB.categories.forEach(c=>{
+            const n=projectsOf(c.id).length;
+            const div=document.createElement('div');
+            div.className='cat'+(c.id===selectedCat?' active':'');
+            div.innerHTML=`<span>${c.name.ro}</span><span class="count">${n}</span>`;
+            div.onclick=()=>{ selectedCat=c.id; renderSidebar(); renderCards(); };
+            sb.appendChild(div);
+        });
+    }
+
+    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function renderCards(){
+        document.getElementById('catTitle').textContent = catName(selectedCat);
+        const wrap=document.getElementById('cards'); wrap.innerHTML='';
+        const list=projectsOf(selectedCat);
+        if(!list.length){ wrap.innerHTML='<div class="empty">Niciun proiect în această categorie. Adăugați unul.</div>'; return; }
+        list.forEach(p=>wrap.appendChild(cardEl(p)));
+    }
+
+    function cardEl(p){
+        const card=document.createElement('div');
+        card.className='card'+(p.active?'':' inactive')+(p._open?' open':'');
+        const head=document.createElement('div'); head.className='card-head';
+        head.innerHTML=`<span class="chev">▶</span><span class="client">${esc(p.client.ro||p.client.en)||'(fără nume)'}</span>`;
+        const actions=document.createElement('div'); actions.className='row-actions';
+        actions.innerHTML=`
+            <label class="switch" title="Vizibil în documente">
+              <input type="checkbox" ${p.active?'checked':''} onchange="toggleActive('${p.id}',this.checked)"/> vizibil
+            </label>
+            <button class="iconbtn" title="Mută sus" onclick="move('${p.id}',-1)">↑</button>
+            <button class="iconbtn" title="Mută jos" onclick="move('${p.id}',1)">↓</button>
+            <button class="iconbtn del" title="Șterge" onclick="del('${p.id}')">✕</button>`;
+        head.appendChild(actions);
+        head.querySelector('.chev').onclick=null;
+        head.onclick=(e)=>{ if(e.target.closest('.row-actions'))return; p._open=!p._open; card.classList.toggle('open'); };
+
+        const body=document.createElement('div'); body.className='card-body';
+        body.appendChild(biField(p,'client','Client', false));
+        body.appendChild(biField(p,'short','Text scurt (Ofertă)', true));
+        body.appendChild(biField(p,'long','Text lung (Prezentare Generală)', true, true));
+        card.appendChild(head); card.appendChild(body);
+        return card;
+    }
+
+    function biField(p, key, label, multiline, isLong){
+        const f=document.createElement('div'); f.className='field'+(isLong?' longf':'');
+        const tag = multiline ? 'textarea' : 'input';
+        const ie = multiline ? '' : 'type="text"';
+        f.innerHTML=`<label>${label}</label>
+          <div class="bi">
+            <div><span class="lang">English</span>
+              <${tag} ${ie} oninput="upd('${p.id}','${key}','en',this.value)">${multiline?esc(p[key].en):''}</${tag}>${multiline?'':''}</div>
+            <div class="trcol">
+              <button class="btn-tr" onclick="tr('${p.id}','${key}','ro')" title="Traduce EN→RO">EN→RO</button>
+              <button class="btn-tr" onclick="tr('${p.id}','${key}','en')" title="Traduce RO→EN">RO→EN</button>
+            </div>
+            <div><span class="lang">Română</span>
+              <${tag} ${ie} oninput="upd('${p.id}','${key}','ro',this.value)">${multiline?esc(p[key].ro):''}</${tag}></div>
+          </div>`;
+        if(!multiline){
+            const ins=f.querySelectorAll('input');
+            ins[0].value=p[key].en||''; ins[1].value=p[key].ro||'';
+        }
+        return f;
+    }
+
+    function find(id){ return DB.projects.find(p=>p.id===id); }
+
+    function upd(id,key,lang,val){ const p=find(id); if(!p)return; p[key][lang]=val; setDirty(true); }
+
+    function toggleActive(id,v){ const p=find(id); if(p){ p.active=v; setDirty(true); renderCards(); } }
+
+    function del(id){ const p=find(id); if(!p)return;
+        if(!confirm('Ștergeți acest proiect?'))return;
+        DB.projects=DB.projects.filter(x=>x.id!==id); setDirty(true); renderSidebar(); renderCards(); }
+
+    function move(id,dir){
+        const p=find(id); if(!p)return;
+        const list=projectsOf(p.category);
+        const i=list.findIndex(x=>x.id===id); const j=i+dir;
+        if(j<0||j>=list.length)return;
+        const a=list[i], b=list[j];
+        const ao=a.order||0, bo=b.order||0; a.order=bo; b.order=ao;
+        setDirty(true); renderCards();
+    }
+
+    function addProject(){
+        const list=projectsOf(selectedCat);
+        const maxOrder=list.reduce((m,p)=>Math.max(m,p.order||0),0);
+        const np={ id:'new-'+Date.now(), category:selectedCat, active:true, order:maxOrder+1,
+                   client:{en:'',ro:''}, short:{en:'',ro:''}, long:{en:'',ro:''}, _open:true };
+        DB.projects.push(np); setDirty(true); renderSidebar(); renderCards();
+        document.querySelector('.main').scrollTop=0;
+    }
+
+    async function tr(id,key,target){
+        const p=find(id); if(!p)return;
+        const source = target==='ro' ? 'en' : 'ro';
+        const text=p[key][source];
+        if(!text || !text.trim()){ toast('Nimic de tradus în limba sursă', true); return; }
+        toast('Se traduce…');
+        try{
+            const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({text, target})});
+            const d=await r.json();
+            if(!r.ok) throw new Error(d.error||d.detail||'eroare');
+            p[key][target]=d.translation; setDirty(true); renderCards();
+            // keep this card open
+            const c=find(id); if(c){ c._open=true; renderCards(); }
+            toast('Tradus');
+        }catch(e){ toast('Eroare la traducere: '+e.message, true); }
+    }
+
+    async function saveAll(){
+        document.getElementById('status').textContent='Se salvează…';
+        // strip helper fields
+        const projects=DB.projects.map(({_open,...p})=> (String(p.id).startsWith('new-')? (({id,...rest})=>rest)(p) : p));
+        try{
+            const r=await fetch('/api/projects',{method:'PUT',headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({projects})});
+            const d=await r.json();
+            if(!r.ok) throw new Error(d.error||d.detail||'eroare');
+            toast('Salvat cu succes'); await load();
+        }catch(e){ document.getElementById('status').textContent='Eroare'; toast('Eroare la salvare: '+e.message, true); }
+    }
+
+    window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+    load();
+    </script>
+</body>
+</html>
