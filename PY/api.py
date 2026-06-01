@@ -15,6 +15,9 @@ from era_agent.pipelines.analysis import analyze_document as run_analysis
 from era_agent.pipelines.drafting import draft_contract as run_drafting
 from era_agent.pipelines.invoicing import draft_invoice as run_invoicing
 from era_agent.pipelines.offers import generate_custom_offer as run_offer
+from era_agent.pipelines.general_description import (
+    generate_general_description as run_general_description,
+)
 from era_agent.export.libreoffice import pptx_to_pdf
 from era_agent.chat_settings import load_instructions, save_instructions
 
@@ -146,6 +149,19 @@ class GenerateOfferRequest(BaseModel):
     format: str = "pptx"          # "pptx" | "pdf"
 
 
+class GenerateGeneralDescriptionRequest(BaseModel):
+    addressee_block: str
+    addressee_salutation: str
+    date: str = ""
+    intro_context: str = ""        # optional matter context for the opening paragraph
+    compose_intro: bool = True     # let Claude compose the opening paragraph
+    signatory_name: str = "Oleg EFRIM"
+    signatory_title: str = "Managing Partner"
+    hourly_rate: str = ""          # blank -> template default (EUR 250)
+    lang: str = "ro"               # "ro" | "en"
+    format: str = "pptx"           # "pptx" | "pdf"
+
+
 class ChatInstructions(BaseModel):
     instructions: str = ""
 
@@ -200,6 +216,42 @@ async def generate_custom_offer_endpoint(req: GenerateOfferRequest):
         content=pptx_bytes,
         media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
         headers={"Content-Disposition": f'attachment; filename="Oferta_{safe_name}.pptx"'},
+    )
+
+
+@app.post("/generate-general-description", dependencies=[Depends(verify_key)])
+async def generate_general_description_endpoint(req: GenerateGeneralDescriptionRequest):
+    """Fill ERA's General Description deck and return a PPTX (or PDF via LibreOffice)."""
+    try:
+        pptx_bytes = run_general_description(
+            addressee_block=req.addressee_block,
+            addressee_salutation=req.addressee_salutation,
+            date=req.date,
+            intro_context=req.intro_context,
+            compose_intro=req.compose_intro,
+            signatory_name=req.signatory_name,
+            signatory_title=req.signatory_title,
+            hourly_rate=req.hourly_rate,
+            lang=req.lang,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la generarea prezentării: {str(e)}")
+
+    if req.format == "pdf":
+        try:
+            pdf_bytes = pptx_to_pdf(pptx_bytes)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Eroare la conversia în PDF: {str(e)}")
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": 'attachment; filename="Prezentare_ERA.pdf"'},
+        )
+
+    return Response(
+        content=pptx_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        headers={"Content-Disposition": 'attachment; filename="Prezentare_ERA.pptx"'},
     )
 
 

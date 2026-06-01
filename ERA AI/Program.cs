@@ -357,6 +357,49 @@ app.MapPost("/api/generate-custom-offer", async (GenerateOfferRequest req, IConf
     }
 });
 
+app.MapPost("/api/generate-general-description", async (GenerateGeneralDescriptionRequest req, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+        var httpClient = factory.CreateClient();
+        // PDF export runs LibreOffice; allow generous time.
+        httpClient.Timeout = TimeSpan.FromSeconds(220);
+
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        var content = JsonContent.Create(req, options: jsonOptions);
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/generate-general-description", content);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var err = await resp.Content.ReadAsStringAsync();
+            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
+        }
+
+        var bytes = await resp.Content.ReadAsByteArrayAsync();
+        var isPdf = string.Equals(req.Format, "pdf", StringComparison.OrdinalIgnoreCase);
+        var mime = isPdf
+            ? "application/pdf"
+            : "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        var ext = isPdf ? "pdf" : "pptx";
+        return Results.File(bytes, mime, $"Prezentare_ERA.{ext}");
+    }
+    catch (TaskCanceledException)
+    {
+        return Results.Json(new { error = "Generarea prezentării a durat prea mult." }, statusCode: 504);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
 app.MapGet("/api/chat-instructions", async (IConfiguration config, IHttpClientFactory factory) =>
 {
     var instructions = await FetchInstructions(config, factory);
@@ -476,5 +519,18 @@ record GenerateOfferRequest(
     string? SignatoryTitle,
     string? Lang,
     bool ReformatFees,
+    string? Format
+);
+
+record GenerateGeneralDescriptionRequest(
+    string AddresseeBlock,
+    string AddresseeSalutation,
+    string? Date,
+    string? IntroContext,
+    bool ComposeIntro,
+    string? SignatoryName,
+    string? SignatoryTitle,
+    string? HourlyRate,
+    string? Lang,
     string? Format
 );
