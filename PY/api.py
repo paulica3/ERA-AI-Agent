@@ -14,6 +14,8 @@ from era_agent.ingestion.docx import extract_text as docx_extract
 from era_agent.pipelines.analysis import analyze_document as run_analysis
 from era_agent.pipelines.drafting import draft_contract as run_drafting
 from era_agent.pipelines.invoicing import draft_invoice as run_invoicing
+from era_agent.pipelines.offers import generate_custom_offer as run_offer
+from era_agent.export.libreoffice import pptx_to_pdf
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -126,6 +128,59 @@ class DraftInvoiceRequest(BaseModel):
     partner_name: str = "Oleg Efrim"
     partner_title: str = "Partner"
     partner_email: str = "oleg.efrim@era.md"
+
+
+class GenerateOfferRequest(BaseModel):
+    client_name: str
+    date: str
+    addressee_salutation: str
+    addressee_block: str = ""
+    intro_paragraphs: list[str] = Field(default_factory=list)
+    fee_text: str = ""
+    signatory_name: str = "Oleg EFRIM"
+    signatory_title: str = "Managing Partner"
+    lang: str = "ro"          # "ro" | "en"
+    reformat_fees: bool = True
+    format: str = "pptx"      # "pptx" | "pdf"
+
+
+@app.post("/generate-custom-offer", dependencies=[Depends(verify_key)])
+async def generate_custom_offer_endpoint(req: GenerateOfferRequest):
+    """Fill ERA's Custom Offer deck and return a PPTX (or PDF via LibreOffice)."""
+    try:
+        pptx_bytes = run_offer(
+            client_name=req.client_name,
+            date=req.date,
+            addressee_salutation=req.addressee_salutation,
+            addressee_block=req.addressee_block,
+            intro_paragraphs=req.intro_paragraphs,
+            fee_text=req.fee_text,
+            signatory_name=req.signatory_name,
+            signatory_title=req.signatory_title,
+            lang=req.lang,
+            reformat_fees=req.reformat_fees,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la generarea ofertei: {str(e)}")
+
+    safe_name = req.client_name.replace(" ", "_").replace("/", "_")[:30] or "Oferta"
+
+    if req.format == "pdf":
+        try:
+            pdf_bytes = pptx_to_pdf(pptx_bytes)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Eroare la conversia în PDF: {str(e)}")
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="Oferta_{safe_name}.pdf"'},
+        )
+
+    return Response(
+        content=pptx_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        headers={"Content-Disposition": f'attachment; filename="Oferta_{safe_name}.pptx"'},
+    )
 
 
 @app.post("/draft-invoice", dependencies=[Depends(verify_key)])

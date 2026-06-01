@@ -303,6 +303,52 @@ app.MapPost("/api/draft-contract", async (DraftContractRequest req, IConfigurati
     }
 });
 
+app.MapPost("/api/generate-custom-offer", async (GenerateOfferRequest req, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+        var httpClient = factory.CreateClient();
+        // PDF export runs LibreOffice; allow generous time.
+        httpClient.Timeout = TimeSpan.FromSeconds(220);
+
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        var content = JsonContent.Create(req, options: jsonOptions);
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/generate-custom-offer", content);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var err = await resp.Content.ReadAsStringAsync();
+            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
+        }
+
+        var bytes = await resp.Content.ReadAsByteArrayAsync();
+        var safeName = (req.ClientName ?? "Oferta").Replace(" ", "_").Replace("/", "_");
+        safeName = safeName[..Math.Min(30, safeName.Length)];
+
+        var isPdf = string.Equals(req.Format, "pdf", StringComparison.OrdinalIgnoreCase);
+        var mime = isPdf
+            ? "application/pdf"
+            : "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        var ext = isPdf ? "pdf" : "pptx";
+        return Results.File(bytes, mime, $"Oferta_{safeName}.{ext}");
+    }
+    catch (TaskCanceledException)
+    {
+        return Results.Json(new { error = "Generarea ofertei a durat prea mult." }, statusCode: 504);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
 app.Run();
 
 record TitleRequest(string Message, string? Reply = null);
@@ -342,4 +388,18 @@ record DraftContractRequest(
     string? Fees,
     string? Duration,
     string? ContractNumber
+);
+
+record GenerateOfferRequest(
+    string ClientName,
+    string Date,
+    string AddresseeSalutation,
+    string? AddresseeBlock,
+    List<string>? IntroParagraphs,
+    string? FeeText,
+    string? SignatoryName,
+    string? SignatoryTitle,
+    string? Lang,
+    bool ReformatFees,
+    string? Format
 );

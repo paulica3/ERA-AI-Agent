@@ -999,6 +999,26 @@ footer {
   gap: 16px;
 }
 
+.draft-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.draft-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--wine, #722F37);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .draft-actions {
   width: 100%;
   max-width: 700px;
