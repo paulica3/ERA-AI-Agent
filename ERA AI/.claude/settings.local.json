@@ -22,7 +22,16 @@
       "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\paolo\\\\Downloads\\\\Invoice _Eleving_Bonds_2026.docx\" \"C:\\\\Users\\\\paolo\\\\Downloads\\\\invoice_unpacked\")",
       "Bash(pip install *)",
       "Bash(rm \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\deploy-python-api.yml\" \"C:\\\\Users\\\\paolo\\\\repos\\\\ERA-AI-Agent\\\\.github\\\\workflows\\\\main_era-ai-app.yml\")",
-      "Bash(python3 -c \"import secrets; print\\(secrets.token_hex\\(32\\)\\)\")"
+      "Bash(python3 -c \"import secrets; print\\(secrets.token_hex\\(32\\)\\)\")",
+      "Bash(PYTHONIOENCODING=utf-8 python /tmp/inspect_pptx.py \"C:/Users/paolo/Downloads/Custom Offer Romanian.pptx\")",
+      "Bash(PYTHONIOENCODING=utf-8 python /tmp/inspect_pptx.py \"C:/Users/paolo/Downloads/General Description.pptx\")",
+      "Read(//c/Program Files/LibreOffice/program/**)",
+      "Read(//c/Program Files \\(x86\\)/LibreOffice/program/**)",
+      "Read(//c/Program Files/Microsoft Office/root/Office16/**)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft Office/root/Office16/**)",
+      "Bash(PYTHONIOENCODING=utf-8 python /tmp/slide_detail.py \"C:/Users/paolo/Downloads/Custom Offer Romanian.pptx\" 12)",
+      "Bash(cd \"C:/Users/paolo/repos/ERA-AI-Agent/PY/_render\" && ls -la ro_fixed_test.pptx && ls -la \"/c/Users/paolo/Downloads/Custom Offer Romanian.pptx\")",
+      "Bash(PYTHONIOENCODING=utf-8 python)"
     ]
   }
 }
