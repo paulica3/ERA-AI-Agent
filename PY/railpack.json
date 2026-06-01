@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "deploy": {
+    "aptPackages": [
+      "libreoffice-impress",
+      "libreoffice-writer",
+      "fonts-liberation",
+      "fonts-dejavu",
+      "fonts-crosextra-carlito",
+      "fonts-noto-core"
+    ]
+  }
+}
