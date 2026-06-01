@@ -22,5 +22,8 @@ Desktop.ini
 # Environment
 .env
 
+# Runtime data (chat instructions store, etc.)
+PY/data/
+
 # Claude Code
 .claude/worktrees/

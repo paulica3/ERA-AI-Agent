@@ -1019,6 +1019,15 @@ footer {
   flex-shrink: 0;
 }
 
+.instr-help {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink-soft, #6b6256);
+  margin: 0 0 14px 0;
+}
+
 .draft-actions {
   width: 100%;
   max-width: 700px;

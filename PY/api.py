@@ -16,6 +16,7 @@ from era_agent.pipelines.drafting import draft_contract as run_drafting
 from era_agent.pipelines.invoicing import draft_invoice as run_invoicing
 from era_agent.pipelines.offers import generate_custom_offer as run_offer
 from era_agent.export.libreoffice import pptx_to_pdf
+from era_agent.chat_settings import load_instructions, save_instructions
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -143,6 +144,23 @@ class GenerateOfferRequest(BaseModel):
     lang: str = "ro"              # "ro" | "en"
     reformat_fees: bool = True
     format: str = "pptx"          # "pptx" | "pdf"
+
+
+class ChatInstructions(BaseModel):
+    instructions: str = ""
+
+
+@app.get("/chat-instructions", dependencies=[Depends(verify_key)])
+async def get_chat_instructions():
+    """Return the user's saved standing chat instructions."""
+    return {"instructions": load_instructions()}
+
+
+@app.put("/chat-instructions", dependencies=[Depends(verify_key)])
+async def put_chat_instructions(body: ChatInstructions):
+    """Persist the user's standing chat instructions."""
+    saved = save_instructions(body.instructions)
+    return {"instructions": saved}
 
 
 @app.post("/generate-custom-offer", dependencies=[Depends(verify_key)])

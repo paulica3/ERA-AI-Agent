@@ -104,6 +104,7 @@
     <button class="tab-btn" id="tabDraft" onclick="switchTab('draft')">Redactare Contract</button>
     <button class="tab-btn" id="tabInvoice" onclick="switchTab('invoice')">Factură</button>
     <button class="tab-btn" id="tabOffer" onclick="switchTab('offer')">Ofertă</button>
+    <button class="tab-btn" id="tabInstructions" onclick="switchTab('instructions')">Instrucțiuni</button>
   </div>
 
   <!-- ── ANALYZE PANEL ─────────────────────────────────────────────── -->
@@ -485,6 +486,36 @@
         <button class="draft-btn-ghost" onclick="resetOffer()">Ofertă Nouă</button>
       </div>
       <div class="draft-error" id="offerError" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <!-- ── INSTRUCTIONS PANEL ─────────────────────────────────────────── -->
+  <div class="draft-panel" id="instructionsPanel" style="display:none">
+
+    <div class="draft-form">
+      <div class="draft-section">
+        <div class="draft-section-title">Instrucțiuni personalizate pentru asistent</div>
+        <p class="instr-help">
+          Aceste instrucțiuni sunt aplicate automat la fiecare mesaj din tab-ul
+          <strong>Conversație</strong>. Folosiți-le pentru a stabili tonul, formatul,
+          preferințele firmei, modul de citare a legislației sau semnătura.
+          Se salvează pe server și se aplică pe toate dispozitivele.
+        </p>
+        <div class="draft-field">
+          <label class="draft-label" for="instrText">Instrucțiuni</label>
+          <textarea class="draft-textarea" id="instrText" style="min-height:240px"
+            placeholder="Ex:&#10;— Răspunde concis, structurat, cu diacritice corecte.&#10;— Când e relevant, citează articolele din legislația Republicii Moldova.&#10;— Pentru scrisori, folosește un registru formal și semnează „Echipa ERA”.&#10;— Evită limbajul promoțional."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="draft-actions">
+      <button class="draft-btn" id="instrSaveBtn" onclick="saveInstructions()">Salvează Instrucțiunile</button>
+      <div class="draft-success-card" id="instrSuccess" style="display:none">
+        <span class="draft-success-text">Instrucțiunile au fost salvate.</span>
+      </div>
+      <div class="draft-error" id="instrError" style="display:none"></div>
     </div>
 
   </div>
@@ -957,17 +988,21 @@
     const isDraft   = tab === 'draft';
     const isInvoice = tab === 'invoice';
     const isOffer   = tab === 'offer';
-    document.getElementById('messages').style.display      = isChat    ? '' : 'none';
-    document.getElementById('inputArea').style.display     = isChat    ? '' : 'none';
-    document.getElementById('analyzePanel').style.display  = isAnalyze ? '' : 'none';
-    document.getElementById('draftPanel').style.display    = isDraft   ? '' : 'none';
-    document.getElementById('invoicePanel').style.display  = isInvoice ? '' : 'none';
-    document.getElementById('offerPanel').style.display    = isOffer   ? '' : 'none';
+    const isInstr   = tab === 'instructions';
+    document.getElementById('messages').style.display          = isChat    ? '' : 'none';
+    document.getElementById('inputArea').style.display         = isChat    ? '' : 'none';
+    document.getElementById('analyzePanel').style.display      = isAnalyze ? '' : 'none';
+    document.getElementById('draftPanel').style.display        = isDraft   ? '' : 'none';
+    document.getElementById('invoicePanel').style.display      = isInvoice ? '' : 'none';
+    document.getElementById('offerPanel').style.display        = isOffer   ? '' : 'none';
+    document.getElementById('instructionsPanel').style.display = isInstr   ? '' : 'none';
     document.getElementById('tabChat').classList.toggle('active', isChat);
     document.getElementById('tabAnalyze').classList.toggle('active', isAnalyze);
     document.getElementById('tabDraft').classList.toggle('active', isDraft);
     document.getElementById('tabInvoice').classList.toggle('active', isInvoice);
     document.getElementById('tabOffer').classList.toggle('active', isOffer);
+    document.getElementById('tabInstructions').classList.toggle('active', isInstr);
+    if (isInstr) loadInstructions();
   }
 
   // ── Document analysis ─────────────────────────────────────────────
@@ -1298,6 +1333,51 @@
     document.getElementById('offerError').style.display   = 'none';
     ['offClient','offDate','offSalutation','offAddressee','offIntro','offFees']
       .forEach(id => { document.getElementById(id).value = ''; });
+  }
+
+  // ── Custom chat instructions ──────────────────────────────────────
+  let instructionsLoaded = false;
+
+  async function loadInstructions() {
+    if (instructionsLoaded) return;   // load once per page session
+    try {
+      const r = await fetch('/api/chat-instructions');
+      if (!r.ok) return;
+      const data = await r.json();
+      document.getElementById('instrText').value = data.instructions || '';
+      instructionsLoaded = true;
+    } catch {}
+  }
+
+  async function saveInstructions() {
+    const btn = document.getElementById('instrSaveBtn');
+    const text = document.getElementById('instrText').value;
+    btn.disabled = true;
+    document.getElementById('instrSuccess').style.display = 'none';
+    document.getElementById('instrError').style.display   = 'none';
+    try {
+      const r = await fetch('/api/chat-instructions', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instructions: text })
+      });
+      if (!r.ok) {
+        let msg = 'Eroare server';
+        try { const err = await r.json(); msg = err.error || err.detail || msg; } catch {}
+        throw new Error(msg);
+      }
+      const data = await r.json();
+      document.getElementById('instrText').value = data.instructions || '';
+      const ok = document.getElementById('instrSuccess');
+      ok.style.display = 'flex';
+      setTimeout(() => { ok.style.display = 'none'; }, 2500);
+    } catch (e) {
+      const errEl = document.getElementById('instrError');
+      errEl.textContent = `Eroare la salvarea instrucțiunilor: ${e.message}`;
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+    }
   }
 
   // ── Init ──────────────────────────────────────────────────────────

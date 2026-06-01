@@ -22,16 +22,13 @@ from era_agent.config import MODEL, MAX_TOKENS
 TEMPLATES_DIR = Path(__file__).parent.parent.parent / "templates"
 
 # Anchor strings used to locate the fields to fill in the template. These are the
-# placeholder values baked into custom_offer_ro.pptx / custom_offer_en.pptx.
 _CLIENT_NAME_PLACEHOLDER = "VITAFOR"
-# The date string is baked in identically (Romanian) in both decks.
 _DATE_PLACEHOLDER = "14 decembrie 2025"
-_SALUTATION_ANCHOR = "Stimate domnule"  # RO salutation start; EN mirrors via index
+_SALUTATION_ANCHOR = "Stimate domnule"
 _FEE_HEADING_RO = "Structura onorariilor"
 _FEE_HEADING_EN = "Fee Structure"
 
 
-# ── Low-level paragraph / run helpers ─────────────────────────────────────────
 
 def _para_text(p) -> str:
     return "".join(r.text for r in p.runs)
@@ -140,21 +137,6 @@ def reformat_fee_structure(fee_text: str, lang: str = "ro") -> list[str]:
 
 
 def compose_cover_letter(context: str, client_name: str, lang: str = "ro") -> list[str]:
-    """Compose the slide-2 cover-letter body from the user's free context.
-
-    The user describes the matter (who the client is, what the transaction /
-    mandate is, what assistance is needed). Claude turns that into the formal
-    body of an ERA offer letter — exactly 3 paragraphs matching the house style:
-      1. ERA is pleased to submit this offer in response to the client's request
-         regarding <the matter>.
-      2. The scope of assistance, from the perspective of Moldovan law.
-      3. The standard closing (attached: scope, team, assumptions, fee estimate;
-         remaining available for clarifications).
-
-    The salutation and the "Cu respect, / Oleg EFRIM / Managing Partner" block are
-    handled separately, so this returns ONLY the body paragraphs. Claude must not
-    invent specific facts (figures, names, dates) that aren't in the context.
-    """
     context = (context or "").strip()
     if not context:
         return []

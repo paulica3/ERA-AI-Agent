@@ -90,10 +90,18 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
     httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
     httpClient.DefaultRequestHeaders.Add("anthropic-beta", "web-search-2025-03-05");
 
+    // Standing user instructions (stored server-side) are prepended to the base prompt.
+    var customInstructions = await FetchInstructions(config, factory);
+    var effectiveSystem = string.IsNullOrWhiteSpace(customInstructions)
+        ? SystemPrompt
+        : SystemPrompt
+          + "\n\n## Instrucțiuni personalizate ale utilizatorului (au prioritate)\n"
+          + customInstructions.Trim();
+
     var requestBody = new AnthropicRequest(
         Model: "claude-sonnet-4-20250514",
         MaxTokens: 4096,
-        System: SystemPrompt,
+        System: effectiveSystem,
         Messages: req.Messages,
         Tools: [new AnthropicTool("web_search_20250305", "web_search")],
         Stream: true
@@ -349,8 +357,74 @@ app.MapPost("/api/generate-custom-offer", async (GenerateOfferRequest req, IConf
     }
 });
 
+app.MapGet("/api/chat-instructions", async (IConfiguration config, IHttpClientFactory factory) =>
+{
+    var instructions = await FetchInstructions(config, factory);
+    return Results.Ok(new { instructions });
+});
+
+app.MapPut("/api/chat-instructions", async (ChatInstructions body, IConfiguration config, IHttpClientFactory factory) =>
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl))
+            return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(15);
+
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        var content = JsonContent.Create(body, options: jsonOptions);
+        var resp = await httpClient.PutAsync($"{pythonApiUrl}/chat-instructions", content);
+        if (!resp.IsSuccessStatusCode)
+        {
+            var err = await resp.Content.ReadAsStringAsync();
+            return Results.Json(new { error = $"Python API ({(int)resp.StatusCode}): {err}" }, statusCode: 502);
+        }
+
+        var data = await resp.Content.ReadFromJsonAsync<ChatInstructions>();
+        return Results.Ok(new { instructions = data?.Instructions ?? "" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+});
+
+// Fetch the user's standing instructions from the Python service (best-effort).
+static async Task<string> FetchInstructions(IConfiguration config, IHttpClientFactory factory)
+{
+    try
+    {
+        var pythonApiUrl = config["PythonApiUrl"];
+        if (string.IsNullOrEmpty(pythonApiUrl)) return "";
+
+        var httpClient = factory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+        var eraApiKey = config["EraApiKey"];
+        if (!string.IsNullOrEmpty(eraApiKey))
+            httpClient.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+        var resp = await httpClient.GetAsync($"{pythonApiUrl}/chat-instructions");
+        if (!resp.IsSuccessStatusCode) return "";
+
+        var data = await resp.Content.ReadFromJsonAsync<ChatInstructions>();
+        return data?.Instructions ?? "";
+    }
+    catch
+    {
+        return "";
+    }
+}
+
 app.Run();
 
+record ChatInstructions(string? Instructions);
 record TitleRequest(string Message, string? Reply = null);
 record ChatRequest(List<ChatMessage> Messages);
 record ChatMessage(string Role, string Content);
