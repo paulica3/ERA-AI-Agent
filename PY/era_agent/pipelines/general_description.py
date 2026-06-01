@@ -27,6 +27,7 @@ from pptx.oxml.ns import qn
 
 from era_agent.client import get_client
 from era_agent.config import MODEL, MAX_TOKENS
+from era_agent.pipelines.experience import regenerate_experience
 
 TEMPLATES_DIR = Path(__file__).parent.parent.parent / "templates"
 
@@ -322,6 +323,11 @@ def generate_general_description(
 
     # ── Slide 12: hourly rate ─────────────────────────────────────────
     _set_hourly_rate(prs.slides[11], hourly_rate)
+
+    # ── Experience sections: rebuild from the content store ───────────
+    # Done last so the fixed-index fills above (slides 1/2/12) are unaffected
+    # by the slides this adds/removes further down the deck.
+    regenerate_experience(prs, lang)
 
     buf = io.BytesIO()
     prs.save(buf)
