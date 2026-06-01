@@ -13,11 +13,17 @@ process restarts within the same container.
 import os
 from pathlib import Path
 
-_DEFAULT_PATH = Path(__file__).resolve().parent.parent / "data" / "chat_instructions.txt"
+# All durable files live under ERA_DATA_DIR (default PY/data; the Railway volume
+# at /data in production). CHAT_INSTRUCTIONS_PATH still overrides for back-compat.
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def _path() -> Path:
-    return Path(os.getenv("CHAT_INSTRUCTIONS_PATH", str(_DEFAULT_PATH)))
+    override = os.getenv("CHAT_INSTRUCTIONS_PATH")
+    if override:
+        return Path(override)
+    base = Path(os.getenv("ERA_DATA_DIR", str(_DEFAULT_DATA_DIR)))
+    return base / "chat_instructions.txt"
 
 
 def load_instructions() -> str:

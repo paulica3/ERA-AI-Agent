@@ -1,0 +1,891 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "ma",
+      "name": {
+        "en": "Mergers & Acquisitions",
+        "ro": "Fuziuni și achiziții"
+      }
+    },
+    {
+      "id": "competition",
+      "name": {
+        "en": "Competition Law",
+        "ro": "Dreptul concurenței"
+      }
+    },
+    {
+      "id": "banking",
+      "name": {
+        "en": "Guarantees, Security, Regulatory & Banking",
+        "ro": "Garanții, Reglementare și domeniul bancar"
+      }
+    },
+    {
+      "id": "treasury",
+      "name": {
+        "en": "Treasury, Cash Management & Foreign Exchange",
+        "ro": "Trezorerie, Managementul Numerarului și Schimb Valutar"
+      }
+    },
+    {
+      "id": "grc",
+      "name": {
+        "en": "Governance, Risk & Compliance",
+        "ro": "Guvernanță, Risc și Conformitate"
+      }
+    },
+    {
+      "id": "sanctions",
+      "name": {
+        "en": "Sanctions Compliance",
+        "ro": "Conformitatea cu Sancțiunile"
+      }
+    },
+    {
+      "id": "regulatory",
+      "name": {
+        "en": "Regulatory & Product Compliance",
+        "ro": "Reglementări și Conformitatea Produselor"
+      }
+    },
+    {
+      "id": "public_policy",
+      "name": {
+        "en": "Public Policy, Legislative Drafting & Regulatory Frameworks",
+        "ro": "Politici Publice, Elaborare Legislativă și Cadre de Reglementare"
+      }
+    },
+    {
+      "id": "data_protection",
+      "name": {
+        "en": "Data Protection, Privacy & Digital Compliance",
+        "ro": "Protecția Datelor, Confidențialitatea și Conformitatea Digitală"
+      }
+    },
+    {
+      "id": "energy",
+      "name": {
+        "en": "Energy Sector",
+        "ro": "Sectorul Energetic"
+      }
+    },
+    {
+      "id": "distribution",
+      "name": {
+        "en": "Distribution, Dealer & After-Sales Frameworks",
+        "ro": "Cadre de Distribuție, Dealer și After-Sales"
+      }
+    },
+    {
+      "id": "contractual",
+      "name": {
+        "en": "Current Contractual Practice",
+        "ro": "Practica contractuală curentă"
+      }
+    },
+    {
+      "id": "hr_labour",
+      "name": {
+        "en": "HR / Labour Legal Framework",
+        "ro": "Cadrul juridic pentru resurse umane/muncă"
+      }
+    },
+    {
+      "id": "disputes",
+      "name": {
+        "en": "Dispute Resolution & Regulatory Risk Management",
+        "ro": "Soluționarea Disputelor și Gestionarea Riscului de Reglementare"
+      }
+    },
+    {
+      "id": "ip",
+      "name": {
+        "en": "Intellectual Property – Administration & Enforcement",
+        "ro": "Proprietate Intelectuală – Administrare și Aplicare"
+      }
+    }
+  ],
+  "projects": [
+    {
+      "category": "ma",
+      "client": {
+        "en": "Vienna Insurance Group",
+        "ro": "Vienna Insurance Group"
+      },
+      "short": {
+        "en": "We provided legal assistance as sole attorneys for Vienna Insurance Group (VIG) in connection with the acquisition of Moldasig S.A., the largest insurance company in the Republic of Moldova, in a complex back-to-back transaction involving the state of the Republic of Moldova. The state initially acquired the shares through a cancellation and reissuance mechanism, subsequently selling them to a qualified investor through a public tender procedure. The transaction was structured to be completed by the end of August 2025. The operation had strategic importance both for the client and for the insurance market in the Republic of Moldova, representing an essential step in the stabilization and professionalization process of the sector. We played a decisive role in structuring the transaction, by designing a mechanism that allowed the state to acquire and immediately resell the shares in accordance with privatization legislation, ensuring the investor's legal security and compatibility with competition law requirements. The transaction structure involved the correlation and succession of two interdependent contracts — the acquisition of shares by the state and subsequent sale to VIG — conditioned by the finding of public interest and obtaining relevant regulatory approvals. Legal assistance covered all transaction stages, from due diligence and operation structuring, to transactional documentation negotiation and coordination with the main state authorities. Currently, the only pending stage is the economic concentration examination procedure before the Competition Council.",
+        "ro": "Am acordat asistență juridică în clitate de unici avocați ai Vienna Insurance Group (VIG) în legătură cu achiziția Moldasig S.A., cea mai mare companie de asigurări din Republica Moldova, într-o tranzacție complexă de tip back-to-back, care a implicat statul Republica Moldova. Statul a dobândit inițial acțiunile printr-un mecanism de anulare și reemitere, urmând să le vândă ulterior unui investitor calificat prin intermediul unei proceduri de licitație publică. Tranzacția a fost structurată pentru a fi finalizată până la sfârșitul lunii august 2025 Operațiunea a avut o importanță strategică atât pentru client, cât și pentru piața asigurărilor din Republica Moldova, reprezentând un pas esențial în procesul de stabilizare și profesionalizare a sectorului. Am avut un rol determinant în structurarea tranzacției, prin conceperea unui mecanism care a permis statului să dobândească și să revândă imediat acțiunile în conformitate cu legislația în materie de privatizare, asigurând securitatea juridică a investitorului și compatibilitatea cu cerințele dreptului concurenței.. Structura tranzacției a presupus corelarea și succesiunea a două contracte interdependente — achiziția acțiunilor de către stat și vânzarea ulterioară către VIG — condiționate de constatarea interesului public și de obținerea aprobărilor regulatorii relevante. Asistența juridică a acoperit toate etapele tranzacției, de la due diligence și structurarea operațiunii, până la negocierea documentației tranzacționale și coordonarea cu principalele autorități ale statului. În prezent, singura etapă aflată în curs este procedura de examinare a concentrării economice în fața Consiliului Concurenței."
+      },
+      "long": {
+        "en": "We served as sole legal counsel to Vienna Insurance Group (VIG) in connection with the acquisition of Moldasig S.A., the largest insurance company in the Republic of Moldova, through a complex back-to-back transaction involving the Moldovan state. Under the structure implemented, the state initially acquired the shares through a cancellation and re-issuance mechanism and then sold them to a qualified investor via a public auction. The operation was of strategic importance to both the client and the Moldovan insurance market, representing a key step in the stabilization and professionalization of the sector. We played a central role in structuring the transaction by designing a mechanism that enabled the state to acquire and immediately resell the shares in compliance with privatization legislation, while ensuring legal certainty for the investor and compatibility with competition law requirements. The transaction structure coordinated and sequenced two interdependent agreements-the state’s acquisition of the shares and their subsequent sale to VIG - each conditional upon a public interest determination and the receipt of the relevant regulatory approvals. Our legal assistance covered all stages of the transaction, from legal due diligence and transaction structuring to negotiation of the transaction documentation and coordination with the key state authorities. At present, the only outstanding step is the Competition Council’s review of the economic concentration.",
+        "ro": "Am servit ca singur consilier juridic pentru Vienna Insurance Group (VIG) în legătură cu achiziția Moldasig S.A., cea mai mare companie de asigurări din Republica Moldova, printr-o tranzacție complexă back-to-back care a implicat statul moldovenesc. Conform structurii implementate, statul a achiziționat inițial acțiunile prin intermediul unui mecanism de anulare și reemitere, iar apoi le-a vândut unui investitor calificat prin licitație publică. Operațiunea a avut importanță strategică atât pentru client, cât și pentru piața moldovenească de asigurări, reprezentând un pas esențial în stabilizarea și profesionalizarea sectorului. Am jucat un rol central în structurarea tranzacției prin conceperea unui mecanism care a permis statului să achiziționeze și să revândă imediat acțiunile în conformitate cu legislația privind privatizarea, asigurând în același timp certitudinea juridică pentru investitor și compatibilitatea cu cerințele dreptului concurenței. Structura tranzacției a coordonat și secvențializat două acorduri interdependente - achiziționarea acțiunilor de către stat și vânzarea ulterioară către VIG - fiecare condiționată de determinarea interesului public și obținerea aprobărilor de reglementare relevante. Asistența noastră juridică a acoperit toate etapele tranzacției, de la due diligence juridic și structurarea tranzacției până la negocierea documentației tranzacționale și coordonarea cu autoritățile de stat cheie. În prezent, singura etapă rămasă în suspensie este examinarea concentrării economice de către Consiliul Concurenței."
+      },
+      "order": 1,
+      "active": true,
+      "id": "dfe7f723d47b4f4d8cf7e87178de1848",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ma",
+      "client": {
+        "en": "GOVERNMENT OF THE REPUBLIC OF MOLDOVA",
+        "ro": "Guvernul Republicii Moldova"
+      },
+      "short": {
+        "en": "ERA provided legal assistance to the Government of the Republic of Moldova, through the Public Property Agency, in the transaction for the sale of 63.8865% of the share capital of B.C. \"Moldindconbank\" S.A., worth approximately 39,000,000 EUR, to Doverie United-Holding AD from Bulgaria. Doverie United-Holding AD, a European investor, acquired the single participation of 63.89% of the bank's capital. The transaction was carried out through the Public Property Agency, which initially acquired the shares from Moldindconbank and subsequently sold them to the Bulgarian investor through a public auction. ERA drafted the preliminary contract and the sale-purchase contract, actively participating in the negotiations related to the transaction. Additionally, ERA reviewed the Government Decision regarding the approval of the preliminary contract text, which included the sale-purchase contract as an annex, and assisted the client regarding the applicable requirements for competition authorization.",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA has advised the Moldovan Government, acting through the Agency for Public Property, on its sale of 63.8865%, worth EUR 39.000.000 of the authorized capital of B.C. Moldindconbank S.A. to Bulgaria's Doverie United-Holding AD. DOVERIE UNITED-HOLDING AD, a European investor, bought the sole stake of B.C. Moldindconbank S.A., in the amount of 63.89%. The transaction took place through the Agency on Public Property, which acquired the stock shares from Moldindconbank and sold them to the Bulgarian investor at a public auction. ERA drafted the Pre-contract and the Sale-Purchase Contract and participated at the negotiations. Also, ERA revised the Government Decision regarding the approval of the text of the Pre-contract which contained in the annexes the Sale-Purchase Contract and assisted the client with regard to applicable requirements for anti-trust clearance.",
+        "ro": "ERA a consiliat Guvernul Republicii Moldova, acționând prin intermediul Agenției Proprietății Publice, în privința vânzării a 63,8865%, în valoare de EUR 39.000.000 din capitalul autorizat al B.C. Moldindconbank S.A. către Doverie United-Holding AD din Bulgaria. DOVERIE UNITED-HOLDING AD, un investitor european, a achiziționat participația unică la B.C. Moldindconbank S.A., în cuantum de 63,89%. Tranzacția a avut loc prin intermediul Agenției Proprietății Publice, care a achiziționat acțiunile de la Moldindconbank și le-a vândut investitorului bulgar la o licitație publică. ERA a redactat Precontractul și Contractul de Vânzare-Cumpărare și a participat la negocieri. De asemenea, ERA a revizuit Hotărârea Guvernului privind aprobarea textului Precontractului care conținea în anexe Contractul de Vânzare-Cumpărare și a asistat clientul în ceea ce privește cerințele aplicabile pentru autorizarea antitrust."
+      },
+      "order": 2,
+      "active": true,
+      "id": "d6d175ee314547458a85984eb849593e",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ma",
+      "client": {
+        "en": "GOVERNMENT OF THE REPUBLIC OF MOLDOV and MOLDOVA-AGROINDBANK",
+        "ro": "GUVERNUL REPUBLICII MOLDOVA și MOLDOVA-AGROINDBANK"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA represented both the Government MAIB in this transaction. After several unsuccessful transactions, over 41 % of the shares of Moldova-Agroindbank S.A. (the largest bank in Moldova) were sold at BVB the stock exchange with 450 million MDL. The two packages were purchased by the Government of the Republic of Moldova to solve a systemic banking crisis. The transaction follows the government's signing of a pre-contract for the sale of these shares to an international consortium, led by the European Bank for Reconstruction and Development. Structuring such a transaction involved a complex and multilateral approach to ensure compliance with all legal requirements, especially related to competition legislation requirements, compliance with complex corporate and banking law requirements and procedures.",
+        "ro": "ERA a reprezentat atât Guvernul, cât și MAIB în această tranzacție. După mai multe tranzacții nereușite, peste 41% din acțiunile Moldova-Agroindbank S.A. (cea mai mare bancă din Moldova) au fost vândute la bursa de valori BVB cu 450 milioane MDL. Cele două pachete au fost achiziționate de Guvernul Republicii Moldova pentru a soluționa o criză bancară sistemică. Tranzacția urmează semnării de către guvern a unui precontract pentru vânzarea acestor acțiuni către un consorțiu internațional, condus de Banca Europeană pentru Reconstrucție și Dezvoltare. Structurarea unei astfel de tranzacții a implicat o abordare complexă și multilaterală pentru a asigura conformitatea cu toate cerințele legale, în special cele legate de cerințele legislației concurenței, conformitatea cu cerințele și procedurile complexe ale dreptului societar și bancar."
+      },
+      "order": 3,
+      "active": true,
+      "id": "e6233059045d43b0a72a57e5860b49cc",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ma",
+      "client": {
+        "en": "Sony / Funimation acquisition of Crunchyroll",
+        "ro": "Achiziția Sony / Funimation a Crunchyroll"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA assisted the client in connection with the global acquisition of Ellation Holdings, Inc. (Crunchyroll) by Funimation Global Group, LLC, a subsidiary of Sony Pictures Entertainment, from Warner Media Content Holdings, L.P. ERA’s role encompassed the local legal due diligence of the Moldovan subsidiary, an IT company and resident of the Moldova IT Park, with a focus on the corporate structure, intragroup arrangements, and material commercial and IP-related contracts. The work included identifying deal-critical issues under Moldovan law, reviewing and assessing key contractual frameworks, and proposing contractual amendments, recommended clauses, and mitigation measures, taking into account the specific regulatory and tax regime applicable to IT Park residents. ERA’s advice helped the client address local legal risks and align the Moldovan aspects of the transaction with the global deal structure and closing requirements.",
+        "ro": "ERA a asistat clientul în legătură cu achiziția globală a Ellation Holdings, Inc. (Crunchyroll) de către Funimation Global Group, LLC, o filială a Sony Pictures Entertainment, de la Warner Media Content Holdings, L.P. Rolul ERA a cuprins due diligence-ul juridic local al filialei moldovenești, o companie IT și rezident al Parcului IT Moldova, cu accent pe structura corporativă, aranjamentele intragrup și contractele comerciale și de PI importante. Lucrarea a inclus identificarea aspectelor critice ale tranzacției în conformitate cu legislația moldovenească, examinarea și evaluarea cadrelor contractuale cheie, și propunerea de amendamente contractuale, clauze recomandate și măsuri de atenuare, ținând cont de regimul reglementar și fiscal specific aplicabil rezidenților Parcului IT. Consultanța ERA a ajutat clientul să abordeze riscurile juridice locale și să alinieze aspectele moldovenești ale tranzacției cu structura globală a acordului și cerințele de finalizare."
+      },
+      "order": 4,
+      "active": true,
+      "id": "0d6251ffe412497787624930c046426d",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ma",
+      "client": {
+        "en": "BICO Industries IUTE CREDIT Europe DB SCHENKER",
+        "ro": "BICO Industries IUTE CREDIT Europe DB SCHENKER"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA assisted BICO Industries, part of the ROCA Investments group and listed on the Bucharest Stock Exchange, in its entry and expansion in the Republic of Moldova, including the first transaction in the Vulcănești Free Economic Zone and the acquisition of 100% of Europlas Lux. The assistance covered legal due diligence, transaction structuring, regulatory analysis, and full M&A support. ERA assisted Iute Credit Europe in connection with a complex transaction involving the proposed acquisition of a banking institution in the Republic of Moldova, providing comprehensive legal support across transactional and regulatory workstreams. Our mandate included comprehensive legal due diligence covering all deal-critical areas relevant to a regulated financial institution, including corporate structure, regulatory status, material contracts, compliance and AML/CFT frameworks, and existing and potential litigation exposure. Particular attention was given to risks specific to the banking sector, supervisory requirements, and change-of-control implications under Moldovan law. In parallel, ERA assisted throughout the process of obtaining prior authorization from the Banca Națională a Moldovei for the acquisition of a qualifying holding exceeding 50% of the share capital of a Moldovan bank. This included advising on applicable legal thresholds, preparing and reviewing the regulatory submission package, coordinating responses to supervisory requests, and supporting interactions with the banking regulator. ERA assisted DB Schenker in a strategic transaction to increase the group’s stake in its Moldovan subsidiary, resulting in the Romanian group entity acquiring 100% of the share capital of the local company. Our mandate encompassed all stages of the transaction, including corporate and competition legal due diligence, assessment of change-of-control implications, and structuring, drafting, and negotiation of the share transfer documentation. ERA also provided ongoing legal support throughout the implementation phase, ensuring compliance with applicable corporate, competition, and regulatory requirements under Moldovan law.",
+        "ro": "ERA a asistat BICO Industries, parte din grupul ROCA Investments și cotată la Bursa de Valori București, în intrarea și expansiunea sa în Republica Moldova, inclusiv prima tranzacție în Zona Economică Liberă Vulcănești și achiziția a 100% din Europlas Lux. Asistența a acoperit due diligence-ul juridic, structurarea tranzacției, analiza de reglementare și suportul complet pentru fuziuni și achiziții. ERA a asistat Iute Credit Europe în legătură cu o tranzacție complexă care implica propusa achiziție a unei instituții bancare din Republica Moldova, oferind suport juridic cuprinzător pe toate palierele tranzacționale și de reglementare. Mandatul nostru a inclus o verificare juridică cuprinzătoare (due diligence) care a acoperit toate domeniile critice pentru tranzacție relevante pentru o instituție financiară reglementată, inclusiv structura corporativă, statutul de reglementare, contractele materiale, cadrele de conformitate și AML/CFT, și expunerea la litigii existente și potențiale. Atenție particulară s-a acordat riscurilor specifice sectorului bancar, cerințelor de supraveghere și implicațiilor schimbării de control conform dreptului moldovenesc. În paralel, ERA a asistat pe tot parcursul procesului de obținere a autorizației prealabile de la Banca Națională a Moldovei pentru achiziția unei participații calificate care depășește 50% din capitalul social al unei bănci moldovenești. Aceasta a inclus consultanța privind pragurile legale aplicabile, pregătirea și revizuirea pachetului de documentație pentru reglementator, coordonarea răspunsurilor la solicitările de supraveghere și sprijinirea interacțiunilor cu regulatorul bancar. ERA a asistat DB Schenker într-o tranzacție strategică pentru creșterea participației grupului în subsidiara sa moldovenească, rezultând în achiziția de către entitatea grupului din România a 100% din capitalul social al companiei locale. Mandatul nostru a cuprins toate etapele tranzacției, inclusiv verificarea juridică (due diligence) corporativă și de concurență, evaluarea implicațiilor schimbării de control și structurarea, redactarea și negocierea documentației de transfer al acțiunilor. ERA a oferit, de asemenea, suport juridic continuu pe tot parcursul fazei de implementare, asigurând conformitatea cu cerințele corporative, de concurență și de reglementare aplicabile conform dreptului moldovenesc."
+      },
+      "order": 5,
+      "active": true,
+      "id": "cd641dc2effd4dbca8f54a040653d6f6",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "competition",
+      "client": {
+        "en": "Philip Morris International",
+        "ro": "Philip Morris International"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "At the request of Clifford Chance, ERA assisted PMI and KT&G Corporation in two separate merger control assessments before the Competition Council regarding their global framework of technology, trademark, commercialization, and supply arrangements for heated tobacco products. The first assessment was conducted when the initial contractual framework was concluded, at which point ERA determined that no merger notification was required under Moldovan law. Several years later, ERA conducted a second assessment when the parties entered into a new set of agreements that expanded and restructured their cooperation, including elements resembling a business transfer. The structure of the relationship was highly innovative and nonstandard from a merger control perspective, requiring a complex legal and economic analysis under both Moldovan and EU principles to determine whether notification thresholds were met. ERA demonstrated that, despite the transfer elements and expanded cooperation, the arrangement did not generate qualifying turnover in Moldova. Following ERA’s substantiation, the Competition Council accepted that the transaction did not constitute a notifiable economic concentration.",
+        "ro": "La solicitarea Clifford Chance, ERA a asistat PMI și KT&G Corporation în două evaluări separate ale controlului concentrărilor în fața Consiliului Concurenței privind cadrul lor global de tehnologie, mărci comerciale, comercializare și acorduri de furnizare pentru produsele din tutun încălzit. Prima evaluare a fost efectuată când cadrul contractual inițial a fost încheiat, moment în care ERA a determinat că nu era necesară nicio notificare de concentrare conform legislației moldovenești. Câțiva ani mai târziu, ERA a efectuat o a doua evaluare când părțile au încheiat un nou set de acorduri care au extins și restructurat cooperarea lor, incluzând elemente ce seamănă cu un transfer de afaceri. Structura relației a fost foarte inovatoare și nestandardizată din perspectiva controlului concentrărilor, necesitând o analiză juridică și economică complexă atât conform principiilor moldovenești, cât și ale UE pentru a determina dacă pragurile de notificare au fost îndeplinite. ERA a demonstrat că, în ciuda elementelor de transfer și a cooperării extinse, aranjamentul nu a generat cifra de afaceri calificatoare în Moldova. În urma fundamentării ERA, Consiliul Concurenței a acceptat că tranzacția nu a constituit o concentrare economică notificabilă."
+      },
+      "order": 1,
+      "active": true,
+      "id": "3604f6636b224dd49e6ea812de030fe5",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "competition",
+      "client": {
+        "en": "Vienna Insurance Group Lux Proba Group",
+        "ro": "Vienna Insurance Group Lux Proba Group"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA serves as sole legal counsel to Vienna Insurance Group in the acquisition of Moldasig S.A., which is currently under review by the Competition Council. The case raised unprecedented competition law issues in Moldova. Given the back-to-back structure and the share acquisition via public auction, ERA relied, for the first time locally, on the exception permitting post-closing notification of the concentration. ERA also successfully invoked, again as a first in Moldova, the legal mechanism that permits a derogation from the standstill obligation, enabling VIG to exercise voting rights for urgent governance decisions. The authority opened an in-depth investigation due to market structure concerns. ERA addressed and resolved these concerns through detailed market and legal analysis, managing a highly nonstandard clearance process in a landmark insurance transaction. We assisted Luxproba Group SRL, a major Moldovan distributor, in a cartel investigation by the Competition Council i concerning alleged price coordination under a dual distribution arrangement. The case’s complexity stemmed largely from the dual distribution aspects, which raised difficult questions about vertical–horizontal interactions with very limited precedent, including at the EU level. ERA coordinated with EU antitrust counsel and economic experts, prepared the client’s response to the statement of objections, and advised on evidentiary standards, procedural strategy, and risk mitigation. .",
+        "ro": "ERA servește ca unic consilier juridic pentru Vienna Insurance Group în achiziția Moldasig S.A., care se află în prezent sub examinarea Consiliului Concurenței. Cazul a ridicat probleme de drept al concurenței fără precedent în Moldova. Având în vedere structura back-to-back și achiziția de acțiuni prin licitație publică, ERA s-a bazat, pentru prima dată la nivel local, pe excepția care permite notificarea post-închidere a concentrării. ERA a invocat de asemenea cu succes, din nou ca o premieră în Moldova, mecanismul juridic care permite o derogare de la obligația de suspendare, permițând VIG să exercite drepturile de vot pentru decizii urgente de guvernanță. Autoritatea a deschis o investigație aprofundată din cauza preocupărilor legate de structura pieței. ERA a abordat și a rezolvat aceste preocupări prin analiză detaliată de piață și juridică, gestionând un proces de autorizare foarte nestandardizat într-o tranzacție de asigurări de referință. Am asistat Luxproba Group SRL, un distribuitor moldovenesc major, într-o investigație privind cartelurile efectuată de Consiliul Concurenței referitoare la presupusa coordonare a prețurilor în cadrul unui aranjament de distribuție duală. Complexitatea cazului a rezultat în mare măsură din aspectele distribuției duale, care au ridicat întrebări dificile privind interacțiunile vertical-orizontale cu precedente foarte limitate, inclusiv la nivelul UE. ERA a coordonat cu consiliul antitrust UE și experții economici, a pregătit răspunsul clientului la declarația de obiecții și a consiliat privind standardele probatorii, strategia proceduală și atenuarea riscurilor. ."
+      },
+      "order": 2,
+      "active": true,
+      "id": "4d80efcdf94d410185648af894b83d95",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "banking",
+      "client": {
+        "en": "Eleving Group (Luxembourg)",
+        "ro": "Eleving Group (Luxembourg)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Bond Refinancing: We are currently advising Eleving Group on a bond refinancing transaction supported by a security package broadly aligned with the previous issuance and, in relevant parts, governed by Moldovan law. Our role as Moldovan counsel covers the preparation, execution, perfection, and enforceability of the Moldovan-law security, including pledges over shares in Sebo MD and Mogo MD, as well as pledges over receivables, trademarks, and bank accounts. The mandate includes reviewing and updating the existing security structure to reflect the refinancing terms, coordinating execution and registration with the relevant Moldovan authorities, and issuing a legal opinion under Moldovan law on capacity and enforceability. In parallel, we are assisting the group in the final stage of obtaining the required authorization from the National Bank of Moldova, ensuring alignment between the regulatory process and the implementation of the security package under Moldovan law.",
+        "ro": "Refinanțarea Obligațiunilor: În prezent consiliăm Eleving Group într-o tranzacție de refinanțare a obligațiunilor susținută de un pachet de securitate în linii generale aliniat cu emisia anterioară și, în părțile relevante, guvernat de legea moldovenească. Rolul nostru ca consiliu moldovenesc acoperă pregătirea, executarea, perfecționarea și caracterul executoriu al securității de drept moldovenesc, inclusiv gajurile asupra acțiunilor în Sebo MD și Mogo MD, precum și gajurile asupra creanțelor, mărcilor comerciale și conturilor bancare. Mandatul include revizuirea și actualizarea structurii de securitate existente pentru a reflecta termenii refinanțării, coordonarea executării și înregistrării cu autoritățile moldovenești relevante și emiterea unei opinii juridice sub legea moldovenească privind capacitatea și caracterul executoriu. În paralel, asistăm grupul în etapa finală de obținere a autorizației necesare de la Banca Națională a Moldovei, asigurând alinierea între procesul de reglementare și implementarea pachetului de securitate sub legea moldovenească."
+      },
+      "order": 1,
+      "active": true,
+      "id": "befe65080d15499a9daaf8b7cbae1a98",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "banking",
+      "client": {
+        "en": "National Commission on Financial Market Victoriabank",
+        "ro": "Comisia Națională a Pieței Financiare Victoriabank"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA has maintained a long-standing relationship with the National Financial Market Commission (CNPF), assisting the regulator for two years on various issues. Our work included advising on the implementation of the Administrative Code and applying sectoral laws related to insurance and microfinance. Additionally, ERA represents the CNPF in civil and administrative litigation involving insurance companies, offering support in case preparation and directly representing clients before Moldovan courts. ERA has maintained a professional relationship of over ten years with one of Moldova’s largest commercial banks, supporting it on a wide range of regulatory and prudential issues overseen by the National Bank of Moldova. Our work has included ongoing assistance in interpreting and applying banking regulations, as well as advising on compliance with prudential standards. Additionally, ERA advised the bank on the sale of a significant portfolio of non-performing loans to an international investor, with a total value of approximately EUR 10 million. We also have extensive experience in defending the bank’s interests in disputes with the State Tax Service, the National Bank of Moldova, and private clients, offering both strategic advice and direct representation in court.",
+        "ro": "ERA a menținut o relație de lungă durată cu Comisia Națională a Pieței Financiare (CNPF), asistând regulatorul timp de doi ani în diverse probleme. Activitatea noastră a inclus consiliere privind implementarea Codului administrativ și aplicarea legilor sectoriale referitoare la asigurări și microfinanțare. În plus, ERA reprezintă CNPF în litigii civile și administrative ce implică companii de asigurări, oferind suport în pregătirea cauzelor și reprezentând direct clienții în fața instanțelor moldovenești. ERA a menținut o relație profesională de peste zece ani cu una dintre cele mai mari bănci comerciale din Moldova, sprijinind-o într-o gamă largă de probleme de reglementare și prudențiale supravegheate de Banca Națională a Moldovei. Activitatea noastră a inclus asistență continuă în interpretarea și aplicarea reglementărilor bancare, precum și consiliere privind conformitatea cu standardele prudențiale. În plus, ERA a consiliat banca privind vânzarea unui portofoliu semnificativ de credite neperformante către un investitor internațional, cu o valoare totală de aproximativ 10 milioane EUR. De asemenea, avem experiență vastă în apărarea intereselor băncii în dispute cu Serviciul Fiscal de Stat, Banca Națională a Moldovei și clienți privați, oferind atât consiliere strategică, cât și reprezentare directă în instanță."
+      },
+      "order": 2,
+      "active": true,
+      "id": "256a0b14ad7a4db59132a4e345cbdfd4",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "treasury",
+      "client": {
+        "en": "Sumitomo UK",
+        "ro": "Sumitomo UK"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA assisted Sumitomo Electric Finance UK Limited and Sumitomo Electric Bordnetze SE with a detailed assessment of Moldovan law regarding the feasibility of integrating the Moldovan subsidiary, SE Bordnetze Moldova SRL, into the group’s cross-border cash pooling and cash management system operated from Germany. The mandate involved a comprehensive review of the legal framework governing treasury operations in Moldova, with particular focus on foreign exchange regulation, intra-group lending, corporate capacity, capital maintenance, insolvency exposure, tax and transfer pricing implications, and banking operational constraints. ERA paid specific attention to the National Bank of Moldova’s authorization powers and supervisory role regarding capital movements, foreign accounts, and cross-border loan arrangements. ERA analyzed three alternative treasury structures considered by the Group: cross-border physical sweeping of funds to Germany, the use of a German bank account opened in the name of the Moldovan subsidiary, and participation in a virtual (notional) cash pooling structure. For each scenario, ERA identified the required regulatory approvals, reporting obligations, contractual safeguards, and practical limitations arising from Moldova’s foreign exchange regime, its non-participation in SEPA, and the subsidiary’s location in a Free Economic Zone. This work enabled the client to assess the feasibility, regulatory risks, and compliance requirements of incorporating the Moldovan entity into its global treasury framework, ensuring alignment with Moldovan banking, corporate, tax, and insolvency regulations.",
+        "ro": "ERA a asistat Sumitomo Electric Finance UK Limited și Sumitomo Electric Bordnetze SE cu o evaluare detaliată a dreptului moldovenesc privind fezabilitatea integrării filialei moldovenești, SE Bordnetze Moldova SRL, în sistemul transfrontalier de grupare a numerarului și gestionare a numerarului al grupului, operat din Germania. Mandatul a implicat o analiză cuprinzătoare a cadrului legal care reglementează operațiunile de trezorerie în Moldova, cu accent deosebit pe reglementarea valutară, creditarea intra-grup, capacitatea corporativă, menținerea capitalului, expunerea la insolvență, implicațiile fiscale și de transfer pricing, precum și constrângerile operaționale bancare. ERA a acordat atenție specifică puterilor de autorizare ale Banca Națională a Moldovei și rolului său de supraveghere privind mișcările de capital, conturile străine și acordurile de creditare transfrontaliere. ERA a analizat trei structuri alternative de trezorerie luate în considerare de Grup: transferul fizic transfrontalier de fonduri către Germania, utilizarea unui cont bancar german deschis pe numele filialei moldovenești și participarea la o structură virtuală (noțională) de cash pooling. Pentru fiecare scenariu, ERA a identificat aprobările de reglementare necesare, obligațiile de raportare, garanțiile contractuale și limitările practice care decurg din regimul valutar al Moldovei, din neparticiparea sa la SEPA și din localizarea filialei într-o Zonă Economică Liberă. Această activitate a permis clientului să evalueze fezabilitatea, riscurile de reglementare și cerințele de conformitate pentru încorporarea entității moldovenești în cadrul global de trezorerie, asigurând alinierea cu reglementările bancare, corporative, fiscale și de insolvență din Moldova."
+      },
+      "order": 1,
+      "active": true,
+      "id": "7ac6d98d0e7547f4a47304a39b26848c",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "grc",
+      "client": {
+        "en": "KPMG Legal Romania",
+        "ro": "KPMG Legal Romania"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Provided Moldovan law input to KPMG Legal – Toncescu și Asociații for an equivalence assessment mandated by the National Bank of Romania on banking confidentiality and professional secrecy. The work involved a structured comparison between the Moldovan legal framework (BNM, banking, resolution, financial conglomerates and core codes) and the Romanian regime under Law No. 312/2015 transposing BRRD, assessing the definition of confidential information, secrecy obligations, limits on use and exchange of information, sanctions, and the resulting level of equivalence relevant for prudential supervision and resolution.",
+        "ro": "A furnizat consultanță de drept moldovenesc către KPMG Legal – Toncescu și Asociații pentru o evaluare de echivalență mandatată de Banca Națională a României privind confidențialitatea bancară și secretul profesional. Activitatea a implicat o comparație structurată între cadrul legal moldovenesc (BNM, bancar, de rezoluție, conglomerate financiare și coduri fundamentale) și regimul român în baza Law No. 312/2015 de transpunere a BRRD, evaluând definiția informațiilor confidențiale, obligațiile de secret, limitele privind utilizarea și schimbul de informații, sancțiunile și nivelul rezultant de echivalență relevant pentru supravegherea prudențială și rezoluție."
+      },
+      "order": 1,
+      "active": true,
+      "id": "91e6dec14e994242b850247a604ad5ec",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "grc",
+      "client": {
+        "en": "KPMG Legal Hungary KPMG Romania Donaris Vienna Insurance Group S.A.",
+        "ro": "KPMG Legal Hungary KPMG Romania Donaris Vienna Insurance Group S.A."
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Advised KPMG Legal Tóásó Law Firm and the National Bank of Hungary on comparing confidentiality and professional secrecy regimes applicable to resolution authorities in Hungary, Albania, and Moldova for cross-border supervisory cooperation and participation in Resolution Colleges. The work concentrated on the Moldovan framework (BNM, banking, resolution, financial conglomerates, trade secrets, violations, criminal and labor laws), benchmarking it against the BRRD and EU standards, and assessing the level of equivalence required under Article 98 of the BRRD and the Hungarian Resolution Act. Provided legal support to KPMG for adapting and implementing its General Terms of Business for the Republic of Moldova, including reviewing and drafting provisions related to personal data protection and processing (including cross-border transfers), confidentiality, anti-money laundering, and counter-terrorist financing (KYC/beneficial ownership, suspicious transaction reporting). Ensured compliance with sanctions, clarified liability and limitations, addressed conflicts of interest, and outlined the use of subcontractors and electronic communications to align with Moldovan civil, data protection, and AML laws, as well as KPMG’s global risk management standards. Advised Donaris S.A. on AML/CFT and international sanctions compliance related to licensing its life insurance business. The work included preparing a comprehensive legal opinion on Moldovan AML/CFT and restrictive-measures requirements applicable to life insurers, covering reporting thresholds, suspicious-transaction indicators, terrorist-financing and sanctions screening, governance and AML officer responsibilities, internal procedures, and training obligations. We also conducted an in-depth review of VIG Group’s AML and sanctions rules to assess their compatibility with Moldovan laws and supervisory regulations and provided specific recommendations to align the local AML framework while maintaining stricter group-level standards.",
+        "ro": "Am consiliat KPMG Legal Tóásó Law Firm și Banca Națională a Ungariei privind compararea regimurilor de confidențialitate și secret profesional aplicabile autorităților de rezoluție din Ungaria, Albania și Moldova pentru cooperarea transfrontalieră de supraveghere și participarea în Colegiile de Rezoluție. Activitatea s-a concentrat pe cadrul moldovenesc (BNM, bancar, rezoluție, conglomerate financiare, secrete comerciale, încălcări, drept penal și al muncii), comparându-l cu BRRD și standardele UE, și evaluând nivelul de echivalență cerut conform Articolului 98 al BRRD și Legii ungare privind Rezoluția. Am oferit asistență juridică KPMG pentru adaptarea și implementarea Termenilor Generali de Afaceri pentru Republica Moldova, inclusiv revizuirea și redactarea prevederilor referitoare la protecția și prelucrarea datelor cu caracter personal (inclusiv transferuri transfrontaliere), confidențialitate, combaterea spălării banilor și finanțarea terorismului (KYC/beneficiarul efectiv, raportarea tranzacțiilor suspecte). Am asigurat conformitatea cu sancțiunile, am clarificat răspunderea și limitările, am abordat conflictele de interese și am deliniat utilizarea subcontractorilor și comunicațiilor electronice pentru alinierea cu legislația moldovenească civilă, de protecție a datelor și AML, precum și cu standardele globale de management al riscului KPMG. Am consiliat Donaris S.A. privind conformitatea AML/CFT și sancțiunile internaționale legate de licențierea activității de asigurări de viață. Activitatea a inclus pregătirea unei opinii juridice cuprinzătoare privind cerințele moldovenești AML/CFT și măsurile restrictive aplicabile asigurătorilor de viață, acoperind pragurile de raportare, indicatorii tranzacțiilor suspecte, screeningul pentru finanțarea terorismului și sancțiuni, responsabilitățile de guvernanță și ale ofițerului AML, procedurile interne și obligațiile de formare. De asemenea, am efectuat o revizuire detaliată a regulilor AML și de sancțiuni ale VIG Group pentru a evalua compatibilitatea acestora cu legile moldovenești și reglementările de supraveghere și am furnizat recomandări specifice pentru alinierea cadrului AML local menținând în același timp standarde mai stricte la nivel de grup."
+      },
+      "order": 2,
+      "active": true,
+      "id": "8c494d61e2dc4503a255526693d60434",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "sanctions",
+      "client": {
+        "en": "Vienna Insurance Group",
+        "ro": "Vienna Insurance Group"
+      },
+      "short": {
+        "en": "We provided legal assistance as sole attorneys for Vienna Insurance Group (VIG) in connection with the acquisition of Moldasig S.A., the largest insurance company in the Republic of Moldova, in a complex back-to-back transaction involving the state of the Republic of Moldova. The state initially acquired the shares through a cancellation and reissuance mechanism, subsequently selling them to a qualified investor through a public tender procedure. The transaction was structured to be completed by the end of August 2025. The operation had strategic importance both for the client and for the insurance market in the Republic of Moldova, representing an essential step in the stabilization and professionalization process of the sector. We played a decisive role in structuring the transaction, by designing a mechanism that allowed the state to acquire and immediately resell the shares in accordance with privatization legislation, ensuring the investor's legal security and compatibility with competition law requirements. The transaction structure involved the correlation and succession of two interdependent contracts — the acquisition of shares by the state and subsequent sale to VIG — conditioned by the finding of public interest and obtaining relevant regulatory approvals. Legal assistance covered all transaction stages, from due diligence and operation structuring, to transactional documentation negotiation and coordination with the main state authorities. Currently, the only pending stage is the economic concentration examination procedure before the Competition Council.",
+        "ro": "Am acordat asistență juridică în clitate de unici avocați ai Vienna Insurance Group (VIG) în legătură cu achiziția Moldasig S.A., cea mai mare companie de asigurări din Republica Moldova, într-o tranzacție complexă de tip back-to-back, care a implicat statul Republica Moldova. Statul a dobândit inițial acțiunile printr-un mecanism de anulare și reemitere, urmând să le vândă ulterior unui investitor calificat prin intermediul unei proceduri de licitație publică. Tranzacția a fost structurată pentru a fi finalizată până la sfârșitul lunii august 2025 Operațiunea a avut o importanță strategică atât pentru client, cât și pentru piața asigurărilor din Republica Moldova, reprezentând un pas esențial în procesul de stabilizare și profesionalizare a sectorului. Am avut un rol determinant în structurarea tranzacției, prin conceperea unui mecanism care a permis statului să dobândească și să revândă imediat acțiunile în conformitate cu legislația în materie de privatizare, asigurând securitatea juridică a investitorului și compatibilitatea cu cerințele dreptului concurenței.. Structura tranzacției a presupus corelarea și succesiunea a două contracte interdependente — achiziția acțiunilor de către stat și vânzarea ulterioară către VIG — condiționate de constatarea interesului public și de obținerea aprobărilor regulatorii relevante. Asistența juridică a acoperit toate etapele tranzacției, de la due diligence și structurarea operațiunii, până la negocierea documentației tranzacționale și coordonarea cu principalele autorități ale statului. În prezent, singura etapă aflată în curs este procedura de examinare a concentrării economice în fața Consiliului Concurenței."
+      },
+      "long": {
+        "en": "ERA has advised Vienna Insurance Group (VIG) with legal due diligence during the acquisition of a Moldovan insurance company, focusing on compliance with international sanctions and embargoes. The scope included reviewing relevant laws (Law No. 25/2016 on international restrictive measures and Law No. 308/2017 AML/CFT), evaluating Moldova’s measures to implement UN, EU, and third-country sanctions, and analyzing the potential effects on financial sector companies. ERA provided the client with a detailed opinion on legal compliance and risks, along with recommendations for incorporating compliance assurances into the transaction documents.",
+        "ro": "ERA a consiliat Vienna Insurance Group (VIG) cu due diligence juridic în cadrul achiziției unei companii de asigurări moldovenești, concentrându-se pe conformitatea cu sancțiunile și embargurile internaționale. Domeniul de aplicare a inclus examinarea legilor relevante (Legea nr. 25/2016 privind măsurile restrictive internaționale și Legea nr. 308/2017 AML/CFT), evaluarea măsurilor Moldovei de implementare a sancțiunilor ONU, UE și ale țărilor terțe, și analizarea efectelor potențiale asupra companiilor din sectorul financiar. ERA a furnizat clientului o opinie detaliată privind conformitatea juridică și riscurile, împreună cu recomandări pentru încorporarea asigurărilor de conformitate în documentele tranzacției."
+      },
+      "order": 1,
+      "active": true,
+      "id": "78d8eb1a8f6343bb8a158a4d05bd82a8",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "sanctions",
+      "client": {
+        "en": "KPMG Romania",
+        "ro": "KPMG Romania"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Assisted KPMG Romania with the risk management process related to a Russian-owned company by analyzing the international sanctions regime in the Republic of Moldova. The task involved verifying Moldova's compliance with EU and UN sanctions, identifying any autonomous sanctions imposed by Moldova, and assessing how CSE Provision No. 45/2022 affects restrictions on financial transactions involving persons linked to US-sanctioned entities. This analysis offered the client a clear overview of the national legal framework and compliance systems pertinent to sanctions risk assessment.",
+        "ro": "A asistat KPMG Romania cu procesul de gestionare a riscurilor legat de o companie deținută de ruși prin analizarea regimului de sancțiuni internaționale din Republica Moldova. Sarcina a implicat verificarea conformității Moldovei cu sancțiunile UE și ONU, identificarea oricăror sancțiuni autonome impuse de Moldova, și evaluarea modului în care Decizia CSE nr. 45/2022 afectează restricțiile asupra tranzacțiilor financiare care implică persoane legate de entități sancționate de SUA. Această analiză a oferit clientului o perspectivă clară asupra cadrului juridic național și sistemelor de conformitate pertinente pentru evaluarea riscului de sancțiuni."
+      },
+      "order": 2,
+      "active": true,
+      "id": "6db759ad17fe454fbad974324dfcc5ab",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "sanctions",
+      "client": {
+        "en": "Philip Morris Moldova",
+        "ro": "Philip Morris Moldova"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Assisted Philip Morris Moldova in understanding how US international sanctions apply within Moldova. The scope included reviewing the national legal framework established by Law No. 25/2016 on implementing international restrictive measures and assessing Moldova’s partial alignment with US sanctions through decisions by the Interinstitutional Supervisory Council, such as Decision No. 1/2023 and No. 8/a/2024. These decisions reflect Moldova’s alignment with US sanctions against Russia and specific individuals targeted by Executive Orders 13818/2017 and 14024/2021. The review covered the practical implications for companies that do not report, the criteria that convert them into reporting entities under Law No. 308/2017 AML/CFT, and obligations for transactions exceeding local monetary thresholds. ERA issued a memorandum detailing compliance requirements, risks linked to payments to sanctioned or connected persons, and the consequences of tax authority decisions in cases of funds being frozen.",
+        "ro": "A asistat Philip Morris Moldova în înțelegerea modului în care sancțiunile internaționale ale SUA se aplică în Moldova. Domeniul de aplicare a inclus revizuirea cadrului juridic național stabilit prin Legea nr. 25/2016 privind implementarea măsurilor restrictive internaționale și evaluarea alinierii parțiale a Moldovei la sancțiunile SUA prin deciziile Consiliului Interinstituțional de Supraveghere, cum ar fi Decizia nr. 1/2023 și nr. 8/a/2024. Aceste decizii reflectă alinierea Moldovei la sancțiunile SUA împotriva Rusiei și a anumitor persoane vizate de Ordinele Executive 13818/2017 și 14024/2021. Analizarea a acoperit implicațiile practice pentru companiile care nu raportează, criteriile care le transformă în entități raportoare conform Legii nr. 308/2017 AML/CFT, și obligațiile pentru tranzacțiile care depășesc pragurile monetare locale. ERA a emis un memorandum care detaliază cerințele de conformitate, riscurile legate de plățile către persoane sancționate sau conectate, și consecințele deciziilor autorităților fiscale în cazurile de înghețare a fondurilor."
+      },
+      "order": 3,
+      "active": true,
+      "id": "2534d182ac76440c893b87ada19c634f",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "regulatory",
+      "client": {
+        "en": "Honda Motor Co. Ltd",
+        "ro": "Honda Motor Co. Ltd"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Acted as local counsel for Honda Motor Co., Ltd. in connection with the Global Connect 5.0 project, providing a high-level review under Moldovan law of connected-car features including Remote View, Digital Key, and Remote Parking. The work covered compliance with personal data protection legislation (Law No. 133/2011 and the forthcoming GDPR-alignment framework), road traffic regulations (including restrictions on continuous video recording in public spaces and the unjustified use of sound signals), and relevant UN/ECE standards. The review identified applicable legal requirements, operational constraints, key legal risks, and mitigation measures relevant for the deployment of connected services in Moldova.",
+        "ro": "A acționat ca avocat local pentru Honda Motor Co., Ltd. în legătură cu proiectul Global Connect 5.0, oferind o analiză la nivel înalt conform dreptului moldovenesc a caracteristicilor mașinilor conectate, inclusiv Remote View, Digital Key și Remote Parking. Activitatea a acoperit conformitatea cu legislația privind protecția datelor cu caracter personal (Legea nr. 133/2011 și viitorul cadru de aliniere GDPR), reglementările de circulație rutieră (inclusiv restricțiile privind înregistrarea video continuă în spațiile publice și utilizarea nejustificată a semnalelor sonore) și standardele relevante UN/ECE. Analiza a identificat cerințele legale aplicabile, constrângerile operaționale, riscurile juridice principale și măsurile de atenuare relevante pentru implementarea serviciilor conectate în Moldova."
+      },
+      "order": 1,
+      "active": true,
+      "id": "57c752ac80984cb5971cfed4b479d2f3",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "regulatory",
+      "client": {
+        "en": "Google Autospace SRL (Official BMW Distributor) KPMG Romania",
+        "ro": "Google Autospace SRL (Distribuitor Oficial BMW) KPMG Romania"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Provided regulatory and product-compliance advisory to Google in connection with the deployment of Google Distributed Cloud (GDC), supporting data-driven and product-related services in the Republic of Moldova. The mandate included a comprehensive legal risk assessment covering data protection and privacy, government and law-enforcement data access requirements, intermediary liability, telecommunications and cloud-related regulatory obligations, and intellectual property protection. The review identified applicable regulatory constraints, compliance requirements, and mitigation measures relevant to the local deployment and operation of cloud-enabled products and services. For more than 10 years, we have acted as legal counsel to the official BMW distributor in Moldova, providing ongoing regulatory advisory and compliance support across the full scope of its local operations. Our assistance includes assessing and implementing applicable product, consumer, advertising, and safety regulations, as well as reviewing regulatory requirements triggered by the introduction of new BMW products, technologies, and services on the Moldovan market. We regularly support the client in aligning global manufacturer standards with mandatory local rules, managing regulatory interactions, and mitigating compliance and enforcement risks. Provided regulatory compliance advisory to KPMG Romania in relation to the assessment of statutory reporting and disclosure obligations applicable to auditors and regulated entities under Moldovan law. The work involved a high-level review of mandatory reporting triggers, interactions with financial supervisory authorities, confidentiality constraints, and statutory safe-harbours for good-faith disclosures, including under the AML/CTF framework. The analysis focused on regulatory risk identification, compliance decision-making, and practical implications for cross-border audit and advisory activities.",
+        "ro": "Am furnizat servicii de consultanță în domeniul reglementărilor și conformității produselor către Google în legătură cu implementarea Google Distributed Cloud (GDC), în sprijinul serviciilor bazate pe date și produse în Republica Moldova. Mandatul a inclus o evaluare juridică cuprinzătoare a riscurilor, acoperind protecția datelor și confidențialitatea, cerințele de acces la date ale guvernului și organelor de aplicare a legii, răspunderea intermediarilor, obligațiile de reglementare în telecomunicații și cloud, precum și protecția proprietății intelectuale. Analiza a identificat constrângerile de reglementare aplicabile, cerințele de conformitate și măsurile de atenuare relevante pentru implementarea și funcționarea locală a produselor și serviciilor activate în cloud. De mai bine de 10 ani, am acționat ca consilier juridic pentru distribuitorul oficial BMW din Moldova, furnizând consultanță de reglementare continuă și suport pentru conformitate pe întreaga gamă a operațiunilor sale locale. Asistența noastră include evaluarea și implementarea reglementărilor aplicabile pentru produse, consumatori, publicitate și siguranță, precum și examinarea cerințelor de reglementare declanșate de introducerea pe piața moldovenească a noilor produse, tehnologii și servicii BMW. Sprijinim în mod regulat clientul în alinierea standardelor globale ale producătorului cu normele locale obligatorii, gestionarea interacțiunilor cu autoritățile de reglementare și atenuarea riscurilor de conformitate și aplicare. Am furnizat servicii de consultanță în conformitatea cu reglementările către KPMG Romania în legătură cu evaluarea obligațiilor de raportare și divulgare statutare aplicabile auditorilor și entităților reglementate sub legea moldovenească. Activitatea a implicat o analiză de nivel înalt a factorilor declanșatori de raportare obligatorie, interacțiunilor cu autoritățile de supraveghere financiară, constrângerilor de confidențialitate și garanțiilor statutare pentru divulgările de bună-credință, inclusiv în cadrul legislației AML/CTF. Analiza s-a concentrat pe identificarea riscurilor de reglementare, luarea deciziilor de conformitate și implicațiile practice pentru activitățile transfrontaliere de audit și consultanță."
+      },
+      "order": 2,
+      "active": true,
+      "id": "37675cd8bfd7462f95f38c2a4aa8c280",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "public_policy",
+      "client": {
+        "en": "German Agency for International Cooperation (GIZ)",
+        "ro": "Agenția Germană pentru Cooperare Internațională (GIZ)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA was commissioned by GIZ to help the Ministry of Economy and Infrastructure draft the Regulation on the development, signing, and oversight of strategic investment agreements. The draft Government Decision, prepared with ERA’s input, was later approved by the Government of the Republic of Moldova and published in the Official Gazette. This Regulation sets the legal guidelines for choosing, signing, and monitoring investment projects at the state level and clarifies the responsibilities of public authorities in their execution.",
+        "ro": "ERA a fost mandatată de GIZ să asiste Ministerul Economiei și Infrastructurii în elaborarea Regulamentului privind elaborarea, semnarea și supravegherea acordurilor de investiții strategice. Proiectul de Hotărâre de Guvern, pregătit cu contribuția ERA, a fost ulterior aprobat de Guvernul Republicii Moldova și publicat în Monitorul Oficial. Acest Regulament stabilește liniile directoare juridice pentru selectarea, semnarea și monitorizarea proiectelor de investiții la nivel de stat și clarifică responsabilitățile autorităților publice în executarea acestora."
+      },
+      "order": 1,
+      "active": true,
+      "id": "d83399dc8a2b45dd8654a13d36cd0402",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "public_policy",
+      "client": {
+        "en": "International Labor Organization (ILO)",
+        "ro": "Organizația Internațională a Muncii (OIM)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA supported the Ministry of Health in drafting the Law on the Promotion of Employment and Unemployment Insurance, which has now been adopted by the Moldovan Parliament.",
+        "ro": "ERA a susținut Ministerul Sănătății în elaborarea Legii privind promovarea ocupării forței de muncă și asigurarea în caz de șomaj, care a fost acum adoptată de Parlamentul Republicii Moldova."
+      },
+      "order": 2,
+      "active": true,
+      "id": "8582fdcd012d40ad9b62b928ab582bdd",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "public_policy",
+      "client": {
+        "en": "Multinational corporation (confidential) Soros Foundation Moldova",
+        "ro": "Corporație multinațională (confidențial) Soros Foundation Moldova"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA advised and represented a multinational corporation during the parliamentary process to adopt the Law on the mechanism for examining investments of importance for state security (FDI Law No. 174/2021). ERA’s proposed amendments, intended to align the draft with EU standards and mitigate risks for foreign investors, were incorporated into the final version of the law. ERA drafted the Roadmap to strengthen the paralegal profession within the National System of State-Guaranteed Primary Legal Aid, contributing to the profession’s institutionalization and to alternative models for providing primary legal aid.",
+        "ro": "ERA a consiliat și reprezentat o corporație multinațională în timpul procesului parlamentar de adoptare a Legii privind mecanismul de examinare a investițiilor de importanță pentru securitatea statului (Legea ISD nr. 174/2021). Amendamentele propuse de ERA, menite să alinieze proiectul la standardele UE și să reducă riscurile pentru investitorii străini, au fost încorporate în versiunea finală a legii. ERA a elaborat Foaia de parcurs pentru consolidarea profesiei de parajurist în cadrul Sistemului Național de Asistență Juridică Primară Garantată de Stat, contribuind la instituționalizarea profesiei și la modele alternative de furnizare a asistenței juridice primare."
+      },
+      "order": 3,
+      "active": true,
+      "id": "3cb433d093954e5da51cf6507a3a57b1",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "data_protection",
+      "client": {
+        "en": "Honda Motor Co. Ltd",
+        "ro": "Honda Motor Co. Ltd"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Served as local counsel for Honda Motor Co., Ltd. in connection with the Global Connect 5.0 project, providing a legal assessment under Moldovan law of data protection and privacy aspects related to connected-car features such as Remote View, Digital Key, and Remote Parking. The review focused on the processing of personal and vehicle-related data, compliance with Law No. 133/2011 on personal data protection and the forthcoming GDPR-alignment framework, data collection and use through connected services, and associated regulatory risks. The mandate identified applicable compliance requirements, data-related constraints, and mitigation measures relevant to the lawful deployment and operation of connected services in Moldova.",
+        "ro": "Am acționat în calitate de consilier juridic local pentru Honda Motor Co., Ltd. în legătură cu proiectul Global Connect 5.0, oferind o evaluare juridică în conformitate cu legislația moldovenească privind aspectele de protecție a datelor și confidențialitate referitoare la funcționalitățile mașinilor conectate, cum ar fi Remote View, Digital Key și Remote Parking. Analiza s-a concentrat asupra prelucrării datelor cu caracter personal și a datelor referitoare la vehicule, conformitatea cu Legea nr. 133/2011 privind protecția datelor cu caracter personal și viitorul cadru de aliniere la GDPR, colectarea și utilizarea datelor prin serviciile conectate, și riscurile de reglementare asociate. Mandatul a identificat cerințele de conformitate aplicabile, constrângerile legate de date și măsurile de atenuare relevante pentru implementarea și funcționarea legală a serviciilor conectate în Moldova."
+      },
+      "order": 1,
+      "active": true,
+      "id": "1b7d586baf81475381ff528276c345d0",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "data_protection",
+      "client": {
+        "en": "TikTok PRO TV KPMG Romania",
+        "ro": "TikTok PRO TV KPMG Romania"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Acted as local regulatory counsel to TikTok, upon instruction from Dentons Europe, in connection with the assessment of local content regulation requirements and the legal powers of public authorities to request the removal or restriction of unlawful or non-compliant content. The mandate covered the analysis of applicable content standards, procedural safeguards, authority takedown mechanisms, and platform obligations under Moldovan law, with a focus on compliance risk, enforcement thresholds, and operational implications for digital services. For more than 10 years, we have served as legal counsel to ProTV Moldova, one of the country's leading television broadcasters, providing ongoing legal support on media regulation, content compliance, data protection, and interactions with public authorities. Our mandate includes advising on regulatory requirements for audiovisual content, protecting personal data and privacy in broadcasting and digital distribution, handling requests from authorities related to content restrictions or takedown, and ensuring compliance with applicable media, advertising, and digital regulations. This long-standing engagement provides in-depth insight into regulatory oversight, enforcement practices, and compliance obligations applicable to content-driven and digital media services. Advised KPMG Romania & Moldova on the adaptation and implementation of General Terms of Business for the Republic of Moldova, with a focus on data protection and privacy (including cross-border data transfers), confidentiality, sanctions compliance, and internal risk allocation. The mandate involved aligning global contractual standards with local civil law, data protection, and compliance requirements, including electronic communications and subcontracting frameworks.",
+        "ro": "Am acționat în calitate de consilier juridic local în domeniul reglementării pentru TikTok, la instrucțiunea Dentons Europe, în legătură cu evaluarea cerințelor locale de reglementare a conținutului și puterilor legale ale autorităților publice de a solicita eliminarea sau restricționarea conținutului ilegal sau neconform. Mandatul a acoperit analiza standardelor de conținut aplicabile, garanțiilor procedurale, mecanismelor de eliminare a autorităților și obligațiilor platformelor conform legislației moldovenești, cu accent pe riscul de conformitate, pragurile de executare și implicațiile operaționale pentru serviciile digitale. De mai bine de 10 ani, am servit în calitate de consilier juridic pentru ProTV Moldova, unul dintre principalii radiodifuzori de televiziune din țară, oferind suport juridic continuu în domeniul reglementării media, conformității conținutului, protecției datelor și interacțiunilor cu autoritățile publice. Mandatul nostru include consilierea privind cerințele de reglementare pentru conținutul audiovizual, protejarea datelor cu caracter personal și a confidențialității în radiodifuziune și distribuția digitală, gestionarea solicitărilor din partea autorităților referitoare la restricțiile de conținut sau eliminare, și asigurarea conformității cu reglementările aplicabile în domeniul media, publicității și digital. Acest angajament de lungă durată oferă o perspectivă aprofundată asupra supravegherii de reglementare, practicilor de executare și obligațiilor de conformitate aplicabile serviciilor media orientate pe conținut și digitale. A consiliat KPMG Romania & Moldova cu privire la adaptarea și implementarea Condițiilor Generale de Afaceri pentru Republica Moldova, cu accent pe protecția datelor și confidențialitatea (inclusiv transferurile transfrontaliere de date), confidențialitatea, respectarea sancțiunilor și alocarea internă a riscurilor. Mandatul a implicat alinierea standardelor contractuale globale cu dreptul civil local, protecția datelor și cerințele de conformitate, inclusiv cadrele pentru comunicații electronice și subcontractare."
+      },
+      "order": 2,
+      "active": true,
+      "id": "bff989b685ba46acb1553f800e5d6c80",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "energy",
+      "client": {
+        "en": "Fly Ren and Consulcesi (Italy)",
+        "ro": "Fly Ren și Consulcesi (Italia)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA successfully advised and represented its client, a private developer, in the development and financing of the Republic of Moldova's first solar park, which has a capacity of 1 MW and was launched in 2018. Our legal team provided thorough support throughout all phases of the project, encompassing the regulatory and permitting processes, contractual structuring among project partners and third-party service providers, and assistance with financing documentation. ERA facilitated the effective navigation of the national regulatory landscape by coordinating with relevant public authorities and providing legal clarity on licensing and authorization requirements for renewable energy projects, which were being applied for in Moldova for the first time. This mandate marked a landmark moment for the Moldovan energy sector, contributing to the launch of the country's first operational solar park and setting a precedent for future private renewable investments.",
+        "ro": "ERA a consiliat cu succes și a reprezentat clientul său, un dezvoltator privat, în dezvoltarea și finanțarea primului parc solar al Republicii Moldova, care are o capacitate de 1 MW și a fost lansat în 2018. Echipa noastră juridică a oferit suport complet pe parcursul tuturor fazelor proiectului, cuprinzând procesele de reglementare și autorizare, structurarea contractuală între partenerii de proiect și furnizorii de servicii terți, și asistență cu documentația de finanțare. ERA a facilitat navigarea eficientă a peisajului de reglementare național prin coordonarea cu autoritățile publice relevante și furnizarea clarității juridice privind cerințele de licențiere și autorizare pentru proiectele de energie regenerabilă, care erau solicitate în Moldova pentru prima dată. Acest mandat a marcat un moment de referință pentru sectorul energetic moldovenesc, contribuind la lansarea primului parc solar operațional al țării și stabilind un precedent pentru viitoarele investiții private în energie regenerabilă."
+      },
+      "order": 1,
+      "active": true,
+      "id": "d567547e28904822834942a6655d4c02",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "energy",
+      "client": {
+        "en": "D.Trading (Ukraine)",
+        "ro": "D.Trading (Ucraina)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA successfully advised and represented its client, D.Trading—a subsidiary of the DTEK energy holding—in assessing and securing the legal framework for cross-border trading and the supply of natural gas and electricity in the Republic of Moldova. Our legal team provided comprehensive support across various regulatory dimensions, including the transit of natural gas through the national transmission system, the licensing requirements for electricity and gas trading, and the conditions for non-resident suppliers to enter the Moldovan energy market. ERA’s assistance included formal engagement with the national energy regulator (ANRE), preparation of legal memoranda on licensing obligations, and responses to regulatory inquiries and follow-up clarifications.",
+        "ro": "ERA a consiliat și reprezentat cu succes clientul său, D.Trading—o filială a holdingului energetic DTEK—în evaluarea și asigurarea cadrului juridic pentru tranzacționarea transfrontalieră și furnizarea de gaze naturale și energie electrică în Republica Moldova. Echipa noastră juridică a oferit suport cuprinzător în diverse dimensiuni reglementare, inclusiv tranzitul gazelor naturale prin sistemul național de transport, cerințele de licențiere pentru tranzacționarea electricității și gazelor, și condițiile pentru furnizorii nerezidenți de a intra pe piața energetică moldovenească. Asistența ERA a inclus angajamentul formal cu regulatorul național de energie (ANRE), pregătirea memorandumurilor juridice privind obligațiile de licențiere, și răspunsuri la solicitările de reglementare și clarificări ulterioare."
+      },
+      "order": 2,
+      "active": true,
+      "id": "c4b09beab85f48e2859bf0f777132377",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "energy",
+      "client": {
+        "en": "HPI Wind LTD (UK)",
+        "ro": "HPI Wind LTD (UK)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA successfully advised and represented its client, HPI Wind Ltd., a subsidiary of Hooracan Ltd. (UK), in financing, developing, and ultimately divesting from the largest wind power project in the Republic of Moldova. Our legal team provided comprehensive support in the legal structuring of special-purpose vehicles, drafting and negotiating land option agreements, securing construction permits and environmental approvals, and navigating regulatory uncertainties regarding the legal status of land designated for wind turbines. Given the lack of specific legislation and inconsistent administrative interpretations, the project required innovative legal solutions to ensure risk-free execution. These challenges were further complicated by frequent legislative changes in the renewable energy sector, which ERA addressed effectively to protect the client’s interests. ERA’s Transactions and Advisory department also facilitated the successful sale of 100% of the shares in a Moldovan subsidiary of HPI Wind Ltd., focusing on energy storage infrastructure, to a Danish renewables group company. Our team advised on all aspects of the transaction, including drafting and negotiating the SPA, handling post-closing corporate formalities, and ensuring the preservation of the electricity generation license.",
+        "ro": "ERA a consiliat și reprezentat cu succes clientul său, HPI Wind Ltd., o filială a Hooracan Ltd. (UK), în finanțarea, dezvoltarea și, în cele din urmă, dezinvestirea din cel mai mare proiect de energie eoliană din Republica Moldova. Echipa noastră juridică a oferit suport cuprinzător în structurarea juridică a societăților cu scop special, redactarea și negocierea acordurilor de opțiune funciară, obținerea autorizațiilor de construire și a aprobărilor de mediu, și navigarea incertitudinilor de reglementare privind statutul juridic al terenurilor destinate turbinelor eoliene. Având în vedere lipsa unei legislații specifice și interpretările administrative inconsistente, proiectul a necesitat soluții juridice inovatoare pentru a asigura o execuție fără riscuri. Aceste provocări au fost complicate în continuare de schimbările legislative frecvente din sectorul energiei regenerabile, pe care ERA le-a abordat eficient pentru a proteja interesele clientului. Departamentul de Tranzacții și Consultanță al ERA a facilitat, de asemenea, vânzarea cu succes a 100% din acțiunile unei filiale moldovenești a HPI Wind Ltd., concentrându-se pe infrastructura de stocare a energiei, către o companie daneză din grupul de energie regenerabilă. Echipa noastră a consiliat în toate aspectele tranzacției, inclusiv redactarea și negocierea SPA, gestionarea formalităților corporative post-închidere și asigurarea păstrării licenței de generare a energiei electrice."
+      },
+      "order": 3,
+      "active": true,
+      "id": "363b12c6400a4db5a67071ab6e5ae382",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "distribution",
+      "client": {
+        "en": "Nissan Group",
+        "ro": "Nissan Group"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Advised a Nissan Group company regarding the termination and restructuring of distribution and after-sales arrangements with Renault Group in Romania and Moldova. The mandate included the legal assessment and unwinding of a complex contractual framework, comprising distribution, agency, authorized repairer, and cross-border spare parts supply agreements. Our work focused on contractual risk analysis of termination, ongoing obligations to dealer and repairer networks, indirect liability exposure, and the continuity of warranty and spare parts services. We also advised on structuring a risk-mitigated termination and transition framework, including post-termination liabilities, third-party claims, and the transition to a new importer and dealer-based distribution model.",
+        "ro": "Am consiliat o companie din Nissan Group cu privire la încetarea și restructurarea aranjamentelor de distribuție și service post-vânzare cu Renault Group în România și Moldova. Mandatul a inclus evaluarea juridică și desfacerea unui cadru contractual complex, care cuprindea acorduri de distribuție, de reprezentare comercială, de reparatori autorizați și de furnizare transfrontalieră a pieselor de schimb. Activitatea noastră s-a concentrat pe analiza riscurilor contractuale ale încetării, obligațiile în curs față de rețelele de dealeri și reparatori, expunerea la răspundere indirectă și continuitatea serviciilor de garanție și piese de schimb. De asemenea, am consiliat cu privire la structurarea unui cadru de încetare și tranziție cu risc atenuat, incluzând răspunderile post-încetare, pretențiile părților terțe și tranziția către un nou model de distribuție bazat pe importator și dealeri."
+      },
+      "order": 1,
+      "active": true,
+      "id": "d3025740c36a4cf781d7d2fcd7304d92",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "distribution",
+      "client": {
+        "en": "Autospace SRL (Official BMW Distributor) B. Braun (Germany)",
+        "ro": "Autospace SRL (Distribuitorul oficial BMW) B. Braun (Germania)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Ongoing legal counsel to Autospace, the exclusive distributor of BMW in Moldova, providing continuous advisory support across all legal aspects arising from the distributor–manufacturer relationship. Our assistance covers the full lifecycle of the distribution framework, including the interpretation and implementation of distribution and dealer arrangements, after-sales and warranty obligations, pricing and commercial policies, regulatory and compliance implications, and the management of contractual changes driven by new products, technologies, or manufacturer standards. We regularly advise on risk allocation, interactions with the manufacturer, alignment with BMW’s global distribution policies, and handling operational and compliance issues affecting the local dealer network. Advised B. Braun, a leading German medical and pharmaceutical group, in connection with the planned unilateral termination of exclusive distribution and services arrangements in Moldova. The mandate assessed contractual and statutory risks related to exclusivity, duration, termination notice requirements, and potential compensation or indemnity claims under local law. Our work included reviewing distribution documentation, analyzing termination rights and limitations, and preparing a legal risk assessment covering post-termination obligations, goodwill exposure, and potential dispute scenarios. The advice provided a structured, risk-calibrated framework for managing the exit process while mitigating legal and reputational risks associated with the discontinuation of an exclusive distributor relationship",
+        "ro": "Consiliere juridică permanentă pentru Autospace, distribuitorul exclusiv BMW în Moldova, oferind asistență consultativă continuă pentru toate aspectele juridice care decurg din relația distribuitor-producător. Asistența noastră acoperă întregul ciclu de viață al cadrului de distribuție, incluzând interpretarea și implementarea aranjamentelor de distribuție și dealer, obligațiile de service post-vânzare și garanție, politicile comerciale și de prețuri, implicațiile de reglementare și conformitate, și gestionarea modificărilor contractuale determinate de noi produse, tehnologii sau standarde ale producătorului. Consiliem în mod regulat cu privire la alocarea riscurilor, interacțiunile cu producătorul, alinierea la politicile globale de distribuție BMW și rezolvarea problemelor operaționale și de conformitate care afectează rețeaua locală de dealeri. Am consiliat B. Braun, un grup german de frunte din domeniul medical și farmaceutic, în legătură cu încetarea unilaterală planificată a acordurilor exclusive de distribuție și servicii din Moldova. Mandatul a evaluat riscurile contractuale și legale legate de exclusivitate, durată, cerințele de notificare pentru încetare și potențialele pretenții de compensație sau despăgubire conform legislației locale. Activitatea noastră a inclus revizuirea documentației de distribuție, analiza drepturilor și limitărilor de încetare și pregătirea unei evaluări a riscurilor juridice acoperind obligațiile post-încetare, expunerea în ceea ce privește fondul comercial și scenariile potențiale de dispută. Consultanța a oferit un cadru structurat, calibrat în funcție de riscuri, pentru gestionarea procesului de ieșire, diminuând în același timp riscurile juridice și de reputație asociate cu încetarea unei relații exclusive de distribuție"
+      },
+      "order": 2,
+      "active": true,
+      "id": "015d694392c24f64bd49c91703ac9cad",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "contractual",
+      "client": {
+        "en": "VICTORIABANK",
+        "ro": "VICTORIABANK"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "One of the most important local banks. ERA performed a complex analysis of an impressive volume of contracts that directly target the bank's activity and especially those that target the operation of the bank's systems. The analysis involved not only the identification of deficiencies and clauses that involve risks for the bank's activity but also the elaboration of proposals to modify and adapt the contracts in order to protect the bank's interests and to comply with international standards.",
+        "ro": "Una dintre cele mai importante bănci locale. ERA a efectuat o analiză complexă a unui volum impresionant de contracte care vizează direct activitatea băncii și în special cele care vizează funcționarea sistemelor băncii. Analiza a implicat nu doar identificarea deficiențelor și clauzelor care implică riscuri pentru activitatea băncii, ci și elaborarea de propuneri pentru modificarea și adaptarea contractelor în vederea protejării intereselor băncii și respectării standardelor internaționale."
+      },
+      "order": 1,
+      "active": true,
+      "id": "6892fa9b5e74467b8e304fd76a0b5c41",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "contractual",
+      "client": {
+        "en": "PHILIP MORRIS MOLDOVA",
+        "ro": "PHILIP MORRIS MOLDOVA"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Attorneys and lawyers from ERA advise the client on a daily basis, conducting in-depth analysis of the client’s structure, strategy and operations, also ensuring that Client is operating within the law, revising and drafting a great variety of legal documents, from business letters to contracts. ERA gave accurate and timely counsel to Client in a variety of legal topics, and oversaw the legal aspects of Clients’ business, drafted and solidified agreements, contracts and other legal documents to ensure the Client’s full legal rights .",
+        "ro": "Avocații și juriștii de la ERA consiliază clientul zilnic, efectuând analize aprofundate ale structurii, strategiei și operațiunilor clientului, asigurând totodată că Clientul operează conform legii, revizuind și redactând o mare varietate de documente juridice, de la scrisori de afaceri la contracte. ERA a oferit consultanță precisă și oportună Clientului în diverse subiecte juridice și a supervizat aspectele juridice ale afacerii Clientului, a redactat și consolidat acorduri, contracte și alte documente juridice pentru a asigura drepturile juridice complete ale Clientului ."
+      },
+      "order": 2,
+      "active": true,
+      "id": "6e49f5b5d05642688e0c8ce00eee0646",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "contractual",
+      "client": {
+        "en": "PRO TV",
+        "ro": "PRO TV"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA assists and advise the Client in order to negotiate its agreements. ERA assisted the Client in order to comply with local regulations regarding currency regulations, described all the steps and procedures to be taken and implemented for this purpose. ERA assists the client on a daily basis, dealing with contractual and corporate requests, finding the best solutions, tailored for the benefit of the Client.",
+        "ro": "ERA asistă și consiliază Clientul în vederea negocierii acordurilor sale. ERA a asistat Clientul pentru a se conforma reglementărilor locale privind reglementările valutare, a descris toate etapele și procedurile care trebuie întreprinse și implementate în acest scop. ERA asistă clientul zilnic, ocupându-se de solicitări contractuale și corporative, găsind cele mai bune soluții, adaptate în beneficiul Clientului."
+      },
+      "order": 3,
+      "active": true,
+      "id": "bbe09193ebcc4a529543f6bfb5efe852",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "contractual",
+      "client": {
+        "en": "RECONSCIVIL",
+        "ro": "RECONSCIVIL"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "RECONSCIVIL is one of the largest construction companies on the local market, it has a production base with production sections (with an area of 1500 sqm) and warehouses for materials (with an area of 900 sqm), located on a lot of land with an area of 68 ares, being present on the market for over 20 years, with 38 completed and commissioned projects. ERA assists the Client on a daily basis with regard to an impressive variety of contractual matters, corporate consulting and relevant import matters. .",
+        "ro": "RECONSCIVIL este una dintre cele mai mari companii de construcții de pe piața locală, dispune de o bază de producție cu secții de producție (cu o suprafață de 1500 mp) și depozite pentru materiale (cu o suprafață de 900 mp), situate pe un teren cu suprafața de 68 ari, fiind prezentă pe piață de peste 20 de ani, cu 38 de proiecte finalizate și date în exploatare. ERA asistă Clientul zilnic cu privire la o varietate impresionantă de aspecte contractuale, consultanță corporativă și aspecte relevante de import. ."
+      },
+      "order": 4,
+      "active": true,
+      "id": "241532a463ca4c509f763f823393358b",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "contractual",
+      "client": {
+        "en": "AUTOSPACE (official BMW dealer in Moldova)",
+        "ro": "AUTOSPACE (dealer oficial BMW în Moldova)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Attorneys and lawyers from ERA advise the client on a daily basis, conducting in-depth analysis of the client’s structure, strategy and operations, also ensuring that Client is operating within the law, revising and drafting a great variety of legal documents, from business letters to contracts.",
+        "ro": "Avocații și juriștii de la ERA consiliază clientul zilnic, efectuând analize aprofundate ale structurii, strategiei și operațiunilor clientului, asigurându-se totodată că Clientul operează în conformitate cu legea, revizuind și redactând o mare varietate de documente juridice, de la scrisori de afaceri la contracte."
+      },
+      "order": 5,
+      "active": true,
+      "id": "d786c9b180fc47c2aab712cc7978af5b",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "hr_labour",
+      "client": {
+        "en": "Coca-Cola (Moldova)",
+        "ro": "Coca-Cola (Moldova)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA assisted the client in the HR field to bring the internal documents related to employee positions, the terms of employment agreements, and the proper registration of maternity leave into order. ERA conducted an internal audit of the client’s HR and advised the client on the documents that needed to be executed to ensure compliance with labor legislation.",
+        "ro": "ERA a asistat clientul în domeniul HR pentru a aduce în ordine documentele interne referitoare la pozițiile angajaților, condițiile contractelor de muncă și înregistrarea corespunzătoare a concediului de maternitate. ERA a efectuat un audit intern al HR-ului clientului și a consiliat clientul cu privire la documentele care trebuiau executate pentru a asigura conformitatea cu legislația muncii."
+      },
+      "order": 1,
+      "active": true,
+      "id": "207029ac5298445b8b29fd9dcd05a3f6",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "hr_labour",
+      "client": {
+        "en": "Major European retail and logistics company (Germany)",
+        "ro": "Companie europeană majoră de retail și logistică (Germania)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Major European retail and logistics company: We supported Kinstellar Budapest in advising a major European retail and logistics company on adapting and localizing employment contracts for company directors and senior management in Moldova. The project was part of a larger cross-border effort to harmonize executive-level employment documentation across the group’s international operations. Our team reviewed and customized the contractual framework to ensure full compliance with Moldovan labour laws, including governance-specific obligations for company administrators. This engagement involved balancing group-wide policy standards with Moldovan statutory requirements, helping create a coherent, compliant, and operational employment model within the client’s regional structure.",
+        "ro": "Companie europeană majoră de retail și logistică: Am susținut Kinstellar Budapest în consilierea unei companii europene majore de retail și logistică privind adaptarea și localizarea contractelor de muncă pentru directorii companiei și managementul superior din Moldova. Proiectul a făcut parte dintr-un efort transfrontalier mai amplu de armonizare a documentației de angajare la nivel executiv în cadrul operațiunilor internaționale ale grupului. Echipa noastră a revizuit și personalizat cadrul contractual pentru a asigura conformitatea completă cu legile muncii din Moldova, inclusiv obligațiile specifice de guvernanță pentru administratorii companiei. Această colaborare a implicat echilibrarea standardelor de politică la nivel de grup cu cerințele statutare moldovenești, contribuind la crearea unui model de angajare coerent, conform și operațional în cadrul structurii regionale a clientului."
+      },
+      "order": 2,
+      "active": true,
+      "id": "e72dc00c42e74653b0a04e2a418266d2",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "hr_labour",
+      "client": {
+        "en": "Cedacri International (ION Group)",
+        "ro": "Cedacri International (ION Group)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA advised Cedacri international, part of ION Group, on the personnel restructuring intended to comply with local regulations during the COVID-19 situation and the emergency state introduced by local authorities. ERA drafted the necessary documents and assessed the associated risks and legal consequences for the proposed scenarios.",
+        "ro": "ERA a consiliat Cedacri international, parte din ION Group, privind restructurarea de personal menită să se conformeze reglementărilor locale în timpul situației COVID-19 și a stării de urgență introduse de autoritățile locale. ERA a redactat documentele necesare și a evaluat riscurile asociate și consecințele juridice pentru scenariile propuse."
+      },
+      "order": 3,
+      "active": true,
+      "id": "e4a275c6b8bc45959e1e011886211961",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "hr_labour",
+      "client": {
+        "en": "Magenta consulting",
+        "ro": "Magenta consulting"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA drafted for Magenta Consulting the templates for labor agreements, non-disclosure deeds, and non-compete deeds. The client wished to change the collaboration scheme with its employees regarding the non-disclosure and non-compete obligations. ERA drafted addenda to the already signed agreements and provided a new version of the agreements for potential new employees. Regarding the inspection performed by the Moldovan Labor Inspection, ERA consulted the client regarding the alleged breaches in the labor sector. The inspection was dropped, and no sanctions were applied to the client.",
+        "ro": "ERA a redactat pentru Magenta Consulting șabloanele pentru acordurile de muncă, actele de nedivulgare și actele de neconcurență. Clientul a dorit să modifice schema de colaborare cu angajații săi în ceea ce privește obligațiile de nedivulgare și neconcurență. ERA a redactat adenda la acordurile deja semnate și a furnizat o versiune nouă a acordurilor pentru potențialii angajați noi. În privința inspecției efectuate de Inspecția Muncii din Moldova, ERA a consultat clientul cu privire la presupusele încălcări din sectorul muncii. Inspecția a fost închisă, iar clientului nu i-au fost aplicate sancțiuni."
+      },
+      "order": 4,
+      "active": true,
+      "id": "2f2703e95566491497a88deec5312b58",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "hr_labour",
+      "client": {
+        "en": "TANDEM group of companies",
+        "ro": "Grupul de companii TANDEM"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "ERA advised Tandem Group of companies (one of the biggest companies operating on the furniture market through its companies registered in Moldova and Romania) with regard to a myriad of employment issues, including personnel restructuring during the recent events, assessed best scenarios to opt for from the legal point of view, mitigated associated risks",
+        "ro": "ERA a consiliat Grupul de companii Tandem (una dintre cele mai mari companii care operează pe piața mobilierului prin companiile sale înregistrate în Moldova și România) cu privire la o multitudine de aspecte legate de muncă, inclusiv restructurarea de personal în timpul evenimentelor recente, a evaluat cele mai bune scenarii din punct de vedere juridic, a diminuat riscurile asociate"
+      },
+      "order": 5,
+      "active": true,
+      "id": "e82f863818ae4f768ef7b2f3e93ee213",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "disputes",
+      "client": {
+        "en": "National Commission for Financial Market",
+        "ro": "Comisia Națională a Pieței Financiare"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Provided regulatory risk and dispute advisory in connection with enforcement proceedings conducted by Moldova’s non-bank financial supervisory authority (NCFM). The mandate involved an independent legal assessment of alleged systemic consumer-protection violations, including the review of contractual frameworks, pricing and cost structures, and compliance with statutory regulatory limits. Our work focused on evaluating procedural and substantive defensibility in potential judicial review, identifying legal vulnerabilities and enforcement risk thresholds, and assessing litigation exposure arising from supervisory actions.",
+        "ro": "Am furnizat servicii de consultanță privind riscul de reglementare și dispute în legătură cu procedurile de executare silită desfășurate de autoritatea de supraveghere financiară non-bancară din Moldova (CNPF). Mandatul a implicat o evaluare juridică independentă a presupuselor încălcări sistemice de protecție a consumatorilor, inclusiv revizuirea cadrelor contractuale, a structurilor de prețuri și costuri și a conformității cu limitele reglementare statutare. Activitatea noastră s-a concentrat pe evaluarea apărabilității procedurale și de fond în cadrul unei potențiale revizuiri judiciare, identificarea vulnerabilităților juridice și a pragurilor de risc de executare silită, precum și evaluarea expunerii la litigii rezultate din acțiunile de supraveghere."
+      },
+      "order": 1,
+      "active": true,
+      "id": "e2c9bc0fe721410792fd3fdde923423b",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "disputes",
+      "client": {
+        "en": "ISUZU (Turkey) National Commission for Financial Market Victoriabank S.A. Energbank S.A.",
+        "ro": "ISUZU (Turcia) Comisia Națională a Pieței Financiare Victoriabank S.A. Energbank S.A."
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Successfully represented ISUZU in complex public procurement disputes arising from a high-value tender procedure for the acquisition of city buses, with a total value exceeding EUR 14 million, organized by the Chișinău City Hall. The mandate involved contestation proceedings and related litigation initiated by competing bidders, requiring the defense of the award decision and the client’s position as preferred bidder. Our work focused on managing procedural challenges, regulatory compliance issues, and litigation risk within a highly scrutinized public procurement framework, resulting in the confirmation of ISUZU as the winning bidder. Acted under a two-year contractual engagement in connection with civil and administrative litigation involving the National Financial Market Commission and insurance companies, providing litigation strategy, preparation of procedural submissions, and court representation. The mandate covered complex disputes in a highly regulated sector and required ongoing assessment of regulatory decisions, procedural compliance, and litigation risk over an extended period. Advised Victoriabank S.A., one of Moldova’s leading banks, in a broad range of civil, administrative, and criminal proceedings affecting the bank’s operations and the interests of its shareholders. Our assistance includes litigation strategy, representation before courts and authorities, and regulatory risk assessment in disputes arising in a highly regulated banking environment. Currently representing Energbank in complex litigation initiated by former shareholders seeking compensation for alleged damages arising from the mandatory sale of their shares, following findings by the National Bank of Moldova regarding breaches of shareholder suitability and regulatory requirements. The mandate involves assessing regulatory decisions, shareholder rights, causation and damages claims, and litigation risk arising from supervisory intervention in the banking sector.",
+        "ro": "Am reprezentat cu succes ISUZU în dispute complexe de achiziții publice rezultate dintr-o procedură de licitație cu valoare mare pentru achiziția de autobuze urbane, cu o valoare totală ce depășește 14 milioane EUR, organizată de Primăria municipiului Chișinău. Mandatul a implicat proceduri de contestare și litigii conexe inițiate de ofertanții concurenți, necesitând apărarea deciziei de adjudecare și a poziției clientului ca ofertant preferat. Activitatea noastră s-a concentrat pe gestionarea provocărilor procedurale, a problemelor de conformitate reglementară și a riscului de litigii în cadrul unui sistem de achiziții publice supus unei monitorizări stricte, rezultând în confirmarea ISUZU ca ofertant câștigător. Am acționat în cadrul unui angajament contractual de doi ani în legătură cu litigii civile și administrative care au implicat Comisia Națională a Pieței Financiare și companii de asigurări, furnizând strategii de litigiu, pregătirea înscrisurilor procedurale și reprezentarea în instanță. Mandatul a acoperit dispute complexe într-un sector strict reglementat și a necesitat evaluarea continuă a deciziilor de reglementare, a conformității procedurale și a riscului de litigii pe o perioadă extinsă. Am consiliat Victoriabank S.A., una dintre băncile de top din Moldova, într-o gamă largă de proceduri civile, administrative și penale care afectează operațiunile băncii și interesele acționarilor săi. Asistența noastră include strategia de litigiu, reprezentarea înaintea instanțelor și autorităților, și evaluarea riscului de reglementare în disputele care apar într-un mediu bancar strict reglementat. Reprezentăm în prezent Energbank în litigii complexe inițiate de foști acționari care solicită compensații pentru presupuse prejudicii rezultate din vânzarea obligatorie a acțiunilor lor, ca urmare a constatărilor Băncii Naționale a Moldovei privind încălcările cerințelor de conformitate a acționarilor și de reglementare. Mandatul implică evaluarea deciziilor de reglementare, drepturilor acționarilor, cauzalității și pretențiilor de daune, și riscul de litigiu rezultat din intervenția de supraveghere în sectorul bancar."
+      },
+      "order": 2,
+      "active": true,
+      "id": "0e5c3db88272408fb2acf28423b643f3",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ip",
+      "client": {
+        "en": "Michelin (France)",
+        "ro": "Michelin (Franța)"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Advised Michelin (France) in connection with trademark infringement and unfair competition matters arising from the unauthorized use of the MICHELIN and Michelin Man trademarks in Moldova. The mandate involved the legal assessment of infringing online and offline use (website, signage, and commercial presentation), including analysis of likelihood of confusion, false affiliation, and unfair competition under Moldovan law. Our work covered the evaluation of available enforcement mechanisms (civil actions, interim measures, cease-and-desist strategy, and coordination with domain name proceedings), standing to sue, applicable limitation periods, evidentiary requirements, and procedural timelines. We also advised on enforcement strategy, including the appropriateness and legal effect of warning letters, cost estimates, chances of success, and coordination with cross-border IP enforcement actions.",
+        "ro": "Am consiliat Michelin (Franța) în legătură cu chestiuni de încălcare a mărcii comerciale și concurență neloială rezultate din utilizarea neautorizată a mărcilor comerciale MICHELIN și Michelin Man în Moldova. Mandatul a implicat evaluarea juridică a utilizării încălcătoare online și offline (site web, semne și prezentare comercială), inclusiv analiza probabilității de confuzie, afilierii false și concurenței neloiale conform legii moldovenești. Activitatea noastră a acoperit evaluarea mecanismelor de executare disponibile (acțiuni civile, măsuri interimară, strategia de încetare și renunțare, și coordonarea cu procedurile de nume de domeniu), calitatea procesuală activă, termenele de prescripție aplicabile, cerințele probatorii și termenele procedurale. De asemenea, am consiliat privind strategia de executare, inclusiv oportunitatea și efectul juridic al scrisorilor de avertisment, estimările de costuri, șansele de succes și coordonarea cu acțiunile transfrontaliere de executare a proprietății intelectuale."
+      },
+      "order": 1,
+      "active": true,
+      "id": "95261f7cd9414801ae45fc4e1bec1298",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    },
+    {
+      "category": "ip",
+      "client": {
+        "en": "Interkerama (Ucraina) Trademark Registration & Portfolio Administration",
+        "ro": "Interkerama (Ucraina) Înregistrarea Mărcii Comerciale & Administrarea Portofoliului"
+      },
+      "short": {
+        "en": "",
+        "ro": ""
+      },
+      "long": {
+        "en": "Representing the Ukrainian company Interkerama in trademark litigation against a former Moldovan distributor who had fraudulently registered the client’s trademark in Moldova. The mandate included challenging the validity of the registration, addressing bad-faith filing and unfair competition arguments, and seeking recovery of trademark rights from a party that had abused a prior commercial relationship. Our work focused on trademark invalidation, enforcement strategy, and litigation risk management in a cross-border context. Provided trademark registration and portfolio administration services for regional and local clients, including cross-border trademark filings. Over the past year, we assisted with trademark registrations for Romanian and Moldovan companies, including 5GO (Romania), KOOPERATIVA (Romania), and Logico Solutions (Moldova). Our work covered clearance checks, filing strategy, prosecution before the trademark office, and coordination with foreign counsel where applicable.",
+        "ro": "Reprezentarea companiei ucrainene Interkerama în litigiul de mărci comerciale împotriva unui fost distribuitor moldovenesc care înregistrase fraudulos marca clientului în Moldova. Mandatul a inclus contestarea validității înregistrării, abordarea argumentelor privind depunerea de rea-credință și concurența neloială, precum și obținerea recuperării drepturilor asupra mărcii de la o parte care abuzase de o relație comercială anterioară. Activitatea noastră s-a axat pe anularea mărcii, strategia de aplicare și gestionarea riscurilor litigiului în context transfrontalier. Am oferit servicii de înregistrare a mărcilor comerciale și administrare a portofoliului pentru clienți regionali și locali, inclusiv depuneri transfrontaliere de mărci comerciale. În ultimul an, am asistat cu înregistrări de mărci comerciale pentru companii românești și moldovenești, inclusiv 5GO (România), KOOPERATIVA (România) și Logico Solutions (Moldova). Activitatea noastră a acoperit verificări de disponibilitate, strategia de depunere, urmărirea procedurilor în fața oficiului pentru mărci comerciale și coordonarea cu consilieri juridici străini, după caz."
+      },
+      "order": 2,
+      "active": true,
+      "id": "f11685c36f81467187bf27d0c500bcc1",
+      "updated_at": "2026-06-01T18:57:43+00:00"
+    }
+  ]
+}
