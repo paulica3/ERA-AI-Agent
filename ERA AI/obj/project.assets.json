@@ -8,19 +8,19 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\paolo\\.nuget\\packages\\": {}
+    "/Users/paulefrim/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
+      "projectUniqueName": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
       "projectName": "ERA-AI",
-      "projectPath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
-      "packagesPath": "C:\\Users\\paolo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\obj\\",
+      "projectPath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
+      "packagesPath": "/Users/paulefrim/.nuget/packages/",
+      "outputPath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\paolo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/paulefrim/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -44,7 +44,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -63,19 +63,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[9.0.14, 9.0.14]"
+            "version": "[9.0.13, 9.0.13]"
           },
           {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[9.0.14, 9.0.14]"
+            "name": "Microsoft.NETCore.App.Host.osx-arm64",
+            "version": "[9.0.13, 9.0.13]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[9.0.14, 9.0.14]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[9.0.14, 9.0.14]"
+            "version": "[9.0.13, 9.0.13]"
           }
         ],
         "frameworkReferences": {
@@ -86,7 +82,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/Users/paulefrim/.dotnet/sdk/10.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "hMny48k/43s=",
+  "dgSpecHash": "wwduEt8PGTE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\paolo\\repos\\ERA-AI-Agent\\ERA AI\\ERA AI.csproj",
+  "projectFilePath": "/Users/paulefrim/repos/ERA-AI-Agent/ERA AI/ERA AI.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.14\\microsoft.netcore.app.ref.9.0.14.nupkg.sha512",
-    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.14\\microsoft.windowsdesktop.app.ref.9.0.14.nupkg.sha512",
-    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.14\\microsoft.aspnetcore.app.ref.9.0.14.nupkg.sha512",
-    "C:\\Users\\paolo\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.14\\microsoft.netcore.app.host.win-x64.9.0.14.nupkg.sha512"
+    "/Users/paulefrim/.nuget/packages/microsoft.netcore.app.ref/9.0.13/microsoft.netcore.app.ref.9.0.13.nupkg.sha512",
+    "/Users/paulefrim/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.13/microsoft.aspnetcore.app.ref.9.0.13.nupkg.sha512",
+    "/Users/paulefrim/.nuget/packages/microsoft.netcore.app.host.osx-arm64/9.0.13/microsoft.netcore.app.host.osx-arm64.9.0.13.nupkg.sha512"
   ],
   "logs": []
 }
