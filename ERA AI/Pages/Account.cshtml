@@ -1,0 +1,263 @@
+@page
+@model ERA_AI.Pages.AccountModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ERA AI — Contul meu</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
+    <link rel="icon" href="/favicon.ico" sizes="any"/>
+    <link rel="apple-touch-icon" href="/favicon-32.png"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/site.css"/>
+    <style>
+        /* Account — reuses the site's wine theme variables from site.css. Header
+           and logo markup mirror Dashboard.cshtml so the design is identical. */
+        body{ height:auto; min-height:100vh; overflow:auto; display:block; }
+
+        .dash-topbar{ display:flex; align-items:center; gap:16px; padding:14px 28px;
+            border-bottom:1px solid var(--border); background:var(--cream-dark); position:sticky; top:0; z-index:20; }
+        .dash-topbar .logo-mark svg{ width:34px; height:34px; }
+        .dash-title{ font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:500;
+            letter-spacing:.3px; color:var(--ink); line-height:1; }
+        .dash-title span{ color:var(--gold); font-weight:300; }
+        .dash-sub-h{ font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase;
+            color:var(--ink-muted); margin-top:4px; }
+        .dash-spacer{ flex:1; }
+        .dash-link{ font-family:'Jost',sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+            color:var(--ink-muted); text-decoration:none; transition:color .15s; margin-left:18px; }
+        .dash-link:hover{ color:var(--gold); }
+
+        .acc-wrap{ max-width:760px; margin:0 auto; padding:30px 26px 60px; }
+        .acc-wrap h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px;
+            color:var(--ink); margin-bottom:4px; }
+        .acc-wrap .sub{ font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:300;
+            color:var(--ink-muted); margin-bottom:26px; line-height:1.6; }
+
+        .section{ background:var(--white); border:1px solid var(--border); border-left:2px solid var(--gold-light);
+            margin-bottom:20px; padding:20px 22px; }
+        .section-title{ font-family:'Jost',sans-serif; font-size:10px; font-weight:400; letter-spacing:2.5px;
+            text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+
+        .info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 24px; }
+        .info-item .k{ font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase;
+            color:var(--ink-muted); margin-bottom:4px; }
+        .info-item .v{ font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--ink); }
+
+        .field{ margin-top:16px; }
+        .field:first-child{ margin-top:0; }
+        .field > label{ display:block; font-family:'Jost',sans-serif; font-size:9px; font-weight:400;
+            letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+        .acc-wrap select, .acc-wrap textarea{ width:100%; background:var(--cream); border:1px solid var(--border);
+            color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:300;
+            padding:9px 11px; outline:none; resize:vertical; line-height:1.55; transition:border-color .2s; }
+        .acc-wrap select:focus, .acc-wrap textarea:focus{ border-color:var(--gold-light); }
+        .acc-wrap textarea{ min-height:120px; }
+        .field-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+
+        .btn{ font-family:'Jost',sans-serif; font-size:10px; font-weight:400; letter-spacing:2.5px;
+            text-transform:uppercase; border:none; cursor:pointer; transition:background .2s,border-color .2s,color .2s; }
+        .btn-save{ padding:11px 34px; background:var(--gold); color:var(--ink); margin-top:20px; }
+        .btn-save:hover:not(:disabled){ background:var(--gold-light); }
+        .btn-save:disabled{ opacity:.4; cursor:default; }
+
+        .danger{ border-left-color:#c0392b; }
+        .danger .section-title{ color:var(--red-accent); }
+        .danger p{ font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:300; color:var(--ink-soft);
+            line-height:1.6; margin-bottom:16px; }
+        .btn-danger{ padding:11px 28px; background:transparent; border:1px solid #c0392b; color:var(--red-accent); }
+        .btn-danger:hover{ background:rgba(192,57,43,.1); }
+
+        .hint{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px;
+            color:var(--ink-muted); margin-top:8px; }
+
+        .toast{ position:fixed; bottom:24px; right:24px; background:var(--white); border:1px solid var(--border);
+            border-left:2px solid var(--gold-light); color:var(--ink-soft); padding:12px 20px;
+            font-family:'Cormorant Garamond',serif; font-size:15px; opacity:0; transition:opacity .25s;
+            pointer-events:none; z-index:50; }
+        .toast.show{ opacity:1; }
+        .toast.err{ border-left-color:#c0392b; color:var(--red-accent); }
+
+        @@media (max-width:640px){
+            .info-grid{ grid-template-columns:1fr; }
+            .field-row{ grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dash-topbar">
+        <div class="logo-mark">
+            <svg viewBox="0 0 48 48" fill="none">
+                <rect x="0.5" y="0.5" width="47" height="47" stroke="#9B2D3A" stroke-width="1" fill="none"/>
+                <line x1="0" y1="0" x2="7" y2="0" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="0" y1="0" x2="0" y2="7" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="48" y1="0" x2="41" y2="0" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="48" y1="0" x2="48" y2="7" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="0" y1="48" x2="7" y2="48" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="0" y1="48" x2="0" y2="41" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="48" y1="48" x2="41" y2="48" stroke="#C4556A" stroke-width="1.2"/>
+                <line x1="48" y1="48" x2="48" y2="41" stroke="#C4556A" stroke-width="1.2"/>
+                <text x="25" y="22" font-family="Cormorant Garamond, serif" font-size="13" font-weight="500"
+                      fill="#9B2D3A" text-anchor="middle" letter-spacing="2">ERA</text>
+                <line x1="10" y1="27" x2="38" y2="27" stroke="#C4556A" stroke-width="0.6" opacity="0.6"/>
+                <text x="26" y="38" font-family="Jost, sans-serif" font-size="8" font-weight="300"
+                      fill="#7a7060" text-anchor="middle" letter-spacing="4">AI</text>
+            </svg>
+        </div>
+        <div>
+            <div class="dash-title">Contul <span>meu</span></div>
+            <div class="dash-sub-h">Preferințe · profil</div>
+        </div>
+        <div class="dash-spacer"></div>
+        <a class="dash-link" href="/">← Înapoi la aplicație</a>
+        <a class="dash-link" href="/Dashboard">Portofoliu proiecte</a>
+        <a class="dash-link" href="#" onclick="logout(); return false;">Deconectare</a>
+    </div>
+
+    <div class="acc-wrap">
+        <h2>Contul și preferințele dumneavoastră</h2>
+        <div class="sub">Aceste preferințe personalizează modul în care asistentul ERA AI vă răspunde în
+            tab-ul Conversație. Se aplică automat la fiecare mesaj.</div>
+
+        <!-- ── Profile display ─────────────────────────────────────── -->
+        <div class="section">
+            <div class="section-title">Profil</div>
+            <div class="info-grid">
+                <div class="info-item"><div class="k">Nume</div><div class="v" id="pDisplayName">—</div></div>
+                <div class="info-item"><div class="k">Email</div><div class="v" id="pEmail">—</div></div>
+                <div class="info-item"><div class="k">Conversații înregistrate</div><div class="v" id="pCount">—</div></div>
+                <div class="info-item"><div class="k">Ultima actualizare</div><div class="v" id="pUpdated">—</div></div>
+                <div class="info-item" style="grid-column:1 / -1"><div class="k">Subiecte frecvente</div><div class="v" id="pTopics">—</div></div>
+            </div>
+        </div>
+
+        <!-- ── Editable settings ───────────────────────────────────── -->
+        <div class="section">
+            <div class="section-title">Preferințe de răspuns</div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="setTone">Ton</label>
+                    <select id="setTone">
+                        <option value="formal">Formal</option>
+                        <option value="semi-formal">Semi-formal</option>
+                        <option value="casual">Relaxat</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="setLang">Limbă preferată</label>
+                    <select id="setLang">
+                        <option value="ro">Română</option>
+                        <option value="en">Engleză</option>
+                        <option value="ru">Rusă</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="setLength">Lungime răspuns</label>
+                    <select id="setLength">
+                        <option value="detailed">Detaliat</option>
+                        <option value="concise">Concis</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label for="setInstructions">Instrucțiuni personalizate</label>
+                <textarea id="setInstructions" placeholder="Ex:&#10;— Citează articolele din legislația Republicii Moldova când e relevant.&#10;— Pentru scrisori, folosește un registru formal și semnează „Echipa ERA”.&#10;— Evită limbajul promoțional."></textarea>
+                <div class="hint">Aceste instrucțiuni se aplică la fiecare conversație. Maxim 2000 de caractere.</div>
+            </div>
+            <button class="btn btn-save" id="saveBtn" onclick="saveProfile()">Salvează preferințele</button>
+        </div>
+
+        <!-- ── GDPR ────────────────────────────────────────────────── -->
+        <div class="section danger">
+            <div class="section-title">Ștergerea datelor (GDPR)</div>
+            <p>Puteți șterge definitiv contul și toate datele asociate: profilul, preferințele,
+                conversațiile, mesajele și jurnalul de audit. Această acțiune este ireversibilă.</p>
+            <button class="btn btn-danger" onclick="deleteAccount()">Șterge toate datele mele</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function toast(msg, isErr){ const t=document.getElementById('toast'); t.textContent=msg;
+            t.className='toast show'+(isErr?' err':''); setTimeout(()=>t.className='toast',2800); }
+
+        function fmtDate(iso){
+            if(!iso) return '—';
+            try{ const d=new Date(iso); return d.toLocaleDateString('ro-RO',{year:'numeric',month:'long',day:'numeric'}); }
+            catch{ return '—'; }
+        }
+
+        async function loadProfile(){
+            try{
+                const r = await fetch('/api/profile');
+                if(r.status === 401){ window.location.href = '/LogIn'; return; }
+                if(!r.ok){ toast('Eroare la încărcarea profilului', true); return; }
+                const p = await r.json();
+                document.getElementById('pDisplayName').textContent = p.display_name || '—';
+                document.getElementById('pEmail').textContent = p.email || '—';
+                document.getElementById('pCount').textContent = p.interaction_count ?? 0;
+                document.getElementById('pUpdated').textContent = fmtDate(p.last_updated);
+                const topics = Array.isArray(p.frequent_topics) ? p.frequent_topics : [];
+                document.getElementById('pTopics').textContent = topics.length ? topics.join(', ') : 'Niciunul încă';
+                document.getElementById('setTone').value = p.preferred_tone || 'formal';
+                document.getElementById('setLang').value = p.preferred_language || 'ro';
+                document.getElementById('setLength').value = p.response_length || 'detailed';
+                document.getElementById('setInstructions').value = p.custom_instructions || '';
+            }catch{ toast('Nu s-a putut contacta serverul', true); }
+        }
+
+        async function saveProfile(){
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            try{
+                const body = {
+                    preferred_tone: document.getElementById('setTone').value,
+                    preferred_language: document.getElementById('setLang').value,
+                    response_length: document.getElementById('setLength').value,
+                    custom_instructions: document.getElementById('setInstructions').value,
+                };
+                const r = await fetch('/api/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if(r.status === 401){ window.location.href = '/LogIn'; return; }
+                if(!r.ok){ toast('Eroare la salvare', true); return; }
+                const p = await r.json();
+                // Reflect any server-side sanitization of the custom instructions.
+                document.getElementById('setInstructions').value = p.custom_instructions || '';
+                document.getElementById('pUpdated').textContent = fmtDate(p.last_updated);
+                toast('Preferințele au fost salvate.');
+            }catch{ toast('Nu s-a putut contacta serverul', true); }
+            finally{ btn.disabled = false; }
+        }
+
+        async function deleteAccount(){
+            if(!confirm('Sigur doriți să ștergeți definitiv contul și toate datele? Această acțiune este ireversibilă.')) return;
+            if(!confirm('Confirmați încă o dată: toate conversațiile și preferințele vor fi șterse permanent.')) return;
+            try{
+                const r = await fetch('/api/account', { method: 'DELETE' });
+                if(r.ok || r.status === 401){
+                    alert('Datele dumneavoastră au fost șterse. Veți fi deconectat.');
+                    window.location.href = '/LogIn';
+                    return;
+                }
+                toast('Eroare la ștergerea datelor', true);
+            }catch{ toast('Nu s-a putut contacta serverul', true); }
+        }
+
+        async function logout(){
+            try{ await fetch('/api/auth/logout', { method: 'POST' }); }catch{}
+            window.location.href = '/LogIn';
+        }
+
+        loadProfile();
+    </script>
+</body>
+</html>

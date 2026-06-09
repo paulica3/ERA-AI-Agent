@@ -92,6 +92,7 @@
       <div class="firm-sub">Asistent Juridic AI</div>
     </div>
     <div class="header-right">
+      <a class="dashboard-link" href="/Account" title="Contul și preferințele dumneavoastră" style="text-decoration:none;color:var(--ink-muted);border:1px solid var(--border);padding:6px 14px;margin-right:10px;font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)';this.style.borderColor='var(--border)'">Contul meu</a>
       <a class="dashboard-link" href="/Dashboard" title="Editează proiectele firmei" style="text-decoration:none;color:var(--ink-muted);border:1px solid var(--border);padding:6px 14px;margin-right:14px;font-family:'Jost',sans-serif;font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)';this.style.borderColor='var(--border)'">Portofoliu proiecte</a>
       <div class="status-dot"></div>
       <span class="status-label">Activ</span>
@@ -106,7 +107,6 @@
     <button class="tab-btn" id="tabInvoice" onclick="switchTab('invoice')">Factură</button>
     <button class="tab-btn" id="tabOffer" onclick="switchTab('offer')">Ofertă</button>
     <button class="tab-btn" id="tabGenDesc" onclick="switchTab('gendesc')">Prezentare Generală</button>
-    <button class="tab-btn" id="tabInstructions" onclick="switchTab('instructions')">Instrucțiuni</button>
   </div>
 
   <!-- ── ANALYZE PANEL ─────────────────────────────────────────────── -->
@@ -595,36 +595,6 @@
 
   </div>
 
-  <!-- ── INSTRUCTIONS PANEL ─────────────────────────────────────────── -->
-  <div class="draft-panel" id="instructionsPanel" style="display:none">
-
-    <div class="draft-form">
-      <div class="draft-section">
-        <div class="draft-section-title">Instrucțiuni personalizate pentru asistent</div>
-        <p class="instr-help">
-          Aceste instrucțiuni sunt aplicate automat la fiecare mesaj din tab-ul
-          <strong>Conversație</strong>. Folosiți-le pentru a stabili tonul, formatul,
-          preferințele firmei, modul de citare a legislației sau semnătura.
-          Se salvează pe server și se aplică pe toate dispozitivele.
-        </p>
-        <div class="draft-field">
-          <label class="draft-label" for="instrText">Instrucțiuni</label>
-          <textarea class="draft-textarea" id="instrText" style="min-height:240px"
-            placeholder="Ex:&#10;— Răspunde concis, structurat, cu diacritice corecte.&#10;— Când e relevant, citează articolele din legislația Republicii Moldova.&#10;— Pentru scrisori, folosește un registru formal și semnează „Echipa ERA”.&#10;— Evită limbajul promoțional."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="draft-actions">
-      <button class="draft-btn" id="instrSaveBtn" onclick="saveInstructions()">Salvează Instrucțiunile</button>
-      <div class="draft-success-card" id="instrSuccess" style="display:none">
-        <span class="draft-success-text">Instrucțiunile au fost salvate.</span>
-      </div>
-      <div class="draft-error" id="instrError" style="display:none"></div>
-    </div>
-
-  </div>
-
   <div class="messages" id="messages">
     <div class="welcome" id="welcome">
       <div class="welcome-emblem">
@@ -690,17 +660,27 @@
   const inputEl    = document.getElementById('userInput');
   let welcomeVisible = true;
 
-  // ── Conversation store (persisted in localStorage) ────────────────
-  // Shape: { id: string, title: string, messages: {role, content}[] }[]
-  let conversations = JSON.parse(localStorage.getItem('era_convs') || '[]');
+  // ── Conversation store (server-side, scoped to the logged-in user) ─
+  // Conversations and messages live in the database. The browser keeps only a
+  // lightweight list [{ id, title, updated_at }] for the sidebar.
+  let conversations = [];
   let currentId = null;
 
-  function save() {
-    localStorage.setItem('era_convs', JSON.stringify(conversations));
+  // Redirect to login if the session cookie expired / is missing.
+  function requireAuth(resp) {
+    if (resp.status === 401) { window.location.href = '/LogIn'; return true; }
+    return false;
   }
 
-  function getCurrent() {
-    return conversations.find(c => c.id === currentId) || null;
+  async function loadConversations() {
+    try {
+      const r = await fetch('/api/conversations');
+      if (requireAuth(r)) return;
+      if (!r.ok) return;
+      const data = await r.json();
+      conversations = data.conversations || [];
+      renderSidebar();
+    } catch {}
   }
 
   // ── Sidebar ───────────────────────────────────────────────────────
@@ -713,8 +693,8 @@
       return;
     }
 
-    // Most recent first
-    conversations.slice().reverse().forEach(conv => {
+    // Server returns them ordered by updated_at desc already.
+    conversations.forEach(conv => {
       const item = document.createElement('div');
       item.className = 'conv-item' + (conv.id === currentId ? ' active' : '');
       item.dataset.id = conv.id;
@@ -731,7 +711,11 @@
     });
   }
 
-  function deleteConversation(id) {
+  async function deleteConversation(id) {
+    try {
+      const r = await fetch(`/api/conversations/${id}`, { method: 'DELETE' });
+      if (requireAuth(r)) return;
+    } catch {}
     conversations = conversations.filter(c => c.id !== id);
     if (currentId === id) {
       currentId = null;
@@ -739,47 +723,42 @@
       messagesEl.appendChild(buildWelcome());
       welcomeVisible = true;
     }
-    save();
     renderSidebar();
   }
 
   function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   // ── Conversation management ───────────────────────────────────────
   function newConversation() {
+    // A new conversation row is created server-side on the first message.
     currentId = null;
     welcomeVisible = true;
     messagesEl.innerHTML = '';
     messagesEl.appendChild(buildWelcome());
     renderSidebar();
     inputEl.focus();
+    closeSidebar();
   }
 
-  function loadConversation(id) {
-    const conv = conversations.find(c => c.id === id);
-    if (!conv) return;
-    currentId = id;
-    welcomeVisible = false;
-    messagesEl.innerHTML = '';
-    conv.messages.forEach(m => renderMessage(m.role, m.content));
-    renderSidebar();
+  async function loadConversation(id) {
+    try {
+      const r = await fetch(`/api/conversations/${id}`);
+      if (requireAuth(r)) return;
+      if (!r.ok) return;
+      const conv = await r.json();
+      currentId = id;
+      welcomeVisible = false;
+      messagesEl.innerHTML = '';
+      (conv.messages || []).forEach(m => renderMessage(m.role, m.content));
+      renderSidebar();
+      closeSidebar();
+    } catch {}
   }
 
-  function startConversation(firstMessage) {
-    const id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
-    const conv = { id, title: '…', messages: [] };
-    conversations.push(conv);
-    currentId = id;
-    save();
-    renderSidebar();
-    return conv;
-  }
-
-  // Called after the first bot reply — uses both Q and A for a better title
-  async function generateTitle(conv, userMessage, botReply) {
-    const fallback = userMessage.length > 35 ? userMessage.slice(0, 35) + '…' : userMessage;
+  // After the first reply, upgrade the auto-title to a nicer AI-generated one.
+  async function upgradeTitle(convId, userMessage, botReply) {
     try {
       const r = await fetch('/api/title', {
         method: 'POST',
@@ -787,17 +766,17 @@
         body: JSON.stringify({ message: userMessage, reply: botReply })
       });
       const data = await r.json();
-      // Guard: only use the returned title if it looks like a real title (short, no error keywords)
-      const raw = data.title || '';
-      const title = (raw.length > 0 && raw.length <= 50) ? raw : fallback;
-      conv.title = title;
-      save();
-      animateTitle(conv.id, title);
-    } catch {
-      conv.title = fallback;
-      save();
-      animateTitle(conv.id, fallback);
-    }
+      const raw = (data.title || '').trim();
+      if (!raw || raw.length > 50) return;
+      // Persist the better title server-side, then reflect it in the sidebar.
+      await fetch(`/api/conversations/${convId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: raw })
+      });
+      const conv = conversations.find(c => c.id === convId);
+      if (conv) { conv.title = raw; animateTitle(convId, raw); }
+    } catch {}
   }
 
   // Typewriter effect: writes the title letter by letter into the sidebar item
@@ -996,11 +975,6 @@
     hideWelcome();
 
     const isNew = !currentId;
-    if (isNew) startConversation(text);
-
-    const conv = getCurrent();
-    conv.messages.push({ role: 'user', content: text });
-    save();
 
     renderMessage('user', text);
     inputEl.value = '';
@@ -1010,20 +984,24 @@
     showTyping();
 
     try {
+      // Chat runs server-side: Python loads the profile, injects it, calls the
+      // model, and persists both messages. We just send the new turn + the
+      // conversation id (null for a new conversation).
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conv.messages })
+        body: JSON.stringify({ message: text, conversation_id: currentId })
       });
 
       removeTyping();
+
+      if (requireAuth(response)) return;
 
       if (!response.ok) {
         renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
         return;
       }
 
-      // Non-streaming: wait for the full reply, then render it once.
       const data = await response.json();
       const fullText = (data.reply || '').trim();
 
@@ -1031,10 +1009,13 @@
       bubble.innerHTML = marked.parse(fullText || 'Ne cerem scuze, nu am primit un răspuns.');
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
-      conv.messages.push({ role: 'assistant', content: fullText });
-      save();
-
-      if (isNew) generateTitle(conv, text, fullText);
+      // Adopt the server's conversation id and refresh the sidebar.
+      currentId = data.conversation_id;
+      if (isNew) {
+        conversations.unshift({ id: currentId, title: data.title || '…', updated_at: new Date().toISOString() });
+        renderSidebar();
+        upgradeTitle(currentId, text, fullText);
+      }
     } catch {
       removeTyping();
       renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
@@ -1070,7 +1051,6 @@
     const isInvoice = tab === 'invoice';
     const isOffer   = tab === 'offer';
     const isGenDesc = tab === 'gendesc';
-    const isInstr   = tab === 'instructions';
     document.getElementById('messages').style.display          = isChat    ? '' : 'none';
     document.getElementById('inputArea').style.display         = isChat    ? '' : 'none';
     document.getElementById('analyzePanel').style.display      = isAnalyze ? '' : 'none';
@@ -1078,15 +1058,12 @@
     document.getElementById('invoicePanel').style.display      = isInvoice ? '' : 'none';
     document.getElementById('offerPanel').style.display        = isOffer   ? '' : 'none';
     document.getElementById('gendescPanel').style.display      = isGenDesc ? '' : 'none';
-    document.getElementById('instructionsPanel').style.display = isInstr   ? '' : 'none';
     document.getElementById('tabChat').classList.toggle('active', isChat);
     document.getElementById('tabAnalyze').classList.toggle('active', isAnalyze);
     document.getElementById('tabDraft').classList.toggle('active', isDraft);
     document.getElementById('tabInvoice').classList.toggle('active', isInvoice);
     document.getElementById('tabOffer').classList.toggle('active', isOffer);
     document.getElementById('tabGenDesc').classList.toggle('active', isGenDesc);
-    document.getElementById('tabInstructions').classList.toggle('active', isInstr);
-    if (isInstr) loadInstructions();
   }
 
   // ── Document analysis ─────────────────────────────────────────────
@@ -1490,53 +1467,8 @@
       .forEach(id => { document.getElementById(id).value = ''; });
   }
 
-  // ── Custom chat instructions ──────────────────────────────────────
-  let instructionsLoaded = false;
-
-  async function loadInstructions() {
-    if (instructionsLoaded) return;   // load once per page session
-    try {
-      const r = await fetch('/api/chat-instructions');
-      if (!r.ok) return;
-      const data = await r.json();
-      document.getElementById('instrText').value = data.instructions || '';
-      instructionsLoaded = true;
-    } catch {}
-  }
-
-  async function saveInstructions() {
-    const btn = document.getElementById('instrSaveBtn');
-    const text = document.getElementById('instrText').value;
-    btn.disabled = true;
-    document.getElementById('instrSuccess').style.display = 'none';
-    document.getElementById('instrError').style.display   = 'none';
-    try {
-      const r = await fetch('/api/chat-instructions', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instructions: text })
-      });
-      if (!r.ok) {
-        let msg = 'Eroare server';
-        try { const err = await r.json(); msg = err.error || err.detail || msg; } catch {}
-        throw new Error(msg);
-      }
-      const data = await r.json();
-      document.getElementById('instrText').value = data.instructions || '';
-      const ok = document.getElementById('instrSuccess');
-      ok.style.display = 'flex';
-      setTimeout(() => { ok.style.display = 'none'; }, 2500);
-    } catch (e) {
-      const errEl = document.getElementById('instrError');
-      errEl.textContent = `Eroare la salvarea instrucțiunilor: ${e.message}`;
-      errEl.style.display = 'block';
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
   // ── Init ──────────────────────────────────────────────────────────
-  renderSidebar();
+  loadConversations();
 </script>
 
 </body>

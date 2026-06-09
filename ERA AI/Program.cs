@@ -17,15 +17,30 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
+
+// ── Auth gate ─────────────────────────────────────────────────────────────────
+// User-facing pages require a logged-in session (the httpOnly era_jwt cookie).
+// Unauthenticated GETs to a protected page redirect to /LogIn. The API proxies
+// enforce auth themselves (Python returns 401), so they are not gated here.
+var protectedPages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+{
+    "/", "/index", "/dashboard", "/account", "/settings"
+};
+app.Use(async (ctx, next) =>
+{
+    var path = ctx.Request.Path.Value ?? "/";
+    if (HttpMethods.IsGet(ctx.Request.Method)
+        && protectedPages.Contains(path)
+        && !ctx.Request.Cookies.ContainsKey("era_jwt"))
+    {
+        ctx.Response.Redirect("/LogIn");
+        return;
+    }
+    await next();
+});
+
 app.MapStaticAssets();
 app.MapRazorPages().WithStaticAssets();
-
-const string SystemPrompt =
-    "Ești un asistent juridic AI pentru firma de avocatură Efrim Roșca & Asociații " +
-    "din Republica Moldova. Ești profesionist, concis și precis, cu terminologie juridică precisă. " +
-    "Detectează automat limba în care scrie utilizatorul și răspunde în aceeași limbă. " +
-    "Limba implicită este română — dacă nu poți detecta limba, răspunde în română. " +
-    "Indiferent de limbă, menții același nivel de profesionalism și precizie juridică.";
 
 var jsonOptions = new JsonSerializerOptions
 {
@@ -75,58 +90,31 @@ app.MapPost("/api/title", async (TitleRequest req, IConfiguration config, IHttpC
     }
 });
 
-app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+// Chat now runs server-side in Python: it loads the per-user profile, injects it,
+// calls Claude (with web search), persists messages, and writes the audit snapshot.
+// This proxy just forwards the JWT (from the httpOnly cookie) as a Bearer token.
+app.MapPost("/api/chat", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
 {
-    var apiKey = config["AnthropicApiKey"];
-    if (string.IsNullOrEmpty(apiKey))
+    var pythonApiUrl = config["PythonApiUrl"];
+    if (string.IsNullOrEmpty(pythonApiUrl))
+        return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+    var httpClient = PythonClient(factory, config, ctx, timeoutSec: 220);
+    var content = new StringContent(body.GetRawText(), Encoding.UTF8, "application/json");
+    try
     {
-        ctx.Response.StatusCode = 500;
-        await ctx.Response.WriteAsync("Cheia API nu este configurată.");
-        return;
+        var resp = await httpClient.PostAsync($"{pythonApiUrl}/chat", content);
+        var respBody = await resp.Content.ReadAsStringAsync();
+        return Results.Content(respBody, "application/json", Encoding.UTF8, (int)resp.StatusCode);
     }
-
-    var httpClient = factory.CreateClient();
-    httpClient.Timeout = TimeSpan.FromSeconds(220);
-    httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
-    httpClient.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
-    httpClient.DefaultRequestHeaders.Add("anthropic-beta", "web-search-2025-03-05");
-
-    // Standing user instructions (stored server-side) are prepended to the base prompt.
-    var customInstructions = await FetchInstructions(config, factory);
-    var effectiveSystem = string.IsNullOrWhiteSpace(customInstructions)
-        ? SystemPrompt
-        : SystemPrompt
-          + "\n\n## Instrucțiuni personalizate ale utilizatorului (au prioritate)\n"
-          + customInstructions.Trim();
-
-    // Non-streaming: request the full message and return it once it is complete.
-    var requestBody = new AnthropicRequest(
-        Model: "claude-sonnet-4-20250514",
-        MaxTokens: 4096,
-        System: effectiveSystem,
-        Messages: req.Messages,
-        Tools: [new AnthropicTool("web_search_20250305", "web_search")]
-    );
-
-    var content = JsonContent.Create(requestBody, options: jsonOptions);
-    var upstreamResp = await httpClient.PostAsync("https://api.anthropic.com/v1/messages", content);
-
-    if (!upstreamResp.IsSuccessStatusCode)
+    catch (TaskCanceledException)
     {
-        ctx.Response.StatusCode = 502;
-        ctx.Response.ContentType = "application/json";
-        await ctx.Response.WriteAsync("{\"error\":\"Eroare de la serviciul AI.\"}");
-        return;
+        return Results.Json(new { error = "Răspunsul a durat prea mult." }, statusCode: 504);
     }
-
-    // Join every text block (web search adds non-text blocks that we skip).
-    var result = await upstreamResp.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
-    var reply = result?.Content is { } blocks
-        ? string.Concat(blocks.Where(b => b.Type == "text" && b.Text != null).Select(b => b.Text))
-        : "";
-
-    ctx.Response.ContentType = "application/json";
-    await ctx.Response.WriteAsJsonAsync(new { reply });
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
 });
 
 app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
@@ -500,6 +488,155 @@ app.MapPut("/api/chat-instructions", async (ChatInstructions body, IConfiguratio
     }
 });
 
+// ══════════════════════════════════════════════════════════════════════════════
+// Adaptive learning: auth (cookie handoff), conversations, profile, account.
+//
+// The browser never sees the JWT. On login/register the C# proxy stores the
+// token Python returns in an httpOnly Secure SameSite=Lax cookie (era_jwt), and
+// forwards it as Authorization: Bearer on every user-facing Python call.
+// ══════════════════════════════════════════════════════════════════════════════
+
+app.MapPost("/api/auth/login", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await AuthProxy("/auth/login", body, config, factory, ctx));
+
+app.MapPost("/api/auth/register", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await AuthProxy("/auth/register", body, config, factory, ctx));
+
+app.MapPost("/api/auth/logout", (HttpContext ctx) =>
+{
+    ClearAuthCookie(ctx);
+    return Results.Ok(new { ok = true });
+});
+
+// ── Conversations (JWT, ownership-scoped in Python) ───────────────────────────
+app.MapGet("/api/conversations", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Get, "/conversations", null, config, factory, ctx));
+
+app.MapPost("/api/conversations", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Post, "/conversations", body, config, factory, ctx));
+
+app.MapGet("/api/conversations/{id:int}", async (int id, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Get, $"/conversations/{id}", null, config, factory, ctx));
+
+app.MapMethods("/api/conversations/{id:int}", new[] { "PATCH" }, async (int id, JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Patch, $"/conversations/{id}", body, config, factory, ctx));
+
+app.MapDelete("/api/conversations/{id:int}", async (int id, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Delete, $"/conversations/{id}", null, config, factory, ctx));
+
+// ── Profile (JWT) ─────────────────────────────────────────────────────────────
+app.MapGet("/api/profile", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Get, "/profile", null, config, factory, ctx));
+
+app.MapPut("/api/profile", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Put, "/profile", body, config, factory, ctx));
+
+// ── Account: GDPR wipe (JWT). Clears the session cookie on success. ───────────
+app.MapDelete("/api/account", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+{
+    var result = await ForwardJson(HttpMethod.Delete, "/account", null, config, factory, ctx);
+    ClearAuthCookie(ctx);
+    return result;
+});
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+// Build an HttpClient for Python calls: always sends x-era-api-key, and forwards
+// the era_jwt cookie as a Bearer token when present.
+static HttpClient PythonClient(IHttpClientFactory factory, IConfiguration config, HttpContext ctx, int timeoutSec = 60)
+{
+    var client = factory.CreateClient();
+    client.Timeout = TimeSpan.FromSeconds(timeoutSec);
+    var eraApiKey = config["EraApiKey"];
+    if (!string.IsNullOrEmpty(eraApiKey))
+        client.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+    if (ctx.Request.Cookies.TryGetValue("era_jwt", out var token) && !string.IsNullOrEmpty(token))
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+    return client;
+}
+
+static void SetAuthCookie(HttpContext ctx, string token) =>
+    ctx.Response.Cookies.Append("era_jwt", token, new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.Lax,
+        Path = "/",
+        MaxAge = TimeSpan.FromDays(7),
+    });
+
+static void ClearAuthCookie(HttpContext ctx) =>
+    ctx.Response.Cookies.Delete("era_jwt", new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.Lax,
+        Path = "/",
+    });
+
+// Proxy a login/register call: on success, stash the JWT in the cookie and
+// return the rest of the body (display_name, email) to the browser.
+static async Task<IResult> AuthProxy(string path, JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx)
+{
+    var pythonApiUrl = config["PythonApiUrl"];
+    if (string.IsNullOrEmpty(pythonApiUrl))
+        return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+    var client = factory.CreateClient();
+    client.Timeout = TimeSpan.FromSeconds(30);
+    var eraApiKey = config["EraApiKey"];
+    if (!string.IsNullOrEmpty(eraApiKey))
+        client.DefaultRequestHeaders.Add("x-era-api-key", eraApiKey);
+
+    try
+    {
+        var content = new StringContent(body.GetRawText(), Encoding.UTF8, "application/json");
+        var resp = await client.PostAsync($"{pythonApiUrl}{path}", content);
+        var respBody = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+            return Results.Content(respBody, "application/json", Encoding.UTF8, (int)resp.StatusCode);
+
+        using var doc = JsonDocument.Parse(respBody);
+        var root = doc.RootElement;
+        if (root.TryGetProperty("access_token", out var tok) && tok.GetString() is { Length: > 0 } token)
+            SetAuthCookie(ctx, token);
+
+        var displayName = root.TryGetProperty("display_name", out var dn) ? dn.GetString() : "";
+        var email = root.TryGetProperty("email", out var em) ? em.GetString() : "";
+        return Results.Ok(new { display_name = displayName, email });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+}
+
+// Forward a JSON request to Python with the JWT cookie attached, relaying the
+// status code and body verbatim.
+static async Task<IResult> ForwardJson(HttpMethod method, string path, JsonElement? body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx)
+{
+    var pythonApiUrl = config["PythonApiUrl"];
+    if (string.IsNullOrEmpty(pythonApiUrl))
+        return Results.Json(new { error = "Python API URL nu este configurat." }, statusCode: 500);
+
+    var client = PythonClient(factory, config, ctx);
+    var request = new HttpRequestMessage(method, $"{pythonApiUrl}{path}");
+    if (body is { } b)
+        request.Content = new StringContent(b.GetRawText(), Encoding.UTF8, "application/json");
+
+    try
+    {
+        var resp = await client.SendAsync(request);
+        var respBody = await resp.Content.ReadAsStringAsync();
+        return Results.Content(respBody, "application/json", Encoding.UTF8, (int)resp.StatusCode);
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { error = $"Eroare internă: {ex.Message}" }, statusCode: 500);
+    }
+}
+
 // Fetch the user's standing instructions from the Python service (best-effort).
 static async Task<string> FetchInstructions(IConfiguration config, IHttpClientFactory factory)
 {
@@ -531,7 +668,6 @@ app.Run();
 
 record ChatInstructions(string? Instructions);
 record TitleRequest(string Message, string? Reply = null);
-record ChatRequest(List<ChatMessage> Messages);
 record ChatMessage(string Role, string Content);
 record AnthropicTool(string Type, string Name);
 record AnthropicRequest(string Model, int MaxTokens, string System, List<ChatMessage> Messages, List<AnthropicTool>? Tools = null, bool? Stream = null);

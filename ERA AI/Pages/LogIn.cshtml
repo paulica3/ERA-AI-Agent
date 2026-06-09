@@ -1,7 +1,7 @@
-﻿@page
+@page
 @model LogInModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Autentificare";
     Layout = null;
 }
 
@@ -10,33 +10,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Efrim Roșca Asociații — Login</title>
+  <title>Efrim Roșca Asociații — Autentificare</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
   <link rel="icon" href="/favicon.ico" sizes="any"/>
   <link rel="apple-touch-icon" href="/favicon-32.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/login.css">
+  <style>
+    /* Register-only fields are hidden until the user switches mode. */
+    .register-only { display: none; }
+    body.mode-register .register-only { display: block; }
+    body.mode-register .login-only { display: none; }
+
+    .switch-mode { text-align: center; margin-top: 24px; font-size: 12px;
+      font-weight: 300; letter-spacing: 0.06em; color: var(--ink-muted); }
+    .switch-mode a { color: var(--gold-light); text-decoration: none; cursor: pointer; }
+    .switch-mode a:hover { color: var(--gold); }
+    .btn-login:disabled { opacity: 0.5; cursor: default; }
+  </style>
 </head>
-<body>
+<body class="mode-login">
 <div class="page">
 
   <!-- Header -->
   <header>
     <div class="logo-mark">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="47" height="47" stroke="#8b6914" stroke-width="1" fill="none"/>
-        <line x1="0" y1="0" x2="7" y2="0"   stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="0" y1="0" x2="0" y2="7"   stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="48" y1="0"  x2="41" y2="0"  stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="48" y1="0"  x2="48" y2="7"  stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="0"  y1="48" x2="7"  y2="48" stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="0"  y1="48" x2="0"  y2="41" stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="48" y1="48" x2="41" y2="48" stroke="#c9a84c" stroke-width="1.2"/>
-        <line x1="48" y1="48" x2="48" y2="41" stroke="#c9a84c" stroke-width="1.2"/>
+        <rect x="0.5" y="0.5" width="47" height="47" stroke="#9B2D3A" stroke-width="1" fill="none"/>
+        <line x1="0" y1="0" x2="7" y2="0"   stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="0" y1="0" x2="0" y2="7"   stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="48" y1="0"  x2="41" y2="0"  stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="48" y1="0"  x2="48" y2="7"  stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="0"  y1="48" x2="7"  y2="48" stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="0"  y1="48" x2="0"  y2="41" stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="48" y1="48" x2="41" y2="48" stroke="#C4556A" stroke-width="1.2"/>
+        <line x1="48" y1="48" x2="48" y2="41" stroke="#C4556A" stroke-width="1.2"/>
         <text x="25" y="23" font-family="Cormorant Garamond, serif" font-size="13" font-weight="500"
-              fill="#8b6914" text-anchor="middle" letter-spacing="2">ERA</text>
-        <line x1="10" y1="28" x2="38" y2="28" stroke="#c9a84c" stroke-width="0.6" opacity="0.6"/>
+              fill="#9B2D3A" text-anchor="middle" letter-spacing="2">ERA</text>
+        <line x1="10" y1="28" x2="38" y2="28" stroke="#C4556A" stroke-width="0.6" opacity="0.6"/>
         <text x="25" y="39" font-family="Jost, sans-serif" font-size="8" font-weight="300"
               fill="#7a7060" text-anchor="middle" letter-spacing="4">AI</text>
       </svg>
@@ -53,31 +65,34 @@
 
       <!-- Emblem -->
       <svg class="emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="99" height="99" stroke="#8b6914" stroke-width="0.8" fill="none"/>
-        <line x1="0" y1="0" x2="14" y2="0"    stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="0" y1="0" x2="0"  y2="14"   stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="100" y1="0"   x2="86"  y2="0"   stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="100" y1="0"   x2="100" y2="14"  stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="0"   y1="100" x2="14"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="0"   y1="100" x2="0"   y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="100" y1="100" x2="86"  y2="100" stroke="#c9a84c" stroke-width="1.5"/>
-        <line x1="100" y1="100" x2="100" y2="86"  stroke="#c9a84c" stroke-width="1.5"/>
+        <rect x="0.5" y="0.5" width="99" height="99" stroke="#9B2D3A" stroke-width="0.8" fill="none"/>
+        <line x1="0" y1="0" x2="14" y2="0"    stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="0" y1="0" x2="0"  y2="14"   stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="100" y1="0"   x2="86"  y2="0"   stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="100" y1="0"   x2="100" y2="14"  stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="0"   y1="100" x2="14"  y2="100" stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="0"   y1="100" x2="0"   y2="86"  stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="100" y1="100" x2="86"  y2="100" stroke="#C4556A" stroke-width="1.5"/>
+        <line x1="100" y1="100" x2="100" y2="86"  stroke="#C4556A" stroke-width="1.5"/>
         <text x="52" y="52" font-family="Cormorant Garamond, serif" font-size="28" font-weight="500"
-              fill="#8b6914" text-anchor="middle" letter-spacing="5">ERA</text>
-        <line x1="18" y1="59" x2="82" y2="59" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+              fill="#9B2D3A" text-anchor="middle" letter-spacing="5">ERA</text>
+        <line x1="18" y1="59" x2="82" y2="59" stroke="#C4556A" stroke-width="0.8" opacity="0.6"/>
         <text x="52" y="74" font-family="Jost, sans-serif" font-size="13" font-weight="300"
               fill="#7a7060" text-anchor="middle" letter-spacing="8">AI</text>
       </svg>
 
-      <h1 class="card-title">Bine ați venit</h1>
-      <p class="card-sub">Introduceți credențialele pentru a accesa platforma</p>
+      <h1 class="card-title" id="cardTitle">Bine ați venit</h1>
+      <p class="card-sub" id="cardSub">Introduceți credențialele pentru a accesa platforma</p>
 
       <!-- Error -->
-      <div class="error-msg" id="errorMsg">
-        Adresa de email sau parola este incorectă.
-      </div>
+      <div class="error-msg" id="errorMsg"></div>
 
       <!-- Form -->
+      <div class="form-group register-only">
+        <label for="displayName">Nume complet</label>
+        <input type="text" id="displayName" placeholder="Nume Prenume" autocomplete="name"/>
+      </div>
+
       <div class="form-group">
         <label for="email">Adresă de email</label>
         <input type="email" id="email" placeholder="nume@era.md" autocomplete="email"/>
@@ -85,12 +100,23 @@
 
       <div class="form-group">
         <label for="password">Parolă</label>
-        <input type="password" id="password" placeholder="*******" autocomplete="current-password"
-               onkeydown="if(event.key==='Enter') handleLogin()"/>
-        <div class="forgot"><a href="#">Ați uitat parola?</a></div>
+        <input type="password" id="password" placeholder="•••••••" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') submitForm()"/>
+        <div class="forgot login-only"><a href="#" onclick="return false;">Ați uitat parola?</a></div>
       </div>
 
-      <button class="btn-login" onclick="handleLogin()">Autentificare</button>
+      <div class="form-group register-only">
+        <label for="inviteCode">Cod de invitație</label>
+        <input type="text" id="inviteCode" placeholder="Cod furnizat de firmă" autocomplete="off"
+               onkeydown="if(event.key==='Enter') submitForm()"/>
+      </div>
+
+      <button class="btn-login" id="submitBtn" onclick="submitForm()">Autentificare</button>
+
+      <div class="switch-mode">
+        <span class="login-only">Nu aveți cont? <a onclick="setMode('register')">Înregistrați-vă</a></span>
+        <span class="register-only">Aveți deja cont? <a onclick="setMode('login')">Autentificați-vă</a></span>
+      </div>
 
     </div>
   </main>
@@ -108,23 +134,81 @@
 </div>
 
 <script>
-  function handleLogin() {
-    const email    = document.getElementById('email').value.trim();
+  let mode = 'login';
+
+  function setMode(m) {
+    mode = m;
+    document.body.className = 'mode-' + m;
+    document.getElementById('errorMsg').classList.remove('visible');
+    if (m === 'register') {
+      document.getElementById('cardTitle').textContent = 'Creați un cont';
+      document.getElementById('cardSub').textContent = 'Înregistrare cu codul de invitație al firmei';
+      document.getElementById('submitBtn').textContent = 'Înregistrare';
+      document.getElementById('password').setAttribute('autocomplete', 'new-password');
+    } else {
+      document.getElementById('cardTitle').textContent = 'Bine ați venit';
+      document.getElementById('cardSub').textContent = 'Introduceți credențialele pentru a accesa platforma';
+      document.getElementById('submitBtn').textContent = 'Autentificare';
+      document.getElementById('password').setAttribute('autocomplete', 'current-password');
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  async function submitForm() {
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const errorMsg = document.getElementById('errorMsg');
+    const btn = document.getElementById('submitBtn');
+    errorMsg.classList.remove('visible');
 
     if (!email || !password) {
-      errorMsg.textContent = 'Vă rugăm completați toate câmpurile.';
-      errorMsg.classList.add('visible');
+      showError('Vă rugăm completați toate câmpurile.');
       return;
     }
-    else{
-      window.location.href = "/";
+
+    let url, body;
+    if (mode === 'register') {
+      const displayName = document.getElementById('displayName').value.trim();
+      const inviteCode = document.getElementById('inviteCode').value.trim();
+      if (!inviteCode) { showError('Codul de invitație este obligatoriu.'); return; }
+      if (password.length < 8) { showError('Parola trebuie să aibă cel puțin 8 caractere.'); return; }
+      url = '/api/auth/register';
+      body = { email, password, display_name: displayName, invite_code: inviteCode };
+    } else {
+      url = '/api/auth/login';
+      body = { email, password };
     }
 
-    // Replace this with your real auth logic / form post
-    errorMsg.classList.remove('visible');
-    console.log('Login attempt:', email);
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = 'Se procesează...';
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (r.ok) {
+        window.location.href = '/';
+        return;
+      }
+      let detail = 'A apărut o eroare. Încercați din nou.';
+      try {
+        const data = await r.json();
+        detail = data.detail || data.error || detail;
+      } catch { /* keep default */ }
+      showError(detail);
+    } catch (e) {
+      showError('Nu s-a putut contacta serverul.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
   }
 </script>
 

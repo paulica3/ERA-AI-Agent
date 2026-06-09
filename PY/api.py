@@ -7,8 +7,9 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.responses import Response, StreamingResponse
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
-from era_agent.config import ANTHROPIC_API_KEY
+from era_agent.config import ANTHROPIC_API_KEY, FIRM_SIGNUP_CODE
 from era_agent.ingestion.pdf import extract_text as pdf_extract
 from era_agent.ingestion.docx import extract_text as docx_extract
 from era_agent.pipelines.analysis import analyze_document as run_analysis
@@ -25,7 +26,21 @@ from era_agent.content.schema import Project
 from era_agent.client import get_client
 from era_agent.config import MODEL
 
+# Adaptive learning system: DB, auth, profiles, chat
+from era_agent.db.database import get_db, init_db
+from era_agent.db.models import User, Conversation, Message, AuditLog
+from era_agent.auth.security import hash_password, verify_password, create_access_token
+from era_agent.auth.deps import get_current_user
+from era_agent.profiles.service import get_or_create_profile, update_profile
+from era_agent.pipelines.chat import run_chat
+
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
+
+
+@app.on_event("startup")
+def _startup_create_tables():
+    # Create any missing tables on boot (idempotent). Works on SQLite + Postgres.
+    init_db()
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 # The .NET app sends x-era-api-key on every request.
@@ -177,6 +192,40 @@ class TranslateRequest(BaseModel):
 
 class ChatInstructions(BaseModel):
     instructions: str = ""
+
+
+# ── Adaptive learning request models ──────────────────────────────────────────
+
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    display_name: str = ""
+    invite_code: str = ""
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class ChatRequest(BaseModel):
+    message: str
+    conversation_id: int | None = None
+
+
+class ConversationCreateRequest(BaseModel):
+    title: str = ""
+
+
+class ConversationRenameRequest(BaseModel):
+    title: str
+
+
+class ProfileUpdateRequest(BaseModel):
+    preferred_tone: str | None = None
+    preferred_language: str | None = None
+    response_length: str | None = None
+    custom_instructions: str | None = None
 
 
 @app.get("/chat-instructions", dependencies=[Depends(verify_key)])
@@ -373,3 +422,235 @@ async def draft_contract_endpoint(req: DraftContractRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Eroare la redactarea contractului: {str(e)}")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Adaptive learning system: auth, chat, conversations, profile, account
+#
+# Two auth schemes coexist:
+#   - /auth/*  require x-era-api-key (proves the caller is our .NET frontend);
+#     register additionally requires the firm invite code.
+#   - All user-facing endpoints below require the JWT (Authorization: Bearer),
+#     resolved by get_current_user. user_id always comes from the verified token.
+# ══════════════════════════════════════════════════════════════════════════════
+
+
+def _profile_dict(profile) -> dict:
+    return {
+        "preferred_tone": profile.preferred_tone,
+        "preferred_language": profile.preferred_language,
+        "response_length": profile.response_length,
+        "frequent_topics": profile.frequent_topics or [],
+        "custom_instructions": profile.custom_instructions or "",
+        "interaction_count": profile.interaction_count or 0,
+        "last_updated": profile.last_updated.isoformat() if profile.last_updated else None,
+    }
+
+
+def _conversation_dict(conv, include_messages: bool = False) -> dict:
+    data = {
+        "id": conv.id,
+        "title": conv.title,
+        "created_at": conv.created_at.isoformat() if conv.created_at else None,
+        "updated_at": conv.updated_at.isoformat() if conv.updated_at else None,
+    }
+    if include_messages:
+        data["messages"] = [
+            {
+                "id": m.id,
+                "role": m.role,
+                "content": m.content,
+                "created_at": m.created_at.isoformat() if m.created_at else None,
+            }
+            for m in conv.messages
+        ]
+    return data
+
+
+# ── Auth ───────────────────────────────────────────────────────────────────────
+
+@app.post("/auth/register", dependencies=[Depends(verify_key)])
+async def auth_register(body: RegisterRequest, db: Session = Depends(get_db)):
+    """Self-registration gated by the firm invite code. Closed to outsiders."""
+    if FIRM_SIGNUP_CODE and body.invite_code != FIRM_SIGNUP_CODE:
+        raise HTTPException(status_code=403, detail="Cod de invitație invalid.")
+
+    email = (body.email or "").strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Adresă de e-mail invalidă.")
+    if not body.password or len(body.password) < 8:
+        raise HTTPException(status_code=400, detail="Parola trebuie să aibă cel puțin 8 caractere.")
+
+    existing = db.query(User).filter(User.email == email).one_or_none()
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Există deja un cont cu acest e-mail.")
+
+    user = User(
+        email=email,
+        password_hash=hash_password(body.password),
+        display_name=(body.display_name or "").strip(),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    # Create the default profile up front.
+    get_or_create_profile(db, user.id)
+
+    token = create_access_token(user.id)
+    return {"access_token": token, "display_name": user.display_name, "email": user.email}
+
+
+@app.post("/auth/login", dependencies=[Depends(verify_key)])
+async def auth_login(body: LoginRequest, db: Session = Depends(get_db)):
+    email = (body.email or "").strip().lower()
+    user = db.query(User).filter(User.email == email).one_or_none()
+    if user is None or not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="E-mail sau parolă incorecte.")
+    token = create_access_token(user.id)
+    return {"access_token": token, "display_name": user.display_name, "email": user.email}
+
+
+# ── Chat ─────────────────────────────────────────────────────────────────────
+
+@app.post("/chat")
+async def chat(
+    body: ChatRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Single server-side chat turn. Loads the profile, injects it, persists
+    messages, writes the audit snapshot. Returns {reply, conversation_id, title}."""
+    try:
+        return run_chat(db, user, body.message, body.conversation_id)
+    except PermissionError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Eroare la generarea răspunsului: {str(e)}")
+
+
+# ── Conversations (ownership-scoped) ──────────────────────────────────────────
+
+@app.get("/conversations")
+async def list_conversations(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    convs = (
+        db.query(Conversation)
+        .filter(Conversation.user_id == user.id)
+        .order_by(Conversation.updated_at.desc())
+        .all()
+    )
+    return {"conversations": [_conversation_dict(c) for c in convs]}
+
+
+@app.post("/conversations")
+async def create_conversation(
+    body: ConversationCreateRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    conv = Conversation(user_id=user.id, title=(body.title or "").strip() or "Conversație nouă")
+    db.add(conv)
+    db.commit()
+    db.refresh(conv)
+    return _conversation_dict(conv)
+
+
+@app.get("/conversations/{conversation_id}")
+async def get_conversation(
+    conversation_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    conv = db.get(Conversation, conversation_id)
+    if conv is None or conv.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Conversația nu există.")
+    return _conversation_dict(conv, include_messages=True)
+
+
+@app.patch("/conversations/{conversation_id}")
+async def rename_conversation(
+    conversation_id: int,
+    body: ConversationRenameRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    conv = db.get(Conversation, conversation_id)
+    if conv is None or conv.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Conversația nu există.")
+    title = (body.title or "").strip()
+    if not title:
+        raise HTTPException(status_code=400, detail="Titlu gol.")
+    conv.title = title[:255]
+    db.commit()
+    db.refresh(conv)
+    return _conversation_dict(conv)
+
+
+@app.delete("/conversations/{conversation_id}")
+async def delete_conversation(
+    conversation_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    conv = db.get(Conversation, conversation_id)
+    if conv is None or conv.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Conversația nu există.")
+    db.delete(conv)
+    db.commit()
+    return {"deleted": conversation_id}
+
+
+# ── Profile ──────────────────────────────────────────────────────────────────
+
+@app.get("/profile")
+async def get_profile(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    profile = get_or_create_profile(db, user.id)
+    return {
+        "email": user.email,
+        "display_name": user.display_name,
+        **_profile_dict(profile),
+    }
+
+
+@app.put("/profile")
+async def put_profile(
+    body: ProfileUpdateRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    profile = update_profile(
+        db, user.id,
+        preferred_tone=body.preferred_tone,
+        preferred_language=body.preferred_language,
+        response_length=body.response_length,
+        custom_instructions=body.custom_instructions,
+    )
+    return {
+        "email": user.email,
+        "display_name": user.display_name,
+        **_profile_dict(profile),
+    }
+
+
+# ── Account (GDPR) ────────────────────────────────────────────────────────────
+
+@app.delete("/account")
+async def delete_account(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """GDPR wipe: delete the user and all of their data. Cascade removes the
+    profile, conversations, messages, and audit rows."""
+    # Audit rows reference user_id directly (no relationship cascade), wipe first.
+    db.query(AuditLog).filter(AuditLog.user_id == user.id).delete(synchronize_session=False)
+    db.delete(user)  # cascades to profile, conversations, messages
+    db.commit()
+    return {"deleted": True}
