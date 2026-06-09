@@ -1018,40 +1018,16 @@
 
       removeTyping();
 
-      if (!response.ok || !response.body) {
+      if (!response.ok) {
         renderMessage('assistant', 'Ne cerem scuze, a apărut o eroare. Vă rugăm să încercați din nou.');
         return;
       }
 
+      // Non-streaming: wait for the full reply, then render it once.
+      const data = await response.json();
+      const fullText = (data.reply || '').trim();
+
       const bubble = appendStreamingBubble();
-      let fullText = '';
-      let displayIdx = 0;
-      let streamDone = false;
-
-      // Plain-text typewriter: no markdown mid-stream = zero layout reflow = silky smooth.
-      // rAF drains the buffer at a steady pace; markdown renders once at the very end.
-      const animFinished = new Promise(resolve => {
-        function tick() {
-          const remaining = fullText.length - displayIdx;
-          if (remaining > 0) {
-            // While streaming keep pace with Claude; once done, flush quickly
-            displayIdx += streamDone ? Math.min(remaining, 6) : Math.min(remaining, 3);
-            bubble.textContent = fullText.slice(0, displayIdx);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
-          }
-          if (streamDone && displayIdx >= fullText.length) resolve();
-          else requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      });
-
-      await readStream(response, (evt) => {
-        if (evt.delta?.text) fullText += evt.delta.text;
-      });
-      streamDone = true;
-      await animFinished;
-
-      // Swap plain text for fully rendered markdown
       bubble.innerHTML = marked.parse(fullText || 'Ne cerem scuze, nu am primit un răspuns.');
       messagesEl.scrollTop = messagesEl.scrollHeight;
 

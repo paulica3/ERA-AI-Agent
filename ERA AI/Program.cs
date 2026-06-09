@@ -99,42 +99,34 @@ app.MapPost("/api/chat", async (ChatRequest req, IConfiguration config, IHttpCli
           + "\n\n## Instrucțiuni personalizate ale utilizatorului (au prioritate)\n"
           + customInstructions.Trim();
 
+    // Non-streaming: request the full message and return it once it is complete.
     var requestBody = new AnthropicRequest(
         Model: "claude-sonnet-4-20250514",
         MaxTokens: 4096,
         System: effectiveSystem,
         Messages: req.Messages,
-        Tools: [new AnthropicTool("web_search_20250305", "web_search")],
-        Stream: true
+        Tools: [new AnthropicTool("web_search_20250305", "web_search")]
     );
 
     var content = JsonContent.Create(requestBody, options: jsonOptions);
-    var upstreamResp = await httpClient.SendAsync(
-        new HttpRequestMessage(HttpMethod.Post, "https://api.anthropic.com/v1/messages") { Content = content },
-        HttpCompletionOption.ResponseHeadersRead);
+    var upstreamResp = await httpClient.PostAsync("https://api.anthropic.com/v1/messages", content);
 
     if (!upstreamResp.IsSuccessStatusCode)
     {
         ctx.Response.StatusCode = 502;
-        await ctx.Response.WriteAsync("Eroare de la serviciul AI.");
+        ctx.Response.ContentType = "application/json";
+        await ctx.Response.WriteAsync("{\"error\":\"Eroare de la serviciul AI.\"}");
         return;
     }
 
-    ctx.Response.ContentType = "text/event-stream";
-    ctx.Response.Headers["Cache-Control"] = "no-cache";
-    ctx.Response.Headers["X-Accel-Buffering"] = "no";
+    // Join every text block (web search adds non-text blocks that we skip).
+    var result = await upstreamResp.Content.ReadFromJsonAsync<AnthropicResponse>(jsonOptions);
+    var reply = result?.Content is { } blocks
+        ? string.Concat(blocks.Where(b => b.Type == "text" && b.Text != null).Select(b => b.Text))
+        : "";
 
-    await using var stream = await upstreamResp.Content.ReadAsStreamAsync();
-    using var reader = new System.IO.StreamReader(stream);
-
-    while (!reader.EndOfStream && !ctx.RequestAborted.IsCancellationRequested)
-    {
-        var line = await reader.ReadLineAsync();
-        if (line is null) break;
-        await ctx.Response.WriteAsync(line + "\n");
-        if (line == string.Empty)
-            await ctx.Response.Body.FlushAsync();
-    }
+    ctx.Response.ContentType = "application/json";
+    await ctx.Response.WriteAsJsonAsync(new { reply });
 });
 
 app.MapPost("/api/analyze", async (HttpRequest httpReq, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
