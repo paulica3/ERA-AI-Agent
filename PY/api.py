@@ -721,19 +721,47 @@ async def save_memory(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Append a user-written rule to their custom_instructions."""
-    from era_agent.profiles.service import sanitize_text
-    rule = sanitize_text(body.text.strip(), max_len=500)
-    if not rule:
+    """Pass user's free-form text through Claude to extract compact rules,
+    then append those rules to their custom_instructions."""
+    raw = body.text.strip()
+    if not raw:
         raise HTTPException(status_code=400, detail="Textul nu poate fi gol.")
+
+    extraction_prompt = (
+        "The user wants to save personal preferences or rules for an AI legal assistant. "
+        "Read their note and extract ONLY the concrete, actionable rules it implies. "
+        "Return them as a short bulleted list (one rule per line, starting with '- '). "
+        "Be concise — each rule should be one sentence. "
+        "Do NOT add anything else, no introduction, no explanation.\n\n"
+        f"User's note:\n{raw}"
+    )
+    try:
+        client = get_client()
+        resp = client.messages.create(
+            model=MODEL,
+            max_tokens=300,
+            messages=[{"role": "user", "content": extraction_prompt}],
+        )
+        extracted = "".join(
+            b.text for b in resp.content if getattr(b, "type", None) == "text"
+        ).strip()
+    except Exception:
+        logger.exception("Memory extraction failed")
+        raise HTTPException(status_code=500, detail="Eroare la procesarea memoriei.")
+
+    from era_agent.profiles.service import sanitize_text
+    extracted = sanitize_text(extracted, max_len=600)
+    if not extracted:
+        raise HTTPException(status_code=400, detail="Nu s-au putut extrage reguli din text.")
+
     profile = get_or_create_profile(db, user.id)
     existing = (profile.custom_instructions or "").strip()
-    combined = (existing + "\n" + rule).strip() if existing else rule
+    combined = (existing + "\n" + extracted).strip() if existing else extracted
     if len(combined) > 2000:
         combined = combined[:2000].rstrip() + "..."
     profile.custom_instructions = combined
     db.commit()
-    return {"saved": True}
+    return {"saved": True, "rules": extracted}
 
 
 # ── Suggestions (Phase 2) ──────────────────────────────────────────────────────

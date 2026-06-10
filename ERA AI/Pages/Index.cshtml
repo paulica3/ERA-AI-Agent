@@ -994,27 +994,33 @@
   }
 
   // ── /memory command ───────────────────────────────────────────────
-  async function saveMemory(rule) {
+  async function saveMemory(text) {
+    // Show a pending note while Claude processes the text.
+    const note = document.createElement('div');
+    note.className = 'memory-note';
+    note.textContent = 'Se extrag regulile...';
+    messagesEl.appendChild(note);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
     try {
       const r = await fetch('/api/memory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: rule })
+        body: JSON.stringify({ text })
       });
       if (requireAuth(r)) return;
-      const note = document.createElement('div');
-      note.className = 'memory-note';
-      note.textContent = r.ok ? `Memorie salvată: "${rule}"` : 'Eroare la salvarea memoriei.';
-      if (!r.ok) note.style.color = 'var(--red-accent)';
-      messagesEl.appendChild(note);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (r.ok) {
+        const data = await r.json();
+        note.innerHTML = '<strong style="color:var(--gold);font-style:normal">Reguli salvate:</strong><br>' +
+          (data.rules || '').replace(/\n/g, '<br>');
+      } else {
+        note.textContent = 'Eroare la salvarea memoriei.';
+        note.style.color = 'var(--red-accent)';
+      }
     } catch {
-      const note = document.createElement('div');
-      note.className = 'memory-note';
       note.textContent = 'Nu s-a putut contacta serverul.';
       note.style.color = 'var(--red-accent)';
-      messagesEl.appendChild(note);
     }
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
   // ── Send ──────────────────────────────────────────────────────────
