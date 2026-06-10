@@ -17,6 +17,14 @@ DATA_DIR = Path(os.getenv("ERA_DATA_DIR", str(_DEFAULT_DATA_DIR)))
 # Without it, fall back to a local SQLite file under the data dir for dev.
 DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{(DATA_DIR / 'era.db').as_posix()}"
 
+# Railway/Heroku hand out URLs as "postgres://" or "postgresql://", which make
+# SQLAlchemy default to the psycopg2 dialect. We ship psycopg 3 only, so pin the
+# driver explicitly.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgres://"):]
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgresql://"):]
+
 # ── Auth ──────────────────────────────────────────────────────────────────────
 # JWT_SECRET MUST be set to a strong random value in production.
 JWT_SECRET = os.getenv("JWT_SECRET", "dev-insecure-change-me")
