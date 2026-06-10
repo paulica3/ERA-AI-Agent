@@ -1009,9 +1009,7 @@
       });
       if (requireAuth(r)) return;
       if (r.ok) {
-        const data = await r.json();
-        note.innerHTML = '<strong style="color:var(--gold);font-style:normal">Reguli salvate:</strong><br>' +
-          (data.rules || '').replace(/\n/g, '<br>');
+        note.innerHTML = '<strong style="color:var(--gold);font-style:normal; font-size: 0.7rem;">Reguli salvate!</strong><br>';
       } else {
         note.textContent = 'Eroare la salvarea memoriei.';
         note.style.color = 'var(--red-accent)';
