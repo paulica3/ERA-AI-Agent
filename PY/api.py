@@ -732,6 +732,7 @@ async def save_memory(
         "Read their note and extract ONLY the concrete, actionable rules it implies. "
         "Return them as a short bulleted list (one rule per line, starting with '- '). "
         "Be concise — each rule should be one sentence. "
+        "Always save the rules in Romanian language"
         "Do NOT add anything else, no introduction, no explanation.\n\n"
         f"User's note:\n{raw}"
     )
