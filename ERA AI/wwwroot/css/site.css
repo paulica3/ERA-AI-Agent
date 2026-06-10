@@ -201,10 +201,10 @@ body {
   width: 52px;
 }
 
-.conv-delete {
+.conv-delete,
+.conv-end {
   display: none;
   position: absolute;
-  right: 6px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -219,7 +219,11 @@ body {
   transition: color 0.12s, background 0.12s;
 }
 
-.conv-item:hover .conv-delete {
+.conv-delete { right: 6px; }
+.conv-end    { right: 24px; }
+
+.conv-item:hover .conv-delete,
+.conv-item:hover .conv-end {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,6 +232,41 @@ body {
 .conv-delete:hover {
   color: #c0392b;
   background: rgba(192, 57, 43, 0.08);
+}
+
+.conv-end:hover {
+  color: #27ae60;
+  background: rgba(39, 174, 96, 0.08);
+}
+
+.era-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--cream-dark);
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.era-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.era-toast-warn {
+  border-color: var(--ink-muted);
+  color: var(--ink-soft);
 }
 
 .conv-item svg {

@@ -36,6 +36,8 @@ from era_agent.auth.security import hash_password, verify_password, create_acces
 from era_agent.auth.deps import get_current_user
 from era_agent.profiles.service import get_or_create_profile, update_profile
 from era_agent.profiles.analyzer import analyse_preferences
+from era_agent.profiles.summarizer import summarize_conversation
+from era_agent.db.models import ConversationSummary
 from era_agent.pipelines.chat import run_chat
 from era_agent.db.models import PendingSuggestion
 
@@ -45,6 +47,7 @@ app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 logger = logging.getLogger(__name__)
 
 CONVERSATION_MAX_DAYS = 30
+CONVERSATION_IDLE_MINUTES = 15
 
 
 async def _cleanup_old_conversations() -> None:
@@ -81,6 +84,49 @@ def _startup_create_tables():
 @app.on_event("startup")
 async def _startup_schedule_cleanup():
     asyncio.create_task(_cleanup_old_conversations())
+    asyncio.create_task(_summarize_idle_conversations())
+
+
+async def _summarize_idle_conversations() -> None:
+    """Every 5 minutes, find conversations idle for >= 15 min and summarise
+    any unsummarised messages (if at least 3 user turns exist since last summary)."""
+    while True:
+        await asyncio.sleep(5 * 60)
+        try:
+            from era_agent.db.database import SessionLocal
+            db = SessionLocal()
+            try:
+                idle_cutoff = datetime.now(timezone.utc) - timedelta(minutes=CONVERSATION_IDLE_MINUTES)
+                idle_convs = (
+                    db.query(Conversation)
+                    .filter(Conversation.updated_at < idle_cutoff)
+                    .all()
+                )
+                for conv in idle_convs:
+                    # Skip if the latest message is already covered by a summary.
+                    latest_msg = (
+                        db.query(Message)
+                        .filter(Message.conversation_id == conv.id)
+                        .order_by(Message.created_at.desc())
+                        .first()
+                    )
+                    if not latest_msg:
+                        continue
+                    already_covered = (
+                        db.query(ConversationSummary)
+                        .filter(
+                            ConversationSummary.conversation_id == conv.id,
+                            ConversationSummary.last_message_id == latest_msg.id,
+                        )
+                        .first()
+                    )
+                    if already_covered:
+                        continue
+                    summarize_conversation(conv.id)
+            finally:
+                db.close()
+        except Exception:
+            logger.exception("Idle summarization loop failed.")
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 # The .NET app sends x-era-api-key on every request.
@@ -660,6 +706,20 @@ async def delete_conversation(
     db.delete(conv)
     db.commit()
     return {"deleted": conversation_id}
+
+
+@app.post("/conversations/{conversation_id}/end")
+async def end_conversation(
+    conversation_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Manually mark a conversation as finished, triggering an immediate summary."""
+    conv = db.get(Conversation, conversation_id)
+    if conv is None or conv.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Conversația nu există.")
+    summarized = summarize_conversation(conversation_id)
+    return {"summarized": summarized}
 
 
 # ── Profile ──────────────────────────────────────────────────────────────────

@@ -701,14 +701,53 @@
       item.innerHTML = `
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/></svg>
         <span>${esc(conv.title)}</span>
+        <button class="conv-end" title="Încheie conversația și generează un rezumat pentru memoria AI">✓</button>
         <button class="conv-delete" title="Șterge conversația">✕</button>`;
       item.onclick = () => loadConversation(conv.id);
+      item.querySelector('.conv-end').onclick = (e) => {
+        e.stopPropagation();
+        endConversation(conv.id, e.currentTarget);
+      };
       item.querySelector('.conv-delete').onclick = (e) => {
         e.stopPropagation();
         deleteConversation(conv.id);
       };
       list.appendChild(item);
     });
+  }
+
+  function showToast(text, ok = true) {
+    const old = document.querySelector('.era-toast');
+    if (old) old.remove();
+    const t = document.createElement('div');
+    t.className = 'era-toast' + (ok ? '' : ' era-toast-warn');
+    t.textContent = text;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('visible'));
+    setTimeout(() => {
+      t.classList.remove('visible');
+      setTimeout(() => t.remove(), 300);
+    }, 3500);
+  }
+
+  async function endConversation(id, btn) {
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      const r = await fetch(`/api/conversations/${id}/end`, { method: 'POST' });
+      if (requireAuth(r)) return;
+      const data = await r.json();
+      if (data.summarized) {
+        showToast('Rezumat generat și salvat în memoria AI.');
+      } else {
+        showToast('Conversația este prea scurtă pentru un rezumat (minim 3 mesaje).', false);
+      }
+    } catch {
+      showToast('Eroare la generarea rezumatului. Încearcă din nou.', false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '✓';
+    }
   }
 
   async function deleteConversation(id) {

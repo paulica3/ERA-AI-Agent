@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from era_agent.client import get_client, SYSTEM_PROMPT, WEB_SEARCH_TOOL
 from era_agent.config import MODEL, MAX_TOKENS
-from era_agent.db.models import Conversation, Message, AuditLog
+from era_agent.db.models import Conversation, ConversationSummary, Message, AuditLog
 from era_agent.profiles.service import get_or_create_profile, build_profile_block
 
 
@@ -39,9 +39,23 @@ def run_chat(db: Session, user, message: str, conversation_id: int | None) -> di
 
     # Build the system prompt: base + injected profile block (includes user identity).
     profile = get_or_create_profile(db, user.id)
+
+    # Load the 3 most recent summaries from other conversations for cross-session context.
+    recent_summaries = (
+        db.query(ConversationSummary)
+        .filter(
+            ConversationSummary.user_id == user.id,
+            ConversationSummary.conversation_id != conv.id,
+        )
+        .order_by(ConversationSummary.created_at.desc())
+        .limit(3)
+        .all()
+    )
+    summary_texts = [s.summary_text for s in recent_summaries] or None
+
     profile_block = build_profile_block(
         profile,
-        summaries=None,
+        summaries=summary_texts,
         display_name=user.display_name or "",
         email=user.email or "",
     )
