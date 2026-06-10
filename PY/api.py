@@ -1,8 +1,11 @@
 """ERA AI Agent — FastAPI web server (deployed on Azure, called by the .NET app)."""
 
+import asyncio
 import json as json_module
+import logging
 import os
 import tempfile
+from datetime import datetime, timedelta, timezone
 from fastapi import BackgroundTasks, FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.responses import Response, StreamingResponse
 from fastapi.security import APIKeyHeader
@@ -39,10 +42,45 @@ from era_agent.db.models import PendingSuggestion
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
 
+logger = logging.getLogger(__name__)
+
+CONVERSATION_MAX_DAYS = 30
+
+
+async def _cleanup_old_conversations() -> None:
+    """Delete conversations (and their messages/audit rows via cascade) that
+    have not been updated in more than CONVERSATION_MAX_DAYS days.
+    Runs immediately on startup, then repeats every 24 hours."""
+    while True:
+        try:
+            from era_agent.db.database import SessionLocal
+            db = SessionLocal()
+            try:
+                cutoff = datetime.now(timezone.utc) - timedelta(days=CONVERSATION_MAX_DAYS)
+                deleted = (
+                    db.query(Conversation)
+                    .filter(Conversation.updated_at < cutoff)
+                    .delete(synchronize_session=False)
+                )
+                db.commit()
+                if deleted:
+                    logger.info("Pruned %d conversation(s) older than %d days.", deleted, CONVERSATION_MAX_DAYS)
+            finally:
+                db.close()
+        except Exception:
+            logger.exception("Conversation cleanup failed.")
+        await asyncio.sleep(24 * 60 * 60)
+
+
 @app.on_event("startup")
 def _startup_create_tables():
     # Create any missing tables on boot (idempotent). Works on SQLite + Postgres.
     init_db()
+
+
+@app.on_event("startup")
+async def _startup_schedule_cleanup():
+    asyncio.create_task(_cleanup_old_conversations())
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 # The .NET app sends x-era-api-key on every request.
