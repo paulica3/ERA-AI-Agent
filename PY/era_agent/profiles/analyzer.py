@@ -23,7 +23,10 @@ from era_agent.config import MODEL
 
 logger = logging.getLogger(__name__)
 
-_ANALYSABLE_FIELDS = {"preferred_tone", "response_length", "frequent_topics"}
+_ANALYSABLE_FIELDS = {
+    "preferred_tone", "response_length", "frequent_topics",
+    "response_structure", "citation_preference",
+}
 
 _PROMPT = """\
 You are a silent preference-detection assistant. You will receive a list of recent \
@@ -34,24 +37,30 @@ Return ONLY a JSON object — no markdown, no explanation — with this exact sc
 {{
   "preferred_tone": {{"value": "<formal|semi-formal|casual>", "rationale": "<one sentence in Romanian, max 100 chars>"}} | null,
   "response_length": {{"value": "<concise|detailed>", "rationale": "<one sentence in Romanian, max 100 chars>"}} | null,
-  "frequent_topics": {{"value": ["<topic 1>", ...], "rationale": "<one sentence in Romanian, max 100 chars>"}} | null
+  "frequent_topics": {{"value": ["<topic 1>", ...], "rationale": "<one sentence in Romanian, max 100 chars>"}} | null,
+  "response_structure": {{"value": "<one-sentence instruction in Romanian>", "rationale": "<one sentence in Romanian, max 100 chars>"}} | null,
+  "citation_preference": {{"value": "<one-sentence instruction in Romanian>", "rationale": "<one sentence in Romanian, max 100 chars>"}} | null
 }}
 
 Rules:
-- Return null for a field if the current value is already correct or there is not enough signal.
-- For preferred_tone: infer whether the user's writing style suggests they prefer formal, \
-semi-formal, or casual responses.
-- For response_length: if follow-up questions ask for more detail → "detailed"; \
-if the user seems satisfied with short answers or asks to keep it brief → "concise".
-- For frequent_topics: extract up to 8 short domain/topic labels (e.g. "drept civil", \
-"contracte de muncă", "litigii fiscale") that appear repeatedly. Use Romanian labels. \
-If fewer than 3 distinct topics emerge, return null.
-- DO NOT suggest a change unless the evidence is clear and the new value differs from the current one.
+- Return null for ANY field if there is not enough clear signal (fewer than 3-4 consistent indicators).
+- preferred_tone: infer whether the user's writing style suggests formal, semi-formal, or casual responses.
+- response_length: follow-up questions asking for more → "detailed"; user satisfied with short answers / asks to be brief → "concise".
+- frequent_topics: extract up to 8 short domain/topic labels in Romanian (e.g. "drept civil", \
+"contracte de muncă", "litigii fiscale") that appear repeatedly. Return null if fewer than 3 distinct topics.
+- response_structure: if the user repeatedly asks for bullet points, numbered steps, structured sections, \
+or plain prose — write a short instruction like "Structurează răspunsurile cu liste numerotate." \
+or "Preferă răspunsuri în text continuu, fără liste." Return null if no clear preference.
+- citation_preference: if the user frequently requests or reacts positively to citations of specific \
+Moldovan law articles / legal acts, write a short instruction like \
+"Citează articolele relevante din legislația Republicii Moldova când este posibil." Return null if unclear.
+- DO NOT suggest a change for preferred_tone/response_length if the current value already matches the evidence.
 
 Current profile values:
 - preferred_tone: {tone}
 - response_length: {length}
 - frequent_topics: {topics}
+- current custom instructions: {custom_instructions}
 
 Recent user messages (newest first):
 {messages}
@@ -91,6 +100,7 @@ def _run(db, user_id: int) -> None:
         tone=profile.preferred_tone,
         length=profile.response_length,
         topics=topics_str,
+        custom_instructions=(profile.custom_instructions or "none")[:300],
         messages=messages_block,
     )
 
@@ -152,4 +162,6 @@ def _validate(field: str, value) -> bool:
         return isinstance(value, str) and value in LENGTHS
     if field == "frequent_topics":
         return isinstance(value, list) and len(value) >= 1
+    if field in ("response_structure", "citation_preference"):
+        return isinstance(value, str) and len(value.strip()) >= 5
     return False

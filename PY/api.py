@@ -235,6 +235,10 @@ class SuggestionActionRequest(BaseModel):
     value: object = None  # edited value from the user (for accept)
 
 
+class MemoryRequest(BaseModel):
+    text: str
+
+
 @app.get("/chat-instructions", dependencies=[Depends(verify_key)])
 async def get_chat_instructions():
     """Return the user's saved standing chat instructions."""
@@ -540,7 +544,7 @@ async def chat(
 
     # Every 10 turns, run preference analysis in the background.
     profile = get_or_create_profile(db, user.id)
-    if profile.interaction_count > 0 and profile.interaction_count % 10 == 0:
+    if profile.interaction_count > 0 and profile.interaction_count % 5 == 0:
         background_tasks.add_task(analyse_preferences, user.id)
 
     return result
@@ -671,6 +675,29 @@ async def delete_account(
     return {"deleted": True}
 
 
+# ── /memory command ───────────────────────────────────────────────────────────
+
+@app.post("/memory")
+async def save_memory(
+    body: MemoryRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Append a user-written rule to their custom_instructions."""
+    from era_agent.profiles.service import sanitize_text
+    rule = sanitize_text(body.text.strip(), max_len=500)
+    if not rule:
+        raise HTTPException(status_code=400, detail="Textul nu poate fi gol.")
+    profile = get_or_create_profile(db, user.id)
+    existing = (profile.custom_instructions or "").strip()
+    combined = (existing + "\n" + rule).strip() if existing else rule
+    if len(combined) > 2000:
+        combined = combined[:2000].rstrip() + "..."
+    profile.custom_instructions = combined
+    db.commit()
+    return {"saved": True}
+
+
 # ── Suggestions (Phase 2) ──────────────────────────────────────────────────────
 
 def _suggestion_dict(s: PendingSuggestion) -> dict:
@@ -725,6 +752,18 @@ async def act_on_suggestion(
             if isinstance(value, str):
                 value = [t.strip() for t in value.split(",") if t.strip()]
             kwargs["frequent_topics"] = value
+        elif s.field in ("response_structure", "citation_preference"):
+            # Append free-text instruction to custom_instructions.
+            from era_agent.profiles.service import sanitize_text
+            rule = sanitize_text(str(value).strip(), max_len=300)
+            if rule:
+                profile = get_or_create_profile(db, user.id)
+                existing = (profile.custom_instructions or "").strip()
+                combined = (existing + "\n" + rule).strip() if existing else rule
+                if len(combined) > 2000:
+                    combined = combined[:2000].rstrip() + "..."
+                profile.custom_instructions = combined
+                db.flush()
         if kwargs:
             update_profile(db, user.id, **kwargs)
         s.status = "accepted"

@@ -531,6 +531,10 @@ app.MapGet("/api/profile", async (IConfiguration config, IHttpClientFactory fact
 app.MapPut("/api/profile", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
     await ForwardJson(HttpMethod.Put, "/profile", body, config, factory, ctx));
 
+// ── /memory command (JWT) ─────────────────────────────────────────────────────
+app.MapPost("/api/memory", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Post, "/memory", body, config, factory, ctx));
+
 // ── Suggestions (Phase 2) ─────────────────────────────────────────────────────
 app.MapGet("/api/suggestions", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
     await ForwardJson(HttpMethod.Get, "/suggestions", null, config, factory, ctx));

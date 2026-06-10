@@ -643,7 +643,7 @@
       </button>
     </div>
     <div class="input-footer">
-      <span class="input-hint">Enter — trimite &nbsp;·&nbsp; Shift+Enter — linie nouă</span>
+      <span class="input-hint">Enter — trimite &nbsp;·&nbsp; Shift+Enter — linie nouă &nbsp;·&nbsp; <span style="color:var(--gold)">/memory</span> — salvează o regulă</span>
       <span class="char-count" id="charCount">0</span>
     </div>
   </div>
@@ -905,34 +905,60 @@
     }
   }
 
+  const _thinkingLines = [
+    'Consultând codul civil...',
+    'Verificând jurisprudența...',
+    'Analizând argumentele juridice...',
+    'Căutând precedente relevante...',
+    'Interpretând legislația în vigoare...',
+    'Cercetând în bazele de date...',
+    'Examinând clauzele contractuale...',
+    'Formulând răspunsul juridic...',
+    'Calibrând argumentele...',
+    'Verificând actele normative...',
+  ];
+  let _typingTimerIv = null;
+  let _typingTextIv  = null;
+
   function showTyping() {
     const wrap = document.createElement('div');
     wrap.className = 'msg assistant';
     wrap.id = 'typingWrap';
     wrap.innerHTML = `
-      <div class="msg-avatar">
-        <svg viewBox="0 0 32 32" width="18" height="18" fill="none">
-          <circle cx="16" cy="16" r="4.5" fill="#9B2D3A" opacity="0.15"/>
-          <circle cx="16" cy="16" r="2.5" fill="#9B2D3A"/>
-          <circle cx="16" cy="7"  r="1.8" fill="#C4556A"/>
-          <circle cx="25" cy="16" r="1.8" fill="#C4556A"/>
-          <circle cx="16" cy="25" r="1.8" fill="#C4556A"/>
-          <circle cx="7"  cy="16" r="1.8" fill="#C4556A"/>
-        </svg>
-      </div>
+      <div class="msg-avatar">${_avatarSvg}</div>
       <div class="msg-body">
-        <div class="msg-sender">ERA AI · Efrim Roșca & Asociații</div>
+        <div class="msg-sender">ERA AI · Efrim Roșca &amp; Asociații</div>
         <div class="typing-indicator">
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
         </div>
+        <div class="thinking-status">
+          <span class="thinking-text">${_thinkingLines[0]}</span>
+          <span class="thinking-timer">0s</span>
+        </div>
       </div>`;
     messagesEl.appendChild(wrap);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    let secs = 0;
+    let lineIdx = 0;
+    _typingTimerIv = setInterval(() => {
+      secs++;
+      const el = document.querySelector('#typingWrap .thinking-timer');
+      if (el) el.textContent = secs + 's';
+    }, 1000);
+    _typingTextIv = setInterval(() => {
+      lineIdx = (lineIdx + 1) % _thinkingLines.length;
+      const el = document.querySelector('#typingWrap .thinking-text');
+      if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = _thinkingLines[lineIdx]; el.style.opacity = '1'; }, 200); }
+    }, 2500);
   }
 
   function removeTyping() {
+    clearInterval(_typingTimerIv);
+    clearInterval(_typingTextIv);
+    _typingTimerIv = _typingTextIv = null;
     const el = document.getElementById('typingWrap');
     if (el) el.remove();
   }
@@ -967,10 +993,44 @@
     welcomeVisible = false;
   }
 
+  // ── /memory command ───────────────────────────────────────────────
+  async function saveMemory(rule) {
+    try {
+      const r = await fetch('/api/memory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: rule })
+      });
+      if (requireAuth(r)) return;
+      const note = document.createElement('div');
+      note.className = 'memory-note';
+      note.textContent = r.ok ? `Memorie salvată: "${rule}"` : 'Eroare la salvarea memoriei.';
+      if (!r.ok) note.style.color = 'var(--red-accent)';
+      messagesEl.appendChild(note);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    } catch {
+      const note = document.createElement('div');
+      note.className = 'memory-note';
+      note.textContent = 'Nu s-a putut contacta serverul.';
+      note.style.color = 'var(--red-accent)';
+      messagesEl.appendChild(note);
+    }
+  }
+
   // ── Send ──────────────────────────────────────────────────────────
   async function sendMessage() {
     const text = inputEl.value.trim();
     if (!text) return;
+
+    // /memory command: save rule to profile, don't send as chat message
+    if (text.startsWith('/memory ')) {
+      const rule = text.slice('/memory '.length).trim();
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      document.getElementById('charCount').textContent = '0';
+      if (rule) { hideWelcome(); await saveMemory(rule); }
+      return;
+    }
 
     hideWelcome();
 

@@ -286,6 +286,8 @@
             preferred_tone: 'Ton preferat',
             response_length: 'Lungime răspuns',
             frequent_topics: 'Subiecte frecvente',
+            response_structure: 'Structură răspuns',
+            citation_preference: 'Citare legislație',
         };
         const TONE_OPTS = [['formal','Formal'],['semi-formal','Semi-formal'],['casual','Relaxat']];
         const LEN_OPTS = [['detailed','Detaliat'],['concise','Concis']];
@@ -311,10 +313,12 @@
                 inp.placeholder='Subiect 1, Subiect 2, ...';
                 return inp;
             }
-            const span = document.createElement('span');
-            span.textContent = JSON.stringify(s.suggested_value);
-            span.style.color='var(--ink)';
-            return span;
+            // Free-text fields (response_structure, citation_preference) — editable input
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = typeof s.suggested_value === 'string' ? s.suggested_value : '';
+            inp.style.cssText='width:100%;background:var(--cream);border:1px solid var(--border);color:var(--ink);font-family:Cormorant Garamond,serif;font-size:15px;padding:9px 11px;outline:none;';
+            return inp;
         }
 
         function renderSuggestions(list){

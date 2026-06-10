@@ -555,6 +555,13 @@ header {
   0%, 60%, 100% { transform: translateY(0) scaleY(1); opacity: 0.45; }
   30%           { transform: translateY(-6px) scaleY(0.88); opacity: 1; }
 }
+.memory-note { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px;
+  color:var(--gold); text-align:center; padding:8px 0; opacity:0.8; }
+.thinking-status { display:flex; align-items:center; gap:10px; margin-top:6px; }
+.thinking-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px;
+  color:var(--ink-muted); transition:opacity 0.2s ease; }
+.thinking-timer { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:1px;
+  color:var(--gold); opacity:0.7; }
 
 /* ── Input ── */
 .input-area {
