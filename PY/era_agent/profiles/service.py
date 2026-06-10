@@ -89,7 +89,8 @@ def update_profile(db: Session, user_id: int, *,
                    preferred_tone: str | None = None,
                    preferred_language: str | None = None,
                    response_length: str | None = None,
-                   custom_instructions: str | None = None) -> UserProfile:
+                   custom_instructions: str | None = None,
+                   frequent_topics: list[str] | None = None) -> UserProfile:
     profile = get_or_create_profile(db, user_id)
     if preferred_tone is not None and preferred_tone in TONES:
         profile.preferred_tone = preferred_tone
@@ -99,6 +100,10 @@ def update_profile(db: Session, user_id: int, *,
         profile.response_length = response_length
     if custom_instructions is not None:
         profile.custom_instructions = sanitize_text(custom_instructions)
+    if frequent_topics is not None:
+        # Sanitize each topic label and cap the list to 12 entries.
+        cleaned = [sanitize_text(t, max_len=60) for t in frequent_topics if t and t.strip()]
+        profile.frequent_topics = cleaned[:12]
     db.commit()
     db.refresh(profile)
     return profile

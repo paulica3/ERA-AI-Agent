@@ -3,7 +3,7 @@
 import json as json_module
 import os
 import tempfile
-from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
+from fastapi import BackgroundTasks, FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.responses import Response, StreamingResponse
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
@@ -32,7 +32,9 @@ from era_agent.db.models import User, Conversation, Message, AuditLog
 from era_agent.auth.security import hash_password, verify_password, create_access_token
 from era_agent.auth.deps import get_current_user
 from era_agent.profiles.service import get_or_create_profile, update_profile
+from era_agent.profiles.analyzer import analyse_preferences
 from era_agent.pipelines.chat import run_chat
+from era_agent.db.models import PendingSuggestion
 
 app = FastAPI(title="ERA AI Agent — Python API", version="2.0.0")
 
@@ -226,6 +228,11 @@ class ProfileUpdateRequest(BaseModel):
     preferred_language: str | None = None
     response_length: str | None = None
     custom_instructions: str | None = None
+
+
+class SuggestionActionRequest(BaseModel):
+    action: str          # "accept" or "dismiss"
+    value: object = None  # edited value from the user (for accept)
 
 
 @app.get("/chat-instructions", dependencies=[Depends(verify_key)])
@@ -516,19 +523,27 @@ async def auth_login(body: LoginRequest, db: Session = Depends(get_db)):
 @app.post("/chat")
 async def chat(
     body: ChatRequest,
+    background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Single server-side chat turn. Loads the profile, injects it, persists
     messages, writes the audit snapshot. Returns {reply, conversation_id, title}."""
     try:
-        return run_chat(db, user, body.message, body.conversation_id)
+        result = run_chat(db, user, body.message, body.conversation_id)
     except PermissionError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Eroare la generarea răspunsului: {str(e)}")
+
+    # Every 10 turns, run preference analysis in the background.
+    profile = get_or_create_profile(db, user.id)
+    if profile.interaction_count > 0 and profile.interaction_count % 10 == 0:
+        background_tasks.add_task(analyse_preferences, user.id)
+
+    return result
 
 
 # ── Conversations (ownership-scoped) ──────────────────────────────────────────
@@ -651,6 +666,71 @@ async def delete_account(
     profile, conversations, messages, and audit rows."""
     # Audit rows reference user_id directly (no relationship cascade), wipe first.
     db.query(AuditLog).filter(AuditLog.user_id == user.id).delete(synchronize_session=False)
-    db.delete(user)  # cascades to profile, conversations, messages
+    db.delete(user)  # cascades to profile, conversations, messages, pending_suggestions
     db.commit()
     return {"deleted": True}
+
+
+# ── Suggestions (Phase 2) ──────────────────────────────────────────────────────
+
+def _suggestion_dict(s: PendingSuggestion) -> dict:
+    return {
+        "id": s.id,
+        "field": s.field,
+        "suggested_value": s.suggested_value,
+        "rationale": s.rationale,
+        "status": s.status,
+        "created_at": s.created_at.isoformat() if s.created_at else None,
+    }
+
+
+@app.get("/suggestions")
+async def list_suggestions(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Return pending suggestions for the current user, newest first."""
+    rows = (
+        db.query(PendingSuggestion)
+        .filter(PendingSuggestion.user_id == user.id, PendingSuggestion.status == "pending")
+        .order_by(PendingSuggestion.created_at.desc())
+        .all()
+    )
+    return [_suggestion_dict(s) for s in rows]
+
+
+@app.patch("/suggestions/{suggestion_id}")
+async def act_on_suggestion(
+    suggestion_id: int,
+    body: SuggestionActionRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Accept or dismiss a suggestion. On accept, the (possibly edited) value is
+    written directly to the user's profile."""
+    s = db.get(PendingSuggestion, suggestion_id)
+    if s is None or s.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Sugestia nu există.")
+    if body.action not in ("accept", "dismiss"):
+        raise HTTPException(status_code=400, detail="action trebuie să fie 'accept' sau 'dismiss'.")
+
+    if body.action == "accept":
+        value = body.value if body.value is not None else s.suggested_value
+        kwargs: dict = {}
+        if s.field == "preferred_tone":
+            kwargs["preferred_tone"] = value
+        elif s.field == "response_length":
+            kwargs["response_length"] = value
+        elif s.field == "frequent_topics":
+            if isinstance(value, str):
+                value = [t.strip() for t in value.split(",") if t.strip()]
+            kwargs["frequent_topics"] = value
+        if kwargs:
+            update_profile(db, user.id, **kwargs)
+        s.status = "accepted"
+    else:
+        s.status = "dismissed"
+
+    db.commit()
+    db.refresh(s)
+    return _suggestion_dict(s)

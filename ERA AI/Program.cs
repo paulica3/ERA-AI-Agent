@@ -531,6 +531,13 @@ app.MapGet("/api/profile", async (IConfiguration config, IHttpClientFactory fact
 app.MapPut("/api/profile", async (JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
     await ForwardJson(HttpMethod.Put, "/profile", body, config, factory, ctx));
 
+// ── Suggestions (Phase 2) ─────────────────────────────────────────────────────
+app.MapGet("/api/suggestions", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Get, "/suggestions", null, config, factory, ctx));
+
+app.MapMethods("/api/suggestions/{id}", ["PATCH"], async (int id, JsonElement body, IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
+    await ForwardJson(HttpMethod.Patch, $"/suggestions/{id}", body, config, factory, ctx));
+
 // ── Account: GDPR wipe (JWT). Clears the session cookie on success. ───────────
 app.MapDelete("/api/account", async (IConfiguration config, IHttpClientFactory factory, HttpContext ctx) =>
 {

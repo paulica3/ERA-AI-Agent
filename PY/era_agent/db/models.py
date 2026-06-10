@@ -106,3 +106,17 @@ class AuditLog(Base):
     )
     injected_context: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class PendingSuggestion(Base):
+    __tablename__ = "pending_suggestions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    field: Mapped[str] = mapped_column(String(30), nullable=False)   # preferred_tone / response_length / frequent_topics
+    suggested_value: Mapped[object] = mapped_column(JSON, nullable=False)  # str or list
+    rationale: Mapped[str] = mapped_column(String(300), default="")
+    status: Mapped[str] = mapped_column(String(20), default="pending")  # pending / accepted / dismissed
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)

@@ -77,6 +77,22 @@
         .hint{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px;
             color:var(--ink-muted); margin-top:8px; }
 
+        .sug-card{ border:1px solid var(--border); padding:14px 16px; margin-bottom:12px; }
+        .sug-card:last-child{ margin-bottom:0; }
+        .sug-field{ font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px;
+            text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+        .sug-rationale{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px;
+            color:var(--ink-muted); margin-bottom:10px; }
+        .sug-control{ margin-bottom:10px; }
+        .sug-actions{ display:flex; gap:10px; }
+        .btn-sug-accept{ padding:8px 22px; background:var(--gold); color:var(--ink); }
+        .btn-sug-accept:hover{ background:var(--gold-light); }
+        .btn-sug-dismiss{ padding:8px 16px; background:transparent; border:1px solid var(--border);
+            color:var(--ink-muted); }
+        .btn-sug-dismiss:hover{ border-color:var(--gold); color:var(--ink); }
+        .sug-empty{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px;
+            color:var(--ink-muted); }
+
         .toast{ position:fixed; bottom:24px; right:24px; background:var(--white); border:1px solid var(--border);
             border-left:2px solid var(--gold-light); color:var(--ink-soft); padding:12px 20px;
             font-family:'Cormorant Garamond',serif; font-size:15px; opacity:0; transition:opacity .25s;
@@ -173,6 +189,12 @@
             <button class="btn btn-save" id="saveBtn" onclick="saveProfile()">Salvează preferințele</button>
         </div>
 
+        <!-- ── Suggestions (Phase 2) ──────────────────────────────── -->
+        <div class="section">
+            <div class="section-title">Sugestii ERA AI</div>
+            <div id="sugList"><div class="sug-empty">Se încarcă...</div></div>
+        </div>
+
         <!-- ── GDPR ────────────────────────────────────────────────── -->
         <div class="section danger">
             <div class="section-title">Ștergerea datelor (GDPR)</div>
@@ -258,7 +280,132 @@
             window.location.href = '/LogIn';
         }
 
+        // ── Suggestions ──────────────────────────────────────────────
+
+        const FIELD_LABELS = {
+            preferred_tone: 'Ton preferat',
+            response_length: 'Lungime răspuns',
+            frequent_topics: 'Subiecte frecvente',
+        };
+        const TONE_OPTS = [['formal','Formal'],['semi-formal','Semi-formal'],['casual','Relaxat']];
+        const LEN_OPTS = [['detailed','Detaliat'],['concise','Concis']];
+
+        function buildSugControl(s){
+            if(s.field === 'preferred_tone'){
+                const sel = document.createElement('select');
+                TONE_OPTS.forEach(([v,l])=>{ const o=document.createElement('option'); o.value=v; o.textContent=l;
+                    if(v===s.suggested_value) o.selected=true; sel.appendChild(o); });
+                return sel;
+            }
+            if(s.field === 'response_length'){
+                const sel = document.createElement('select');
+                LEN_OPTS.forEach(([v,l])=>{ const o=document.createElement('option'); o.value=v; o.textContent=l;
+                    if(v===s.suggested_value) o.selected=true; sel.appendChild(o); });
+                return sel;
+            }
+            if(s.field === 'frequent_topics'){
+                const inp = document.createElement('input');
+                inp.type='text';
+                inp.value = Array.isArray(s.suggested_value) ? s.suggested_value.join(', ') : '';
+                inp.style.cssText='width:100%;background:var(--cream);border:1px solid var(--border);color:var(--ink);font-family:Cormorant Garamond,serif;font-size:15px;padding:9px 11px;outline:none;';
+                inp.placeholder='Subiect 1, Subiect 2, ...';
+                return inp;
+            }
+            const span = document.createElement('span');
+            span.textContent = JSON.stringify(s.suggested_value);
+            span.style.color='var(--ink)';
+            return span;
+        }
+
+        function renderSuggestions(list){
+            const container = document.getElementById('sugList');
+            if(!list.length){ container.innerHTML='<div class="sug-empty">Nicio sugestie momentan.</div>'; return; }
+            container.innerHTML='';
+            list.forEach(s=>{
+                const card = document.createElement('div');
+                card.className='sug-card';
+                card.id='sug-'+s.id;
+
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className='sug-field';
+                fieldDiv.textContent = FIELD_LABELS[s.field] || s.field;
+
+                const ratDiv = document.createElement('div');
+                ratDiv.className='sug-rationale';
+                ratDiv.textContent = s.rationale;
+
+                const ctrlWrap = document.createElement('div');
+                ctrlWrap.className='sug-control';
+                const ctrl = buildSugControl(s);
+                ctrl.id='sug-ctrl-'+s.id;
+                ctrlWrap.appendChild(ctrl);
+
+                const actions = document.createElement('div');
+                actions.className='sug-actions';
+
+                const acceptBtn = document.createElement('button');
+                acceptBtn.className='btn btn-sug-accept';
+                acceptBtn.textContent='Aplica';
+                acceptBtn.onclick=()=>acceptSuggestion(s.id, s.field, ctrl);
+
+                const dismissBtn = document.createElement('button');
+                dismissBtn.className='btn btn-sug-dismiss';
+                dismissBtn.textContent='Ignora';
+                dismissBtn.onclick=()=>dismissSuggestion(s.id);
+
+                actions.appendChild(acceptBtn);
+                actions.appendChild(dismissBtn);
+                card.appendChild(fieldDiv);
+                card.appendChild(ratDiv);
+                card.appendChild(ctrlWrap);
+                card.appendChild(actions);
+                container.appendChild(card);
+            });
+        }
+
+        async function loadSuggestions(){
+            try{
+                const r = await fetch('/api/suggestions');
+                if(r.status === 401){ window.location.href='/LogIn'; return; }
+                if(!r.ok){ document.getElementById('sugList').innerHTML='<div class="sug-empty">Nu s-au putut încărca sugestiile.</div>'; return; }
+                renderSuggestions(await r.json());
+            }catch{ document.getElementById('sugList').innerHTML='<div class="sug-empty">Eroare de rețea.</div>'; }
+        }
+
+        async function acceptSuggestion(id, field, ctrl){
+            let value;
+            if(ctrl.tagName==='SELECT') value = ctrl.value;
+            else if(ctrl.tagName==='INPUT') value = ctrl.value;
+            else value = null;
+            try{
+                const r = await fetch(`/api/suggestions/${id}`, {
+                    method:'PATCH', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({action:'accept', value})
+                });
+                if(!r.ok){ toast('Eroare la aplicarea sugestiei', true); return; }
+                document.getElementById('sug-'+id)?.remove();
+                if(!document.querySelector('.sug-card'))
+                    document.getElementById('sugList').innerHTML='<div class="sug-empty">Nicio sugestie momentan.</div>';
+                toast('Sugestie aplicată.');
+                loadProfile();
+            }catch{ toast('Nu s-a putut contacta serverul', true); }
+        }
+
+        async function dismissSuggestion(id){
+            try{
+                const r = await fetch(`/api/suggestions/${id}`, {
+                    method:'PATCH', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({action:'dismiss'})
+                });
+                if(!r.ok){ toast('Eroare la ignorarea sugestiei', true); return; }
+                document.getElementById('sug-'+id)?.remove();
+                if(!document.querySelector('.sug-card'))
+                    document.getElementById('sugList').innerHTML='<div class="sug-empty">Nicio sugestie momentan.</div>';
+            }catch{ toast('Nu s-a putut contacta serverul', true); }
+        }
+
         loadProfile();
+        loadSuggestions();
     </script>
 </body>
 </html>
