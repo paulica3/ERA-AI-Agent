@@ -37,9 +37,14 @@ def run_chat(db: Session, user, message: str, conversation_id: int | None) -> di
         db.add(conv)
         db.flush()  # assign conv.id
 
-    # Build the system prompt: base + injected profile block.
+    # Build the system prompt: base + injected profile block (includes user identity).
     profile = get_or_create_profile(db, user.id)
-    profile_block = build_profile_block(profile, summaries=None)
+    profile_block = build_profile_block(
+        profile,
+        summaries=None,
+        display_name=user.display_name or "",
+        email=user.email or "",
+    )
     system = SYSTEM_PROMPT + "\n\n" + profile_block
 
     # Prior turns from the DB plus the new user message.

@@ -111,7 +111,12 @@ def update_profile(db: Session, user_id: int, *,
 
 # ── Resolver: the injected system-prompt block ────────────────────────────────
 
-def build_profile_block(profile: UserProfile, summaries: list[str] | None = None) -> str:
+def build_profile_block(
+    profile: UserProfile,
+    summaries: list[str] | None = None,
+    display_name: str = "",
+    email: str = "",
+) -> str:
     """Render the user-preferences section appended to the base system prompt.
 
     Everything here is clearly framed as preferences/context, never as
@@ -121,7 +126,13 @@ def build_profile_block(profile: UserProfile, summaries: list[str] | None = None
     lang = _LANG_LABEL.get(profile.preferred_language, "Romanian")
     length = _LEN_LABEL.get(profile.response_length, "detailed and thorough")
 
-    lines = [
+    lines = ["## User identity"]
+    if display_name:
+        lines.append(f"- Name: {display_name}")
+    if email:
+        lines.append(f"- Email: {email}")
+    lines += [
+        "",
         "## User preferences (apply these to your response style)",
         f"- Preferred tone: {tone}.",
         f"- Preferred response language: {lang} (still follow the language rules in the base prompt if the user writes in another language).",
